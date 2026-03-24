@@ -19,9 +19,16 @@ const typeorm_2 = require("typeorm");
 const job_entity_1 = require("./job.entity");
 const fs_1 = require("fs");
 const path_1 = require("path");
+const storage_1 = require("@google-cloud/storage");
+const storage = new storage_1.Storage({
+    projectId: process.env.GCS_PROJECT_ID,
+    credentials: JSON.parse(process.env.GCS_CREDENTIALS || '{}'),
+});
+const bucket = storage.bucket(process.env.GCS_BUCKET_NAME || 'fly-labour-uploads');
 let JobsService = class JobsService {
-    constructor(jobsRepo) {
+    constructor(jobsRepo, storage) {
         this.jobsRepo = jobsRepo;
+        this.storage = storage;
     }
     async findAll(query) {
         const { page = 1, limit = 12, search, country, categoryId, jobType, isHot } = query;
@@ -116,7 +123,16 @@ let JobsService = class JobsService {
             throw new common_1.NotFoundException('Không tìm thấy bài đăng');
         return job;
     }
-    saveFile(file) {
+    async saveFile(file) {
+        if (process.env.GCS_BUCKET_NAME) {
+            const filename = `jobs/${Date.now()}-${file.originalname.replace(/\s/g, '-')}`;
+            const blob = bucket.file(filename);
+            await blob.save(file.buffer, {
+                metadata: { contentType: file.mimetype },
+                public: true,
+            });
+            return `https://storage.googleapis.com/${process.env.GCS_BUCKET_NAME}/${filename}`;
+        }
         const dir = (0, path_1.join)(process.cwd(), 'uploads', 'jobs');
         if (!(0, fs_1.existsSync)(dir))
             (0, fs_1.mkdirSync)(dir, { recursive: true });
@@ -129,6 +145,7 @@ exports.JobsService = JobsService;
 exports.JobsService = JobsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(job_entity_1.Job)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        storage_1.Storage])
 ], JobsService);
 //# sourceMappingURL=jobs.service.js.map

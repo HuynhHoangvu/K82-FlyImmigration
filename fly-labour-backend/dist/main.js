@@ -27,6 +27,9 @@ async function bootstrap() {
         .build();
     swagger_1.SwaggerModule.setup('api', app, swagger_1.SwaggerModule.createDocument(app, config));
     const port = process.env.PORT || 3000;
+    app.getHttpAdapter().get('/health', (req, res) => {
+        res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+    });
     await app.listen(port);
     console.log('\n🦅 ================================');
     console.log(`🚀 Backend:  http://localhost:${port}`);
