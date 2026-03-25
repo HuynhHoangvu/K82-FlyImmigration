@@ -8,9 +8,22 @@ import { NestExpressApplication } from '@nestjs/platform-express'
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
 
-  // CORS — cho phép frontend localhost:5173 gọi API
+  // CORS — cho phép frontend localhost và Railway
+  const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:3001',
+    'http://127.0.0.1:5173',
+    process.env.FRONTEND_URL,
+  ].filter(Boolean)
+
   app.enableCors({
-    origin: ['http://localhost:5173', 'http://localhost:3001', 'http://127.0.0.1:5173'],
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.railway.app')) {
+        callback(null, true)
+      } else {
+        callback(new Error(`CORS blocked: ${origin}`))
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT', 'OPTIONS'],
   })
