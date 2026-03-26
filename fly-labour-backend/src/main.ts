@@ -10,6 +10,8 @@ async function bootstrap() {
 
   // CORS — cho phép frontend localhost và Railway
   const allowedOrigins = [
+    'http://localhost',    
+    'http://localhost:80',
     'http://localhost:5173',
     'http://localhost:3001',
     'http://127.0.0.1:5173',

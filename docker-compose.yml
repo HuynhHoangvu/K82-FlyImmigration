@@ -1,0 +1,53 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: fly_labour
+    ports:
+      - '5432:5432'
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./fly-labour-backend
+      dockerfile: Dockerfile
+    environment:
+      # Thêm ?sslmode=disable để tránh lỗi SSL khi seed và chạy app
+      DATABASE_URL: postgresql://postgres:123456@postgres:5432/fly_labour?sslmode=disable
+      JWT_SECRET: fly-labour-super-secret-production-2025
+      NODE_ENV: production
+      PORT: 3000
+    ports:
+      - '3002:3000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # Đảm bảo sh -c chạy đúng lệnh seed
+    command: >
+      sh -c "node dist/database/seeds/run-seeds.js && node dist/main"
+
+  frontend:
+    build:
+      context: ./fly-labour-frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:3002
+    environment:
+      PORT: 3000
+    ports:
+      - '80:3000'
+    depends_on:
+      - backend
+
+volumes:
+  pg_data:

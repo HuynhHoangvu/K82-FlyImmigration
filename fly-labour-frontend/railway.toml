@@ -1,6 +1,7 @@
 [build]
 builder = "dockerfile"
 dockerfilePath = "Dockerfile"
+buildArguments = { VITE_API_URL = "${{VITE_API_URL}}" }
 
 [deploy]
 restartPolicyType = "on_failure"
