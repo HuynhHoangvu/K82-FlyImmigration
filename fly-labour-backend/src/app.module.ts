@@ -7,7 +7,7 @@ import { JobsModule } from './modules/jobs/jobs.module'
 import { ApplicationsModule } from './modules/applications/applications.module'
 import { CategoriesModule } from './modules/categories/categories.module'
 import { NewsModule } from './modules/news/news.module'
-import { join } from 'path/win32'
+import { join } from 'path'
 
 @Module({
   imports: [
