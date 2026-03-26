@@ -14,7 +14,7 @@ export default function NewsSection() {
   useEffect(() => {
     newsApi
       .getAll()
-      .then((r) => setNews(r.data))
+      .then((r) => setNews(Array.isArray(r.data) ? r.data : []))
       .catch(() => {});
   }, []);
 

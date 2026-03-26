@@ -84,6 +84,30 @@ async function migrate() {
     $$;
   `)
 
+  // Tạo bảng contacts nếu chưa có
+  await ds.query(`
+    CREATE TABLE IF NOT EXISTS contacts (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      name VARCHAR NOT NULL,
+      email VARCHAR NOT NULL,
+      phone VARCHAR,
+      message TEXT NOT NULL,
+      "isRead" BOOLEAN NOT NULL DEFAULT false,
+      "createdAt" TIMESTAMP NOT NULL DEFAULT now()
+    )
+  `)
+  console.log('✅ contacts table ready')
+
+  // Tạo bảng settings nếu chưa có
+  await ds.query(`
+    CREATE TABLE IF NOT EXISTS settings (
+      key VARCHAR PRIMARY KEY,
+      value TEXT,
+      "updatedAt" TIMESTAMP NOT NULL DEFAULT now()
+    )
+  `)
+  console.log('✅ settings table ready')
+
   await ds.destroy()
   console.log('✅ Migration hoàn tất!')
 }
