@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common'
+import { Module, Logger } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { AuthModule } from './modules/auth/auth.module'
@@ -8,6 +8,8 @@ import { ApplicationsModule } from './modules/applications/applications.module'
 import { CategoriesModule } from './modules/categories/categories.module'
 import { NewsModule } from './modules/news/news.module'
 import { join } from 'path'
+
+const logger = new Logger('TypeORM')
 
 @Module({
   imports: [
@@ -19,6 +21,7 @@ import { join } from 'path'
       useFactory: (cfg: ConfigService) => {
         const databaseUrl = cfg.get<string>('DATABASE_URL');
         const nodeEnv = cfg.get<string>('NODE_ENV', 'development');
+        const isProduction = nodeEnv !== 'development';
 
         if (databaseUrl) {
           return {
@@ -27,12 +30,17 @@ import { join } from 'path'
             // Railway: Cần SSL cho external URL, nội bộ (.internal) đôi khi cũng cần tùy version
             ssl: { rejectUnauthorized: false },
             entities: [join(__dirname, '**', '*.entity{.ts,.js}')],
-            // Bật true một lần để tự tạo bảng cho database mới xóa
-            synchronize: true, 
-            logging: nodeEnv === 'development',
+            // Chỉ bật synchronize trong development — production dùng migrations
+            synchronize: !isProduction,
+            logging: !isProduction,
+            retryAttempts: 5,
+            retryDelay: 3000,
+            connectTimeoutMS: 30000,
             extra: {
-              max: 10,
-              connectionTimeoutMillis: 10000,
+              max: 20,
+              connectionTimeoutMillis: 30000,
+              idleTimeoutMillis: 30000,
+              statement_timeout: 30000,
             },
           };
         }
@@ -48,6 +56,9 @@ import { join } from 'path'
           entities: [join(__dirname, '**', '*.entity{.ts,.js}')],
           synchronize: true,
           logging: true,
+          retryAttempts: 5,
+          retryDelay: 3000,
+          connectTimeoutMS: 30000,
         };
       },
     }),

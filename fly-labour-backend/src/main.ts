@@ -6,7 +6,14 @@ import { join } from 'path'
 import { NestExpressApplication } from '@nestjs/platform-express'
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule)
+  let app: NestExpressApplication
+
+  try {
+    app = await NestFactory.create<NestExpressApplication>(AppModule)
+  } catch (err) {
+    console.error('❌ Failed to initialize application (database connection error):', err)
+    process.exit(1)
+  }
 
   // CORS — cho phép frontend localhost và Railway
   const allowedOrigins = [
@@ -19,14 +26,14 @@ async function bootstrap() {
     process.env.FRONTEND_URL,
   ].filter(Boolean)
 
-  app.enableCors({
+  app!.enableCors({
     origin: allowedOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT', 'OPTIONS'],
   })
 
   // Tự động validate DTO
-  app.useGlobalPipes(new ValidationPipe({
+  app!.useGlobalPipes(new ValidationPipe({
     whitelist: true,
     forbidNonWhitelisted: true,
     transform: true,
@@ -34,7 +41,7 @@ async function bootstrap() {
   }))
 
   // Serve ảnh upload tĩnh tại /uploads/...
-  app.useStaticAssets(join(__dirname, '..', 'uploads'), { prefix: '/uploads' })
+  app!.useStaticAssets(join(__dirname, '..', 'uploads'), { prefix: '/uploads' })
 
   // Swagger API docs tại /api
   const config = new DocumentBuilder()
@@ -43,14 +50,14 @@ async function bootstrap() {
     .setVersion('1.0')
     .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'JWT')
     .build()
-  SwaggerModule.setup('api', app, SwaggerModule.createDocument(app, config))
+  SwaggerModule.setup('api', app!, SwaggerModule.createDocument(app!, config))
 
-  app.getHttpAdapter().get('/health', (_req: any, res: any) => {
+  app!.getHttpAdapter().get('/health', (_req: any, res: any) => {
     res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() })
   })
 
   const port = process.env.PORT || 3000
-  await app.listen(port, '0.0.0.0')
+  await app!.listen(port, '0.0.0.0')
 
   console.log('\n🦅 ================================')
   console.log(`🚀 Backend:  http://localhost:${port}`)
