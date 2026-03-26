@@ -87,7 +87,7 @@ async function migrate() {
   // Tạo bảng contacts nếu chưa có
   await ds.query(`
     CREATE TABLE IF NOT EXISTS contacts (
-      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      id UUID PRIMARY KEY,
       name VARCHAR NOT NULL,
       email VARCHAR NOT NULL,
       phone VARCHAR,
