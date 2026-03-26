@@ -11,14 +11,17 @@ import { News } from '../../modules/news/news.entity'
 
 const databaseUrl = process.env.DATABASE_URL
 
+const isInternal = databaseUrl?.includes('.railway.internal') ?? false
+
 const AppDataSource = new DataSource(
   databaseUrl
     ? {
         type: 'postgres',
         url: databaseUrl,
-        ssl: { rejectUnauthorized: false },
+        ssl: isInternal ? false : { rejectUnauthorized: false },
         entities: [User, Category, Job, News],
         synchronize: true,
+        extra: { max: 2, connectionTimeoutMillis: 10000 },
       }
     : {
         type: 'postgres',

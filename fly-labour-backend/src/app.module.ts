@@ -19,13 +19,19 @@ import { NewsModule } from './modules/news/news.module'
         const databaseUrl = cfg.get('DATABASE_URL')
 
         if (databaseUrl) {
+          // Railway internal (.railway.internal) không cần SSL; external URL mới cần
+          const isInternal = databaseUrl.includes('.railway.internal')
           return {
             type: 'postgres',
             url: databaseUrl,
-            ssl: { rejectUnauthorized: false },
+            ssl: isInternal ? false : { rejectUnauthorized: false },
             entities: [__dirname + '/**/*.entity{.ts,.js}'],
             synchronize: true,
             logging: false,
+            extra: {
+              max: 5,                        // giới hạn pool connection
+              connectionTimeoutMillis: 10000, // fail nhanh thay vì hang vô tận
+            },
           }
         }
 
