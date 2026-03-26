@@ -10,7 +10,8 @@ async function bootstrap() {
 
   // CORS — cho phép frontend localhost và Railway
   const allowedOrigins = [
-    'http://localhost',    
+    'http://localhost',
+    'https://flylabour.up.railway.app',
     'http://localhost:80',
     'http://localhost:5173',
     'http://localhost:3001',
@@ -19,13 +20,7 @@ async function bootstrap() {
   ].filter(Boolean)
 
   app.enableCors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.railway.app')) {
-        callback(null, true)
-      } else {
-        callback(new Error(`CORS blocked: ${origin}`))
-      }
-    },
+    origin: allowedOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT', 'OPTIONS'],
   })
