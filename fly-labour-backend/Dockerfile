@@ -21,7 +21,7 @@ RUN npm ci --only=production && npm cache clean --force
 
 COPY --from=builder /app/dist ./dist
 
-RUN mkdir -p uploads/jobs uploads/news
+RUN mkdir -p uploads/jobs uploads/news uploads/cv
 
 EXPOSE 3000
 CMD ["node", "dist/main"]
