@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom'
+﻿import { Link, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard, Briefcase, Users, ClipboardList,
   Tag, Newspaper, Settings, LogOut, ChevronRight, X
@@ -35,11 +35,11 @@ export default function AdminSidebar({ mobile, onClose }: Props) {
       {/* Logo */}
       <div className="flex items-center justify-between p-5 border-b border-brand-border">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{background:'linear-gradient(135deg,#F5A623,#EA580C)'}}>
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{background:'linear-gradient(135deg,#e4a808,#fdd52f)'}}>
             <span className="font-display text-sm text-black font-black">FL</span>
           </div>
           <div>
-            <p className="font-display text-sm text-white tracking-wider">FLY <span style={{color:'#F5A623'}}>LABOUR</span></p>
+            <p className="font-display text-sm text-white tracking-wider">FLY <span style={{color:'#fdd52f'}}>LABOUR</span></p>
             <p className="text-xs text-brand-muted -mt-0.5">Admin Panel</p>
           </div>
         </Link>
@@ -53,7 +53,7 @@ export default function AdminSidebar({ mobile, onClose }: Props) {
       {/* User info */}
       <div className="px-4 py-4 border-b border-brand-border">
         <div className="flex items-center gap-3 p-3 bg-brand-yellow/5 rounded-xl">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center text-black font-bold text-xs" style={{background:'linear-gradient(135deg,#F5A623,#EA580C)'}}>
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center text-black font-bold text-xs" style={{background:'linear-gradient(135deg,#e4a808,#fdd52f)'}}>
             {user?.fullName?.charAt(0) || 'A'}
           </div>
           <div className="min-w-0">

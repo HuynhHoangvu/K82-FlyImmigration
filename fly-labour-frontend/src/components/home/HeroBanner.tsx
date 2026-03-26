@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+﻿import { useState, useEffect, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, Search, MapPin, Briefcase, Play, Pause } from 'lucide-react'
 
@@ -17,7 +17,7 @@ const SLIDES = [
     ],
     image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1600&q=80&fit=crop',
     imageAlt: 'Cánh đồng nông trại Úc',
-    accent: '#F5A623',
+    accent: '#fdd52f',
   },
   {
     id: 2,
@@ -33,7 +33,7 @@ const SLIDES = [
     ],
     image: 'https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=1600&q=80&fit=crop',
     imageAlt: 'Cảnh đẹp Canada',
-    accent: '#EA580C',
+    accent: '#e4a808',
   },
   {
     id: 3,

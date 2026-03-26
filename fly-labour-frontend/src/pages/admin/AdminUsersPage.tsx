@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { Search, Pencil, Trash2, Lock, Unlock, X, CheckCircle, Plus } from 'lucide-react'
 import { formatDate } from '@/utils/helpers'
 import toast from 'react-hot-toast'
@@ -123,7 +123,7 @@ export default function AdminUsersPage() {
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2.5">
                       <div className="w-8 h-8 rounded-xl flex items-center justify-center text-black text-xs font-bold shrink-0"
-                        style={{ background: user.role === 'admin' ? 'linear-gradient(135deg,#F5A623,#EA580C)' : 'linear-gradient(135deg,#3B82F6,#8B5CF6)' }}>
+                        style={{ background: user.role === 'admin' ? 'linear-gradient(135deg,#e4a808,#fdd52f)' : 'linear-gradient(135deg,#3B82F6,#8B5CF6)' }}>
                         {user.fullName.charAt(0)}
                       </div>
                       <div>
@@ -183,7 +183,7 @@ export default function AdminUsersPage() {
             <div className="p-5 space-y-4">
               <div className="flex items-center gap-3 p-3 bg-brand-dark rounded-xl">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center text-black text-sm font-bold shrink-0"
-                  style={{ background: editModal.role === 'admin' ? 'linear-gradient(135deg,#F5A623,#EA580C)' : 'linear-gradient(135deg,#3B82F6,#8B5CF6)' }}>
+                  style={{ background: editModal.role === 'admin' ? 'linear-gradient(135deg,#e4a808,#fdd52f)' : 'linear-gradient(135deg,#3B82F6,#8B5CF6)' }}>
                   {editModal.fullName.charAt(0)}
                 </div>
                 <div>

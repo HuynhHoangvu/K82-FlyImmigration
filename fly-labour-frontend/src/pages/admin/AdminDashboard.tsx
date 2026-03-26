@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   BarChart,
@@ -16,7 +16,7 @@ import { jobsApi, applicationsApi, usersApi } from "@/services/api";
 import { APP_STATUS_LABELS, formatDate } from "@/utils/helpers";
 import type { Application } from "@/types";
 
-const PIE_COLORS = ["#F5A623", "#3B82F6", "#10B981", "#EF4444", "#8B5CF6"];
+const PIE_COLORS = ["#fdd52f", "#3B82F6", "#10B981", "#EF4444", "#8B5CF6"];
 
 const MONTHLY_DATA = [
   { month: "T8", apps: 28, users: 65 },
@@ -60,14 +60,14 @@ export default function AdminDashboard() {
       value: userStats?.total ?? "—",
       sub: `+${userStats?.thisMonth ?? 0} tháng này`,
       icon: Users,
-      color: "#F5A623",
+      color: "#fdd52f",
     },
     {
       label: "Tổng bài đăng",
       value: jobStats?.totalJobs ?? "—",
       sub: `${jobStats?.activeJobs ?? 0} đang hoạt động`,
       icon: Briefcase,
-      color: "#EA580C",
+      color: "#e4a808",
     },
     {
       label: "Đơn ứng tuyển",
@@ -193,13 +193,13 @@ export default function AdminDashboard() {
               <Bar
                 dataKey="apps"
                 name="Đơn ứng tuyển"
-                fill="#F5A623"
+                fill="#fdd52f"
                 radius={[6, 6, 0, 0]}
               />
               <Bar
                 dataKey="users"
                 name="Người dùng mới"
-                fill="#EA580C"
+                fill="#e4a808"
                 radius={[6, 6, 0, 0]}
                 opacity={0.7}
               />
@@ -311,7 +311,7 @@ export default function AdminDashboard() {
                 <div
                   className="w-8 h-8 rounded-xl flex items-center justify-center text-black text-xs font-bold shrink-0"
                   style={{
-                    background: "linear-gradient(135deg,#F5A623,#EA580C)",
+                    background: "linear-gradient(135deg,#e4a808,#fdd52f)",
                   }}
                 >
                   {app.fullName.charAt(0)}

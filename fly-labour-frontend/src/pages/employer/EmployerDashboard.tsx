@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Briefcase, ClipboardList, Eye, TrendingUp, ArrowRight } from 'lucide-react'
 import { employerApi } from '@/services/api'
@@ -42,7 +42,7 @@ export default function EmployerDashboard() {
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
-          { label: 'Job Listings',   value: loading ? '—' : jobs.length,         icon: Briefcase,     color: '#F5A623' },
+          { label: 'Job Listings',   value: loading ? '—' : jobs.length,         icon: Briefcase,     color: '#fdd52f' },
           { label: 'Applications',   value: loading ? '—' : applications.length,  icon: ClipboardList, color: '#3B82F6' },
           { label: 'Total Views',    value: loading ? '—' : totalViews,            icon: Eye,           color: '#8B5CF6' },
         ].map(s => (
@@ -107,7 +107,7 @@ export default function EmployerDashboard() {
             <div className="space-y-2">
               {recentApps.map(app => (
                 <div key={app.id} className="flex items-center gap-3 p-3 bg-brand-dark rounded-xl">
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center text-black font-bold text-xs shrink-0" style={{ background: 'linear-gradient(135deg,#F5A623,#EA580C)' }}>
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center text-black font-bold text-xs shrink-0" style={{ background: 'linear-gradient(135deg,#e4a808,#fdd52f)' }}>
                     {app.fullName.charAt(0)}
                   </div>
                   <div className="min-w-0 flex-1">

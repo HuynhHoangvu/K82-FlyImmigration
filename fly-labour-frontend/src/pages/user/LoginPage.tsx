@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Eye, EyeOff, LogIn } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
@@ -36,15 +36,15 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-20 relative">
       <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f00] via-brand-dark to-brand-dark" />
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full blur-3xl opacity-10" style={{ background: "linear-gradient(135deg,#F5A623,#EA580C)" }} />
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full blur-3xl opacity-10" style={{ background: "linear-gradient(135deg,#e4a808,#fdd52f)" }} />
 
       <div className="relative w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2 mb-5">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg,#F5A623,#EA580C)" }}>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg,#e4a808,#fdd52f)" }}>
               <span className="font-display text-lg text-black font-black">FL</span>
             </div>
-            <span className="font-display text-2xl text-white tracking-wider">FLY <span style={{ color: "#F5A623" }}>LABOUR</span></span>
+            <span className="font-display text-2xl text-white tracking-wider">FLY <span style={{ color: "#fdd52f" }}>LABOUR</span></span>
           </Link>
           <h1 className="text-2xl font-bold text-white">{a.signInTitle}</h1>
           <p className="text-brand-muted text-sm mt-1">{a.signInSub}</p>

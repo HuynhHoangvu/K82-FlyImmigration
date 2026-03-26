@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { MessageCircle, X, Phone, Facebook } from 'lucide-react'
 
 export default function FloatingContact() {
@@ -60,7 +60,7 @@ export default function FloatingContact() {
       <button
         onClick={() => setOpen(!open)}
         className="w-14 h-14 rounded-2xl shadow-2xl flex items-center justify-center text-black transition-all duration-300 hover:scale-105 active:scale-95"
-        style={{ background: 'linear-gradient(135deg, #F5A623, #EA580C)' }}
+        style={{ background: 'linear-gradient(135deg, #e4a808, #fdd52f)' }}
       >
         {open
           ? <X size={22} className="text-black" />
@@ -70,7 +70,7 @@ export default function FloatingContact() {
 
       {/* Pulse ring when closed */}
       {!open && (
-        <span className="absolute w-14 h-14 rounded-2xl animate-ping opacity-25" style={{background:'linear-gradient(135deg,#F5A623,#EA580C)'}} />
+        <span className="absolute w-14 h-14 rounded-2xl animate-ping opacity-25" style={{background:'linear-gradient(135deg,#e4a808,#fdd52f)'}} />
       )}
     </div>
   )

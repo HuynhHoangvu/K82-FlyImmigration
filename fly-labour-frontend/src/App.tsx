@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+﻿import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import BackgroundMusic from "@/components/ui/BackgroundMusic";
 import { useT } from "@/hooks/useT";
@@ -126,7 +126,7 @@ export default function App() {
             borderRadius: "12px",
             fontSize: "14px",
           },
-          success: { iconTheme: { primary: "#F5A623", secondary: "#000" } },
+          success: { iconTheme: { primary: "#fdd52f", secondary: "#000" } },
           error: { iconTheme: { primary: "#EF4444", secondary: "#fff" } },
         }}
       />

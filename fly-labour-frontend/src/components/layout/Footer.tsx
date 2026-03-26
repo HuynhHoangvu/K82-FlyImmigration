@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+﻿import { Link } from 'react-router-dom'
 import { MapPin, Phone, Mail, Facebook, Youtube } from 'lucide-react'
 import { useT } from '@/hooks/useT'
 
@@ -13,11 +13,11 @@ export default function Footer() {
         {/* Brand */}
         <div>
           <div className="flex items-center gap-2 mb-4">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{background:'linear-gradient(135deg,#F5A623,#EA580C)'}}>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{background:'linear-gradient(135deg,#e4a808,#fdd52f)'}}>
               <span className="text-black font-display text-base font-black">FL</span>
             </div>
             <span className="font-display text-xl text-white tracking-wider">
-              FLY <span style={{color:'#F5A623'}}>LABOUR</span>
+              FLY <span style={{color:'#fdd52f'}}>LABOUR</span>
             </span>
           </div>
           <p className="text-brand-muted text-sm leading-relaxed">{f.tagline}</p>
@@ -36,7 +36,7 @@ export default function Footer() {
 
         {/* Jobs Links */}
         <div>
-          <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-widest" style={{color:'#F5A623'}}>{f.jobs}</h4>
+          <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-widest" style={{color:'#fdd52f'}}>{f.jobs}</h4>
           <ul className="space-y-2">
             {(f.jobLinks as string[]).map((item: string) => (
               <li key={item}><Link to="/jobs" className="text-brand-muted hover:text-white text-sm transition-colors">{item}</Link></li>
@@ -46,7 +46,7 @@ export default function Footer() {
 
         {/* Support Links */}
         <div>
-          <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-widest" style={{color:'#F5A623'}}>{f.support}</h4>
+          <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-widest" style={{color:'#fdd52f'}}>{f.support}</h4>
           <ul className="space-y-2">
             {(f.supportLinks as string[]).map((item: string) => (
               <li key={item}><Link to="/" className="text-brand-muted hover:text-white text-sm transition-colors">{item}</Link></li>
@@ -56,18 +56,18 @@ export default function Footer() {
 
         {/* Contact */}
         <div>
-          <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-widest" style={{color:'#F5A623'}}>{f.contact}</h4>
+          <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-widest" style={{color:'#fdd52f'}}>{f.contact}</h4>
           <ul className="space-y-3">
             <li className="flex items-start gap-2 text-sm text-brand-muted">
-              <MapPin size={15} className="mt-0.5 shrink-0" style={{color:'#F5A623'}} />
+              <MapPin size={15} className="mt-0.5 shrink-0" style={{color:'#fdd52f'}} />
               <span>123 Nguyen Van Linh, District 7, Ho Chi Minh City</span>
             </li>
             <li className="flex items-center gap-2 text-sm text-brand-muted">
-              <Phone size={15} style={{color:'#F5A623'}} />
+              <Phone size={15} style={{color:'#fdd52f'}} />
               <a href="tel:0901234567" className="hover:text-white transition-colors">0901 234 567</a>
             </li>
             <li className="flex items-center gap-2 text-sm text-brand-muted">
-              <Mail size={15} style={{color:'#F5A623'}} />
+              <Mail size={15} style={{color:'#fdd52f'}} />
               <a href="mailto:info@flylabour.com" className="hover:text-white transition-colors">info@flylabour.com</a>
             </li>
           </ul>

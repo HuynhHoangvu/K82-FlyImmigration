@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { Outlet, Navigate } from "react-router-dom";
 import { Bell, X, CheckCheck } from "lucide-react";
 import AdminSidebar from "@/components/admin/AdminSidebar";
@@ -161,7 +161,7 @@ export default function AdminLayout() {
                               className="w-8 h-8 rounded-lg flex items-center justify-center text-black text-xs font-bold shrink-0 mt-0.5"
                               style={{
                                 background:
-                                  "linear-gradient(135deg,#F5A623,#EA580C)",
+                                  "linear-gradient(135deg,#e4a808,#fdd52f)",
                               }}
                             >
                               {app.fullName.charAt(0)}
@@ -208,7 +208,7 @@ export default function AdminLayout() {
             {/* Avatar */}
             <div
               className="w-8 h-8 rounded-xl flex items-center justify-center text-black font-bold text-xs"
-              style={{ background: "linear-gradient(135deg,#F5A623,#EA580C)" }}
+              style={{ background: "linear-gradient(135deg,#e4a808,#fdd52f)" }}
             >
               {user?.fullName?.charAt(0)}
             </div>

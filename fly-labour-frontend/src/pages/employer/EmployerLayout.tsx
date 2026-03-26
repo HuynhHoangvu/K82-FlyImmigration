@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { Outlet, Navigate, Link, useLocation } from 'react-router-dom'
 import { LayoutDashboard, Briefcase, ClipboardList, LogOut, X, Home, ChevronRight } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
@@ -26,11 +26,11 @@ function Sidebar({ mobile, onClose }: { mobile?: boolean; onClose?: () => void }
     <div className="flex flex-col h-full bg-brand-card border-r border-brand-border w-60">
       <div className="flex items-center justify-between p-5 border-b border-brand-border">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#F5A623,#EA580C)' }}>
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#e4a808,#fdd52f)' }}>
             <span className="font-display text-sm text-black font-black">FL</span>
           </div>
           <div>
-            <p className="font-display text-sm text-white tracking-wider">FLY <span style={{ color: '#F5A623' }}>LABOUR</span></p>
+            <p className="font-display text-sm text-white tracking-wider">FLY <span style={{ color: '#fdd52f' }}>LABOUR</span></p>
             <p className="text-xs text-brand-muted -mt-0.5">Employer Portal</p>
           </div>
         </Link>
@@ -43,7 +43,7 @@ function Sidebar({ mobile, onClose }: { mobile?: boolean; onClose?: () => void }
 
       <div className="px-4 py-4 border-b border-brand-border">
         <div className="flex items-center gap-3 p-3 bg-brand-yellow/5 rounded-xl">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center text-black font-bold text-xs" style={{ background: 'linear-gradient(135deg,#F5A623,#EA580C)' }}>
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center text-black font-bold text-xs" style={{ background: 'linear-gradient(135deg,#e4a808,#fdd52f)' }}>
             {user?.fullName?.charAt(0) || 'E'}
           </div>
           <div className="min-w-0">
@@ -114,7 +114,7 @@ export default function EmployerLayout() {
         <header className="flex items-center justify-between px-5 py-3 border-b border-brand-border bg-brand-card/80 backdrop-blur shrink-0">
           <button onClick={() => setSidebarOpen(true)} className="md:hidden text-gray-400 hover:text-white">☰</button>
           <p className="text-xs text-brand-muted hidden md:block">Fly Labour · Employer Portal</p>
-          <div className="w-8 h-8 rounded-xl flex items-center justify-center text-black font-bold text-xs" style={{ background: 'linear-gradient(135deg,#F5A623,#EA580C)' }}>
+          <div className="w-8 h-8 rounded-xl flex items-center justify-center text-black font-bold text-xs" style={{ background: 'linear-gradient(135deg,#e4a808,#fdd52f)' }}>
             {user?.fullName?.charAt(0)}
           </div>
         </header>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { FileText, Search, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react'
 import { employerApi } from '@/services/api'
 import { APP_STATUS_LABELS, formatDate } from '@/utils/helpers'
@@ -63,7 +63,7 @@ export default function EmployerApplicationsPage() {
                   onClick={() => setExpanded(isOpen ? null : app.id)}
                   className="w-full flex items-center gap-4 p-4 text-left hover:bg-white/2 transition-colors"
                 >
-                  <div className="w-9 h-9 rounded-lg flex items-center justify-center text-black font-bold text-xs shrink-0" style={{ background: 'linear-gradient(135deg,#F5A623,#EA580C)' }}>
+                  <div className="w-9 h-9 rounded-lg flex items-center justify-center text-black font-bold text-xs shrink-0" style={{ background: 'linear-gradient(135deg,#e4a808,#fdd52f)' }}>
                     {app.fullName.charAt(0)}
                   </div>
                   <div className="flex-1 min-w-0">

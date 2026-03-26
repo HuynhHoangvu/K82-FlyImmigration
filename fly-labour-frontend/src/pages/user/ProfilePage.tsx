@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import {
   User,
@@ -73,7 +73,7 @@ export default function ProfilePage() {
               <div
                 className="w-20 h-20 rounded-2xl flex items-center justify-center text-black text-3xl font-bold mx-auto mb-4"
                 style={{
-                  background: "linear-gradient(135deg,#F5A623,#EA580C)",
+                  background: "linear-gradient(135deg,#e4a808,#fdd52f)",
                 }}
               >
                 {user.fullName.charAt(0)}

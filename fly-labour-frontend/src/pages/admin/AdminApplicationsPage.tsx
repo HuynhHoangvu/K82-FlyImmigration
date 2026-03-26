@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { Search, Eye, X, ChevronDown } from 'lucide-react'
 import { MOCK_APPLICATIONS } from '@/utils/mockData'
 import type { Application, AppStatus } from '@/types'
@@ -155,7 +155,7 @@ export default function AdminApplicationsPage() {
                       <div
                         className="w-8 h-8 rounded-xl flex items-center justify-center text-black text-xs font-bold shrink-0"
                         style={{
-                          background: "linear-gradient(135deg,#F5A623,#EA580C)",
+                          background: "linear-gradient(135deg,#e4a808,#fdd52f)",
                         }}
                       >
                         {app.fullName.charAt(0)}
@@ -245,7 +245,7 @@ export default function AdminApplicationsPage() {
                 <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center text-black font-bold"
                   style={{
-                    background: "linear-gradient(135deg,#F5A623,#EA580C)",
+                    background: "linear-gradient(135deg,#e4a808,#fdd52f)",
                   }}
                 >
                   {selected.fullName.charAt(0)}

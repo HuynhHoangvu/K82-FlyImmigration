@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Menu, X, ChevronDown, User, LogOut, LayoutDashboard, Briefcase } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
@@ -59,13 +59,13 @@ export default function Header() {
           <Link to="/" className="flex items-center gap-2 group">
             <div
               className="w-9 h-9 bg-gold-gradient rounded-lg flex items-center justify-center rotate-3 group-hover:rotate-0 transition-transform duration-300"
-              style={{ background: "linear-gradient(135deg, #F5A623, #EA580C)" }}
+              style={{ background: "linear-gradient(135deg, #e4a808, #fdd52f)" }}
             >
               <span className="text-black font-display text-lg font-black">FL</span>
             </div>
             <div>
               <span className="font-display text-xl text-white tracking-wider">FLY</span>
-              <span className="font-display text-xl tracking-wider" style={{ color: "#F5A623" }}> LABOUR</span>
+              <span className="font-display text-xl tracking-wider" style={{ color: "#fdd52f" }}> LABOUR</span>
             </div>
           </Link>
 
@@ -140,7 +140,7 @@ export default function Header() {
                 >
                   <div
                     className="w-7 h-7 rounded-lg bg-gold-gradient flex items-center justify-center text-black font-bold text-xs"
-                    style={{ background: "linear-gradient(135deg,#F5A623,#EA580C)" }}
+                    style={{ background: "linear-gradient(135deg,#e4a808,#fdd52f)" }}
                   >
                     {user.fullName.charAt(0)}
                   </div>

@@ -2,85 +2,197 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Montserrat = headings/display  |  Nunito Sans = body (Google Sans feel) */
+
 @layer base {
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
   html { scroll-behavior: smooth; }
+
   body {
-    background-color: #0A0A0A;
-    color: #F5F5F5;
-    font-family: 'DM Sans', sans-serif;
+    background-color: #0C0C0C;
+    color: #F0F0F0;
+    font-family: 'Nunito Sans', 'Segoe UI', sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  ::-webkit-scrollbar { width: 6px; }
+
+  h1, h2, h3, h4, h5 {
+    font-family: 'Montserrat', 'Nunito Sans', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: #141414; }
-  ::-webkit-scrollbar-thumb { background: #F5A623; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #e4a808, #fdd52f);
+    border-radius: 10px;
+  }
+
+  /* Selection */
+  ::selection {
+    background: rgba(253, 213, 47, 0.22);
+    color: #fdd52f;
+  }
 }
 
 @layer components {
+
+  /* ── Buttons ──────────────────────────────────────────── */
   .btn-primary {
-    @apply bg-gradient-to-r from-brand-yellow to-brand-orange text-black font-semibold
-           px-6 py-3 rounded-lg hover:opacity-90 transition-all duration-200
-           active:scale-95 shadow-lg shadow-brand-orange/20 cursor-pointer;
+    @apply relative inline-flex items-center justify-center gap-2
+           rounded-xl px-6 py-3 cursor-pointer
+           transition-all duration-200 active:scale-[0.97]
+           tracking-wide;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #0C0C0C;
+    background: linear-gradient(135deg, #e4a808 0%, #fdd52f 60%, #f2ee8c 100%);
+    box-shadow: 0 4px 20px rgba(228, 168, 8, 0.32);
   }
+  .btn-primary:hover {
+    box-shadow: 0 6px 30px rgba(228, 168, 8, 0.50);
+    filter: brightness(1.06);
+  }
+
   .btn-outline {
-    @apply border border-brand-yellow text-brand-yellow font-semibold
-           px-6 py-3 rounded-lg hover:bg-brand-yellow hover:text-black
-           transition-all duration-200 cursor-pointer;
+    @apply inline-flex items-center justify-center gap-2
+           rounded-xl px-6 py-3 cursor-pointer
+           transition-all duration-200 active:scale-[0.97] tracking-wide;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #fdd52f;
+    border: 1.5px solid rgba(253, 213, 47, 0.45);
+    background: transparent;
   }
+  .btn-outline:hover {
+    background: rgba(253, 213, 47, 0.07);
+    border-color: #fdd52f;
+    color: #fff;
+  }
+
+  /* ── Cards ────────────────────────────────────────────── */
   .card-dark {
-    @apply bg-brand-card border border-brand-border rounded-2xl
-           hover:border-brand-yellow/40 transition-all duration-300;
+    background: #141414;
+    border: 1px solid #2a2a2a;
+    border-radius: 16px;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
   }
-  .badge-hot {
-    @apply bg-brand-orange text-white text-xs font-bold px-2 py-0.5 rounded-full uppercase tracking-wide;
+  .card-dark:hover {
+    border-color: rgba(253, 213, 47, 0.28);
+    box-shadow: 0 0 0 1px rgba(253, 213, 47, 0.06),
+                0 8px 32px rgba(0, 0, 0, 0.55);
   }
-  .badge-country {
-    @apply bg-brand-yellow/10 text-brand-yellow text-xs font-medium px-2 py-0.5 rounded border border-brand-yellow/20;
-  }
+
+  /* ── Inputs ───────────────────────────────────────────── */
   .input-dark {
-    @apply bg-brand-card border border-brand-border rounded-xl px-4 py-3 w-full
-           text-white placeholder-brand-muted focus:outline-none
-           focus:border-brand-yellow transition-colors duration-200;
+    @apply w-full px-4 py-3 rounded-xl text-white placeholder-brand-muted
+           transition-all duration-200;
+    background: #1a1a1a;
+    border: 1.5px solid #2a2a2a;
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
   }
+  .input-dark:focus {
+    border-color: rgba(253, 213, 47, 0.55);
+    box-shadow: 0 0 0 3px rgba(253, 213, 47, 0.07);
+    background: #1e1e1e;
+  }
+  select.input-dark option { background: #1a1a1a; color: #fff; }
+
+  /* ── Badges ───────────────────────────────────────────── */
+  .badge-hot {
+    @apply inline-flex items-center gap-1 text-[10px] font-black
+           uppercase tracking-wider px-2 py-0.5 rounded-full;
+    background: linear-gradient(135deg, #e4a808, #fdd52f);
+    color: #0C0C0C;
+  }
+
+  .badge-country {
+    @apply inline-flex items-center gap-1 text-[11px] font-semibold
+           px-2.5 py-0.5 rounded-lg;
+    background: rgba(253, 213, 47, 0.09);
+    color: #fdd52f;
+    border: 1px solid rgba(253, 213, 47, 0.20);
+  }
+
+  /* ── Typography ───────────────────────────────────────── */
   .section-title {
-    @apply font-display text-4xl md:text-5xl text-white tracking-wide;
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: #fff;
+    line-height: 1.1;
   }
+
+  .section-label {
+    @apply text-xs font-bold uppercase tracking-[0.18em];
+    color: #e4a808;
+    font-family: 'Montserrat', sans-serif;
+  }
+
   .gradient-text {
-    @apply bg-gradient-to-r from-brand-yellow to-brand-orange bg-clip-text text-transparent;
+    background: linear-gradient(135deg, #e4a808 0%, #fdd52f 55%, #f2ee8c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
+
+  /* ── Utility ──────────────────────────────────────────── */
   .glass {
-    @apply bg-white/5 backdrop-blur-md border border-white/10;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
-  .ticker-wrap {
-    overflow: hidden;
-    white-space: nowrap;
+
+  .glass-gold {
+    background: rgba(253, 213, 47, 0.05);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(253, 213, 47, 0.12);
   }
-  .ticker-content {
-    display: inline-block;
-    animation: ticker 40s linear infinite;
+
+  .divider-gold {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(228,168,8,0.35) 50%, transparent);
   }
+
+  /* ── Ticker ───────────────────────────────────────────── */
+  .ticker-wrap    { overflow: hidden; white-space: nowrap; }
+  .ticker-content { display: inline-block; animation: ticker 40s linear infinite; }
 }
 
+/* ── Keyframes ──────────────────────────────────────────── */
 @keyframes ticker {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
-
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(24px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes slideIn {
   from { opacity: 0; transform: translateX(-24px); }
   to   { opacity: 1; transform: translateX(0); }
 }
-
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
+  0%, 100% { transform: translateY(0); }
   50%       { transform: translateY(-8px); }
+}
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 18px rgba(253,213,47,0.12); }
+  50%       { box-shadow: 0 0 36px rgba(253,213,47,0.30); }
 }
 
 .animate-fade-up  { animation: fadeUp  0.6s ease forwards; }
 .animate-slide-in { animation: slideIn 0.5s ease forwards; }
 .animate-float    { animation: float   3s ease-in-out infinite; }
+.animate-glow     { animation: glow    2.5s ease-in-out infinite; }
