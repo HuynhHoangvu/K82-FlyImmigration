@@ -4,13 +4,14 @@ import { ApiTags, ApiBearerAuth, ApiOperation, ApiConsumes } from '@nestjs/swagg
 import { memoryStorage } from 'multer'
 import { Module } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard'
-import { writeFileSync, mkdirSync, existsSync } from 'fs'
-import { join, extname } from 'path'
-import { randomUUID } from 'crypto'
+import { extname } from 'path'
+import { GcsService } from '../../common/services/gcs.service'
 
 @ApiTags('📎 Upload')
 @Controller('upload')
 export class UploadController {
+  constructor(private gcsService: GcsService) {}
+
   @Post('cv')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('JWT')
@@ -26,12 +27,9 @@ export class UploadController {
       else cb(new Error('Chỉ chấp nhận file PDF, DOC, DOCX'), false)
     },
   }))
-  uploadCv(@UploadedFile() file: Express.Multer.File) {
-    const uploadDir = join(__dirname, '..', '..', '..', 'uploads', 'cv')
-    if (!existsSync(uploadDir)) mkdirSync(uploadDir, { recursive: true })
-    const filename = `${randomUUID()}${extname(file.originalname)}`
-    writeFileSync(join(uploadDir, filename), file.buffer)
-    return { url: `/uploads/cv/${filename}`, filename: file.originalname }
+  async uploadCv(@UploadedFile() file: Express.Multer.File) {
+    const url = await this.gcsService.uploadFile(file, 'cv')
+    return { url, filename: file.originalname }
   }
 }
 

@@ -75,13 +75,14 @@ export default function AdminJobsPage() {
   const [imgTab, setImgTab] = useState<"upload" | "url">("upload");
   const [urlInput, setUrlInput] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+  const fileObjRef = useRef<File | null>(null);
 
   const filtered = jobs.filter(j =>
     !search || j.title.toLowerCase().includes(search.toLowerCase()) ||
     j.company?.toLowerCase().includes(search.toLowerCase())
   )
 
-  const openAdd = () => { setForm(EMPTY_FORM); setEditing(null); setUrlInput(''); setModal('add') }
+  const openAdd = () => { setForm(EMPTY_FORM); setEditing(null); setUrlInput(''); fileObjRef.current = null; setModal('add') }
   const openEdit = (job: Job) => {
     const isPreset = PRESET_COUNTRIES.some(c => c.value === job.country && c.value !== '__other__')
     setForm({
@@ -97,14 +98,16 @@ export default function AdminJobsPage() {
       imagePreview: job.image || '',
     })
     setUrlInput(job.image || '')
+    fileObjRef.current = null
     setEditing(job); setModal('edit')
   }
 
-  // Handle file upload → convert to data URL for preview
+  // Handle file upload → lưu File object + tạo preview
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
     if (file.size > 5 * 1024 * 1024) { toast.error('Ảnh tối đa 5MB'); return }
+    fileObjRef.current = file
     const reader = new FileReader()
     reader.onload = () => setForm(f => ({ ...f, imagePreview: reader.result as string }))
     reader.readAsDataURL(file)
@@ -170,7 +173,9 @@ export default function AdminJobsPage() {
       }
 
       // Xử lý ảnh
-      if (imgTab === "url" && urlInput.trim()) {
+      if (imgTab === "upload" && fileObjRef.current) {
+        fd.append("image", fileObjRef.current);
+      } else if (imgTab === "url" && urlInput.trim()) {
         fd.set("image", urlInput.trim());
       }
 
@@ -414,6 +419,7 @@ export default function AdminJobsPage() {
                           onClick={() => {
                             setForm((f) => ({ ...f, imagePreview: "" }));
                             setUrlInput("");
+                            fileObjRef.current = null;
                           }}
                           className="text-xs bg-red-500/80 hover:bg-red-500 text-white px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1"
                         >

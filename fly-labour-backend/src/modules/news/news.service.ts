@@ -4,8 +4,7 @@ import { Repository } from 'typeorm'
 import { News } from './news.entity'
 import { IsString, IsOptional } from 'class-validator'
 import { ApiProperty } from '@nestjs/swagger'
-import { writeFileSync, mkdirSync, existsSync } from 'fs'
-import { join } from 'path'
+import { GcsService } from '../../common/services/gcs.service'
 
 export class CreateNewsDto {
   @ApiProperty() @IsString() title: string
@@ -18,7 +17,10 @@ export class CreateNewsDto {
 
 @Injectable()
 export class NewsService {
-  constructor(@InjectRepository(News) private newsRepo: Repository<News>) {}
+  constructor(
+    @InjectRepository(News) private newsRepo: Repository<News>,
+    private gcsService: GcsService,
+  ) {}
 
   findAll() {
     return this.newsRepo.find({ where: { isPublished: true }, order: { createdAt: 'DESC' }, take: 10 })
@@ -56,10 +58,6 @@ export class NewsService {
   }
 
   private async saveFile(file: Express.Multer.File): Promise<string> {
-    const uploadDir = join(process.cwd(), 'uploads', 'news')
-    if (!existsSync(uploadDir)) mkdirSync(uploadDir, { recursive: true })
-    const filename = `${Date.now()}-${file.originalname.replace(/\s/g, '-')}`
-    writeFileSync(join(uploadDir, filename), file.buffer)
-    return `/uploads/news/${filename}`
+    return this.gcsService.uploadFile(file, 'news')
   }
 }

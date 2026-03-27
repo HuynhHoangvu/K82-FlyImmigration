@@ -3,13 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Job, JobStatus } from './job.entity';
 import { CreateJobDto, UpdateJobDto, QueryJobDto } from './dto/job.dto';
-import { writeFileSync, mkdirSync, existsSync } from 'fs';
-import { join } from 'path';
+import { GcsService } from '../../common/services/gcs.service';
 
 @Injectable()
 export class JobsService {
   constructor(
     @InjectRepository(Job) private jobsRepo: Repository<Job>,
+    private gcsService: GcsService,
   ) {}
 
   async findAll(query: QueryJobDto) {
@@ -152,13 +152,6 @@ export class JobsService {
   }
 
   private async saveFile(file: Express.Multer.File): Promise<string> {
-    const uploadDir = join(process.cwd(), 'uploads', 'jobs');
-    if (!existsSync(uploadDir)) {
-      mkdirSync(uploadDir, { recursive: true });
-    }
-    const filename = `${Date.now()}-${file.originalname.replace(/\s/g, '-')}`;
-    const filePath = join(uploadDir, filename);
-    writeFileSync(filePath, file.buffer);
-    return `/uploads/jobs/${filename}`;
+    return this.gcsService.uploadFile(file, 'jobs');
   }
 }

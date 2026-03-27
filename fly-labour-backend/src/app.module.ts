@@ -10,6 +10,7 @@ import { NewsModule } from './modules/news/news.module'
 import { ContactModule } from './modules/contact/contact.module'
 import { SettingsModule } from './modules/settings/settings.module'
 import { UploadModule } from './modules/upload/upload.module'
+import { GcsModule } from './common/services/gcs.module'
 import { join } from 'path'
 
 const logger = new Logger('TypeORM')
@@ -68,6 +69,7 @@ const logger = new Logger('TypeORM')
       },
     }),
 
+    GcsModule,
     AuthModule,
     UsersModule,
     JobsModule,
