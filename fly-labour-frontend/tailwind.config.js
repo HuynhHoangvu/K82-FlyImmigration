@@ -15,9 +15,9 @@ export default {
           gray:    '#505050',   // Mid gray
           muted:   '#888888',   // Muted text
           // ── Dark surfaces ─────────────────────────────
-          dark:    '#0C0C0C',
-          card:    '#141414',
-          panel:   '#1a1a1a',
+          dark:    'rgba(12, 12, 12, 0.86)',
+          card:    'rgba(20, 20, 20, 0.88)',
+          panel:   'rgba(26, 26, 26, 0.88)',
           border:  '#2a2a2a',
           line:    '#1f1f1f',
         },

@@ -7,29 +7,24 @@
 @layer base {
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  html { scroll-behavior: smooth; }
+  /* Background toàn app — Trái Đất ban đêm nhìn từ vũ trụ */
+  html {
+    scroll-behavior: smooth;
+    background-color: #0C0C0C;
+    background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=70&fit=crop');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center center;
+  }
 
   body {
-    background-color: #0C0C0C;
+    background-color: transparent;
     color: #F0F0F0;
     font-family: 'Nunito Sans', 'Segoe UI', sans-serif;
     font-size: 15px;
     line-height: 1.65;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-  }
-
-  /* Background toàn app — Trái Đất ban đêm nhìn từ vũ trụ */
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=70&fit=crop');
-    background-size: cover;
-    background-position: center center;
-    opacity: 0.09;
-    z-index: -1;
-    pointer-events: none;
   }
 
   h1, h2, h3, h4, h5 {
@@ -41,7 +36,7 @@
 
   /* Scrollbar */
   ::-webkit-scrollbar { width: 5px; }
-  ::-webkit-scrollbar-track { background: #141414; }
+  ::-webkit-scrollbar-track { background: #0d0d0d; }
   ::-webkit-scrollbar-thumb {
     background: linear-gradient(180deg, #e4a808, #fdd52f);
     border-radius: 10px;
