@@ -1,9 +1,11 @@
 import { Repository } from 'typeorm';
 import { Job } from './job.entity';
 import { CreateJobDto, UpdateJobDto, QueryJobDto } from './dto/job.dto';
+import { GcsService } from '../../common/services/gcs.service';
 export declare class JobsService {
     private jobsRepo;
-    constructor(jobsRepo: Repository<Job>);
+    private gcsService;
+    constructor(jobsRepo: Repository<Job>, gcsService: GcsService);
     findAll(query: QueryJobDto): Promise<{
         data: Job[];
         meta: {

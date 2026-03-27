@@ -19,17 +19,15 @@ const swagger_1 = require("@nestjs/swagger");
 const multer_1 = require("multer");
 const common_2 = require("@nestjs/common");
 const jwt_auth_guard_1 = require("../../common/guards/jwt-auth.guard");
-const fs_1 = require("fs");
 const path_1 = require("path");
-const crypto_1 = require("crypto");
+const gcs_service_1 = require("../../common/services/gcs.service");
 let UploadController = class UploadController {
-    uploadCv(file) {
-        const uploadDir = (0, path_1.join)(__dirname, '..', '..', '..', 'uploads', 'cv');
-        if (!(0, fs_1.existsSync)(uploadDir))
-            (0, fs_1.mkdirSync)(uploadDir, { recursive: true });
-        const filename = `${(0, crypto_1.randomUUID)()}${(0, path_1.extname)(file.originalname)}`;
-        (0, fs_1.writeFileSync)((0, path_1.join)(uploadDir, filename), file.buffer);
-        return { url: `/uploads/cv/${filename}`, filename: file.originalname };
+    constructor(gcsService) {
+        this.gcsService = gcsService;
+    }
+    async uploadCv(file) {
+        const url = await this.gcsService.uploadFile(file, 'cv');
+        return { url, filename: file.originalname };
     }
 };
 exports.UploadController = UploadController;
@@ -54,11 +52,12 @@ __decorate([
     __param(0, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], UploadController.prototype, "uploadCv", null);
 exports.UploadController = UploadController = __decorate([
     (0, swagger_1.ApiTags)('📎 Upload'),
-    (0, common_1.Controller)('upload')
+    (0, common_1.Controller)('upload'),
+    __metadata("design:paramtypes", [gcs_service_1.GcsService])
 ], UploadController);
 let UploadModule = class UploadModule {
 };

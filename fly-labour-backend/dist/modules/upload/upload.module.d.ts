@@ -1,8 +1,11 @@
+import { GcsService } from '../../common/services/gcs.service';
 export declare class UploadController {
-    uploadCv(file: Express.Multer.File): {
+    private gcsService;
+    constructor(gcsService: GcsService);
+    uploadCv(file: Express.Multer.File): Promise<{
         url: string;
         filename: string;
-    };
+    }>;
 }
 export declare class UploadModule {
 }

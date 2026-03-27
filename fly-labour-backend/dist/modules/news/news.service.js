@@ -19,8 +19,7 @@ const typeorm_2 = require("typeorm");
 const news_entity_1 = require("./news.entity");
 const class_validator_1 = require("class-validator");
 const swagger_1 = require("@nestjs/swagger");
-const fs_1 = require("fs");
-const path_1 = require("path");
+const gcs_service_1 = require("../../common/services/gcs.service");
 class CreateNewsDto {
 }
 exports.CreateNewsDto = CreateNewsDto;
@@ -55,8 +54,9 @@ __decorate([
     __metadata("design:type", Boolean)
 ], CreateNewsDto.prototype, "isPublished", void 0);
 let NewsService = class NewsService {
-    constructor(newsRepo) {
+    constructor(newsRepo, gcsService) {
         this.newsRepo = newsRepo;
+        this.gcsService = gcsService;
     }
     findAll() {
         return this.newsRepo.find({ where: { isPublished: true }, order: { createdAt: 'DESC' }, take: 10 });
@@ -93,18 +93,14 @@ let NewsService = class NewsService {
         return { message: 'Đã xóa bài viết' };
     }
     async saveFile(file) {
-        const uploadDir = (0, path_1.join)(process.cwd(), 'uploads', 'news');
-        if (!(0, fs_1.existsSync)(uploadDir))
-            (0, fs_1.mkdirSync)(uploadDir, { recursive: true });
-        const filename = `${Date.now()}-${file.originalname.replace(/\s/g, '-')}`;
-        (0, fs_1.writeFileSync)((0, path_1.join)(uploadDir, filename), file.buffer);
-        return `/uploads/news/${filename}`;
+        return this.gcsService.uploadFile(file, 'news');
     }
 };
 exports.NewsService = NewsService;
 exports.NewsService = NewsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(news_entity_1.News)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        gcs_service_1.GcsService])
 ], NewsService);
 //# sourceMappingURL=news.service.js.map

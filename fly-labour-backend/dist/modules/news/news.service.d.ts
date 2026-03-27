@@ -1,5 +1,6 @@
 import { Repository } from 'typeorm';
 import { News } from './news.entity';
+import { GcsService } from '../../common/services/gcs.service';
 export declare class CreateNewsDto {
     title: string;
     slug: string;
@@ -10,7 +11,8 @@ export declare class CreateNewsDto {
 }
 export declare class NewsService {
     private newsRepo;
-    constructor(newsRepo: Repository<News>);
+    private gcsService;
+    constructor(newsRepo: Repository<News>, gcsService: GcsService);
     findAll(): Promise<News[]>;
     findAllAdmin(): Promise<News[]>;
     findOne(slug: string): Promise<News>;

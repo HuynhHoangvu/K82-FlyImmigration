@@ -6,7 +6,12 @@
       "Bash(xargs wc:*)",
       "Bash(wc -l /d/Fly_Visa/Fly-2/fly-labour/Fly-labour/fly-labour-frontend/src/pages/*/*.tsx)",
       "Bash(npx tsc:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(find D:/Fly_Visa/Fly-2/fly-labour/Fly-labour/fly-labour-backend/src -name *.guard.ts)",
+      "Bash(npm install:*)",
+      "Bash(node -e \"require\\(''''@google-cloud/storage''''\\); console.log\\(''''OK''''\\)\")",
+      "Bash(npm run:*)",
+      "Bash(node -e \":*)"
     ]
   }
 }

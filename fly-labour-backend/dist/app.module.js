@@ -19,6 +19,7 @@ const news_module_1 = require("./modules/news/news.module");
 const contact_module_1 = require("./modules/contact/contact.module");
 const settings_module_1 = require("./modules/settings/settings.module");
 const upload_module_1 = require("./modules/upload/upload.module");
+const gcs_module_1 = require("./common/services/gcs.module");
 const path_1 = require("path");
 const logger = new common_1.Logger('TypeORM');
 let AppModule = class AppModule {
@@ -71,6 +72,7 @@ exports.AppModule = AppModule = __decorate([
                     };
                 },
             }),
+            gcs_module_1.GcsModule,
             auth_module_1.AuthModule,
             users_module_1.UsersModule,
             jobs_module_1.JobsModule,

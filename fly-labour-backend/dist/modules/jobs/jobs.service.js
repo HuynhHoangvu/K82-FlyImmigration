@@ -17,11 +17,11 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const job_entity_1 = require("./job.entity");
-const fs_1 = require("fs");
-const path_1 = require("path");
+const gcs_service_1 = require("../../common/services/gcs.service");
 let JobsService = class JobsService {
-    constructor(jobsRepo) {
+    constructor(jobsRepo, gcsService) {
         this.jobsRepo = jobsRepo;
+        this.gcsService = gcsService;
     }
     async findAll(query) {
         const { page = 1, limit = 12, search, country, categoryId, jobType, isHot } = query;
@@ -152,20 +152,14 @@ let JobsService = class JobsService {
         return job;
     }
     async saveFile(file) {
-        const uploadDir = (0, path_1.join)(process.cwd(), 'uploads', 'jobs');
-        if (!(0, fs_1.existsSync)(uploadDir)) {
-            (0, fs_1.mkdirSync)(uploadDir, { recursive: true });
-        }
-        const filename = `${Date.now()}-${file.originalname.replace(/\s/g, '-')}`;
-        const filePath = (0, path_1.join)(uploadDir, filename);
-        (0, fs_1.writeFileSync)(filePath, file.buffer);
-        return `/uploads/jobs/${filename}`;
+        return this.gcsService.uploadFile(file, 'jobs');
     }
 };
 exports.JobsService = JobsService;
 exports.JobsService = JobsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(job_entity_1.Job)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        gcs_service_1.GcsService])
 ], JobsService);
 //# sourceMappingURL=jobs.service.js.map
