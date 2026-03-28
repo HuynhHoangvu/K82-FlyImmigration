@@ -602,7 +602,7 @@ export default function AdminJobsPage() {
                       <p className="text-xs text-brand-muted mt-0.5">
                         Ảnh mặc định phù hợp với ngành{" "}
                         {
-                          MOCK_CATEGORIES.find((c) => c.id === form.categoryId)
+                          cats.find((c) => c.id === form.categoryId)
                             ?.name
                         }
                       </p>
