@@ -1,7 +1,7 @@
 ﻿import { Link, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard, Briefcase, Users, ClipboardList,
-  Tag, Newspaper, Settings, LogOut, ChevronRight, X
+  Tag, Newspaper, Settings, LogOut, ChevronRight, X, CalendarDays, MessageSquare
 } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 import toast from 'react-hot-toast'
@@ -14,6 +14,8 @@ const NAV = [
   { label: 'Khách hàng',        icon: Users,           href: '/admin/users' },
   { label: 'Danh mục',          icon: Tag,             href: '/admin/categories' },
   { label: 'Tin tức',           icon: Newspaper,       href: '/admin/news' },
+  { label: 'Lịch công việc',    icon: CalendarDays,    href: '/admin/chores' },
+  { label: 'Liên hệ',           icon: MessageSquare,   href: '/admin/contacts' },
   { label: 'Cài đặt',           icon: Settings,        href: '/admin/settings' },
 ]
 

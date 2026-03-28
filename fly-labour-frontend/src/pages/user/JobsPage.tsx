@@ -20,6 +20,7 @@ export default function JobsPage() {
   const country = searchParams.get("country") || "";
   const jobType = searchParams.get("jobType") || "";
   const categoryId = searchParams.get("categoryId") || "";
+  const sort = searchParams.get("sort") || "newest";
 
   useEffect(() => {
     categoriesApi.getAll().then((r) => setCats(r.data)).catch(() => {});
@@ -28,14 +29,14 @@ export default function JobsPage() {
   useEffect(() => {
     setLoading(true);
     jobsApi
-      .getAll({ search, country, jobType, categoryId, limit: 20 })
+      .getAll({ search, country, jobType, categoryId, sort, limit: 20 })
       .then((r) => {
         setJobs(r.data.data);
         setTotal(r.data.meta.total);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [search, country, jobType, categoryId]);
+  }, [search, country, jobType, categoryId, sort]);
 
   const COUNTRIES: { value: Country | ""; label: string }[] = [
     { value: "", label: j.allCountries },
@@ -61,6 +62,12 @@ export default function JobsPage() {
   const hasFilters = !!(search || country || jobType || categoryId);
 
   const activeCount = [search, country, jobType, categoryId].filter(Boolean).length;
+
+  const SORT_OPTIONS = [
+    { value: 'newest', label: j.newest },
+    { value: 'hot', label: j.sortHot ?? 'Hot nhất' },
+    { value: 'salary_desc', label: j.sortSalary ?? 'Lương cao nhất' },
+  ];
 
   return (
     <div className="min-h-screen pt-20">
@@ -184,14 +191,23 @@ export default function JobsPage() {
           </span>
           <div className="flex items-center gap-2 text-xs text-brand-muted">
             <span>{j.sort}</span>
-            <button className="flex items-center gap-1 text-white hover:text-brand-yellow transition-colors">
-              {j.newest} <ChevronDown size={12} />
-            </button>
+            <div className="relative">
+              <select
+                value={sort}
+                onChange={(e) => setParam("sort", e.target.value)}
+                className="appearance-none bg-transparent text-white hover:text-brand-yellow transition-colors cursor-pointer outline-none pr-4"
+              >
+                {SORT_OPTIONS.map(o => (
+                  <option key={o.value} value={o.value} className="bg-brand-dark text-white">{o.label}</option>
+                ))}
+              </select>
+              <ChevronDown size={12} className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 opacity-60" />
+            </div>
           </div>
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-stretch">
             {[...Array(8)].map((_, i) => (
               <div key={i} className="h-72 bg-brand-card rounded-2xl animate-pulse border border-brand-border" />
             ))}
@@ -206,7 +222,7 @@ export default function JobsPage() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-stretch">
             {jobs.map((job) => (
               <JobCard key={job.id} job={job} />
             ))}

@@ -6,6 +6,8 @@ import FlashSaleJobs from "@/components/home/FlashSaleJobs";
 import CategoriesSection from "@/components/home/CategoriesSection";
 import WhyChooseUs from "@/components/home/WhyChooseUs";
 import NewsSection from "@/components/home/NewsSection";
+import ServiceSelectorSection from "@/components/home/ServiceSelectorSection";
+import EmployerCTASection from "@/components/home/EmployerCTASection";
 import JobCard from "@/components/jobs/JobCard";
 import { jobsApi } from "@/services/api";
 import { useT } from "@/hooks/useT";
@@ -24,6 +26,7 @@ export default function HomePage() {
   return (
     <main>
       <HeroBanner />
+      <ServiceSelectorSection />
       <FlashSaleJobs />
       <CategoriesSection />
 
@@ -61,6 +64,7 @@ export default function HomePage() {
       </section>
 
       <WhyChooseUs />
+      <EmployerCTASection />
       <NewsSection />
 
       {/* CTA */}

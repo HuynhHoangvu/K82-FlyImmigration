@@ -50,6 +50,15 @@ let JobsController = class JobsController {
     getStats() {
         return this.jobsService.getStats();
     }
+    getPendingCount() {
+        return this.jobsService.getPendingCount();
+    }
+    approveJob(id) {
+        return this.jobsService.approveJob(id);
+    }
+    rejectJob(id) {
+        return this.jobsService.rejectJob(id);
+    }
     create(dto, file) {
         return this.jobsService.create(dto, file);
     }
@@ -149,6 +158,35 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], JobsController.prototype, "getStats", null);
+__decorate([
+    (0, common_1.Get)('admin/pending-count'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, admin_guard_1.AdminGuard),
+    (0, swagger_1.ApiBearerAuth)('JWT'),
+    (0, swagger_1.ApiOperation)({ summary: '[Admin] Count pending review jobs' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], JobsController.prototype, "getPendingCount", null);
+__decorate([
+    (0, common_1.Patch)('admin/:id/approve'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, admin_guard_1.AdminGuard),
+    (0, swagger_1.ApiBearerAuth)('JWT'),
+    (0, swagger_1.ApiOperation)({ summary: '[Admin] Approve employer job listing' }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], JobsController.prototype, "approveJob", null);
+__decorate([
+    (0, common_1.Patch)('admin/:id/reject'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, admin_guard_1.AdminGuard),
+    (0, swagger_1.ApiBearerAuth)('JWT'),
+    (0, swagger_1.ApiOperation)({ summary: '[Admin] Reject employer job listing' }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], JobsController.prototype, "rejectJob", null);
 __decorate([
     (0, common_1.Post)(),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, admin_guard_1.AdminGuard),

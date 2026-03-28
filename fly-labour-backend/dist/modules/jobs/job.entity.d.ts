@@ -10,7 +10,8 @@ export declare enum JobStatus {
     ACTIVE = "active",
     PAUSED = "paused",
     CLOSED = "closed",
-    DRAFT = "draft"
+    DRAFT = "draft",
+    PENDING_REVIEW = "pending_review"
 }
 export declare class Job {
     id: string;

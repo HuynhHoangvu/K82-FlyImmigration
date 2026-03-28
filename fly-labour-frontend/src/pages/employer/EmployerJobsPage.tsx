@@ -129,11 +129,11 @@ export default function EmployerJobsPage() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-white">My Job Listings</h1>
-          <p className="text-brand-muted text-sm">{jobs.length} listing{jobs.length !== 1 ? 's' : ''}</p>
+          <h1 className="text-xl font-bold text-white">Tin tuyển dụng của tôi</h1>
+          <p className="text-brand-muted text-sm">{jobs.length} tin đăng</p>
         </div>
         <button onClick={openCreate} className="btn-primary flex items-center gap-2 text-sm px-4 py-2">
-          <Plus size={16} /> Post New Job
+          <Plus size={16} /> Đăng tin mới
         </button>
       </div>
 
@@ -142,9 +142,9 @@ export default function EmployerJobsPage() {
       ) : jobs.length === 0 ? (
         <div className="card-dark p-12 text-center">
           <p className="text-4xl mb-3">💼</p>
-          <p className="text-white font-semibold mb-1">No job listings yet</p>
-          <p className="text-brand-muted text-sm mb-4">Post your first job to start receiving applications</p>
-          <button onClick={openCreate} className="btn-primary text-sm px-5 py-2">Post a Job</button>
+          <p className="text-white font-semibold mb-1">Chưa có tin tuyển dụng nào</p>
+          <p className="text-brand-muted text-sm mb-4">Đăng tin đầu tiên để bắt đầu nhận hồ sơ ứng viên</p>
+          <button onClick={openCreate} className="btn-primary text-sm px-5 py-2">Đăng tin ngay</button>
         </div>
       ) : (
         <div className="space-y-3">
@@ -183,28 +183,28 @@ export default function EmployerJobsPage() {
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-black/60 overflow-y-auto">
           <div className="bg-brand-card border border-brand-border rounded-2xl w-full max-w-2xl my-4">
             <div className="flex items-center justify-between p-5 border-b border-brand-border">
-              <h2 className="font-bold text-white">{editing ? 'Edit Job' : 'Post New Job'}</h2>
+              <h2 className="font-bold text-white">{editing ? 'Chỉnh sửa tin tuyển dụng' : 'Đăng tin tuyển dụng mới'}</h2>
               <button onClick={() => setModal(false)} className="text-brand-muted hover:text-white"><X size={20} /></button>
             </div>
             <div className="p-5 space-y-4 max-h-[70vh] overflow-y-auto">
               {/* Title */}
               <div>
-                <label className="text-xs text-brand-muted mb-1.5 block">Job Title *</label>
-                <input value={form.title} onChange={f('title')} className="input-dark" placeholder="e.g. Farm Worker - Fruit Picking" />
+                <label className="text-xs text-brand-muted mb-1.5 block">Tên vị trí tuyển dụng *</label>
+                <input value={form.title} onChange={f('title')} className="input-dark" placeholder="VD: Công nhân Farm - Hái trái cây" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">Company</label>
-                  <input value={form.company} onChange={f('company')} className="input-dark" placeholder="Company name" />
+                  <label className="text-xs text-brand-muted mb-1.5 block">Tên công ty</label>
+                  <input value={form.company} onChange={f('company')} className="input-dark" placeholder="Tên công ty tuyển dụng" />
                 </div>
                 <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">Location</label>
-                  <input value={form.location} onChange={f('location')} className="input-dark" placeholder="City / State" />
+                  <label className="text-xs text-brand-muted mb-1.5 block">Địa điểm làm việc</label>
+                  <input value={form.location} onChange={f('location')} className="input-dark" placeholder="Thành phố / Bang" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">Country *</label>
+                  <label className="text-xs text-brand-muted mb-1.5 block">Quốc gia *</label>
                   <select value={form.country} onChange={f('country')} className="input-dark">
                     {PRESET_COUNTRIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
                     <option value="__other__">Other...</option>
@@ -214,7 +214,7 @@ export default function EmployerJobsPage() {
                   )}
                 </div>
                 <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">Job Type</label>
+                  <label className="text-xs text-brand-muted mb-1.5 block">Loại hình công việc</label>
                   <select value={form.jobType} onChange={f('jobType')} className="input-dark">
                     {Object.entries(JOBTYPE_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
                   </select>
@@ -222,15 +222,15 @@ export default function EmployerJobsPage() {
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">Min Salary</label>
+                  <label className="text-xs text-brand-muted mb-1.5 block">Lương tối thiểu</label>
                   <input type="number" value={form.salaryMin} onChange={f('salaryMin')} className="input-dark" placeholder="2500" />
                 </div>
                 <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">Max Salary</label>
+                  <label className="text-xs text-brand-muted mb-1.5 block">Lương tối đa</label>
                   <input type="number" value={form.salaryMax} onChange={f('salaryMax')} className="input-dark" placeholder="3500" />
                 </div>
                 <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">Currency</label>
+                  <label className="text-xs text-brand-muted mb-1.5 block">Đơn vị tiền tệ</label>
                   <select value={form.salaryCurrency} onChange={f('salaryCurrency')} className="input-dark">
                     {['AUD','CAD','NZD','USD','GBP','SGD','JPY'].map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
@@ -238,25 +238,25 @@ export default function EmployerJobsPage() {
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">Slots</label>
+                  <label className="text-xs text-brand-muted mb-1.5 block">Số chỉ tiêu</label>
                   <input type="number" value={form.slots} onChange={f('slots')} className="input-dark" placeholder="10" />
                 </div>
                 <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">Deadline</label>
+                  <label className="text-xs text-brand-muted mb-1.5 block">Hạn nộp hồ sơ</label>
                   <input type="date" value={form.deadline} onChange={f('deadline')} className="input-dark" />
                 </div>
                 <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">Status</label>
+                  <label className="text-xs text-brand-muted mb-1.5 block">Trạng thái</label>
                   <select value={form.status} onChange={f('status')} className="input-dark">
-                    <option value="active">Active</option>
-                    <option value="draft">Draft</option>
-                    <option value="paused">Paused</option>
-                    <option value="closed">Closed</option>
+                    <option value="active">Đang tuyển</option>
+                    <option value="draft">Nháp</option>
+                    <option value="paused">Tạm dừng</option>
+                    <option value="closed">Đã đóng</option>
                   </select>
                 </div>
               </div>
               <div>
-                <label className="text-xs text-brand-muted mb-1.5 block">Category</label>
+                <label className="text-xs text-brand-muted mb-1.5 block">Ngành nghề</label>
                 <select value={form.categoryId} onChange={f('categoryId')} className="input-dark">
                   <option value="">— Select category —</option>
                   {categories.map(c => <option key={c.id} value={c.id}>{c.icon} {c.name}</option>)}
@@ -264,7 +264,7 @@ export default function EmployerJobsPage() {
               </div>
               {/* Image */}
               <div>
-                <label className="text-xs text-brand-muted mb-1.5 block">Cover Image</label>
+                <label className="text-xs text-brand-muted mb-1.5 block">Ảnh bìa tin tuyển dụng</label>
                 <div className="flex gap-3">
                   <label className="flex items-center gap-2 px-3 py-2 bg-brand-dark border border-brand-border rounded-lg text-sm text-brand-muted hover:text-white hover:border-brand-yellow/40 cursor-pointer transition-colors">
                     <ImageIcon size={14} /> Upload
@@ -283,22 +283,22 @@ export default function EmployerJobsPage() {
                 </div>
               </div>
               <div>
-                <label className="text-xs text-brand-muted mb-1.5 block">Description *</label>
-                <textarea value={form.description} onChange={f('description')} className="input-dark h-24 resize-none" placeholder="Describe the role and responsibilities..." />
+                <label className="text-xs text-brand-muted mb-1.5 block">Mô tả công việc *</label>
+                <textarea value={form.description} onChange={f('description')} className="input-dark h-24 resize-none" placeholder="Mô tả nhiệm vụ, công việc hàng ngày..." />
               </div>
               <div>
-                <label className="text-xs text-brand-muted mb-1.5 block">Requirements</label>
-                <textarea value={form.requirements} onChange={f('requirements')} className="input-dark h-20 resize-none" placeholder="Required skills, experience, qualifications..." />
+                <label className="text-xs text-brand-muted mb-1.5 block">Yêu cầu ứng viên</label>
+                <textarea value={form.requirements} onChange={f('requirements')} className="input-dark h-20 resize-none" placeholder="Kỹ năng, kinh nghiệm, bằng cấp yêu cầu..." />
               </div>
               <div>
-                <label className="text-xs text-brand-muted mb-1.5 block">Benefits</label>
-                <textarea value={form.benefits} onChange={f('benefits')} className="input-dark h-20 resize-none" placeholder="Accommodation, visa sponsorship, flights..." />
+                <label className="text-xs text-brand-muted mb-1.5 block">Quyền lợi được hưởng</label>
+                <textarea value={form.benefits} onChange={f('benefits')} className="input-dark h-20 resize-none" placeholder="Bao visa, bao ăn ở, vé máy bay, lương thưởng..." />
               </div>
             </div>
             <div className="flex gap-3 p-5 border-t border-brand-border">
-              <button onClick={() => setModal(false)} className="flex-1 btn-outline py-2.5">Cancel</button>
+              <button onClick={() => setModal(false)} className="flex-1 btn-outline py-2.5">Hủy</button>
               <button onClick={handleSave} disabled={saving} className="flex-1 btn-primary py-2.5">
-                {saving ? 'Saving...' : editing ? 'Save Changes' : 'Post Job'}
+                {saving ? 'Đang lưu...' : editing ? 'Lưu thay đổi' : 'Đăng tin'}
               </button>
             </div>
           </div>
@@ -310,11 +310,11 @@ export default function EmployerJobsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60">
           <div className="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-sm w-full text-center">
             <p className="text-2xl mb-3">🗑️</p>
-            <h3 className="font-bold text-white mb-2">Delete Job?</h3>
-            <p className="text-brand-muted text-sm mb-5">This will permanently remove the job listing and all applications.</p>
+            <h3 className="font-bold text-white mb-2">Xóa tin tuyển dụng?</h3>
+            <p className="text-brand-muted text-sm mb-5">Tin tuyển dụng và tất cả hồ sơ liên quan sẽ bị xóa vĩnh viễn.</p>
             <div className="flex gap-3">
-              <button onClick={() => setDeleteId(null)} className="flex-1 btn-outline py-2.5">Cancel</button>
-              <button onClick={handleDelete} className="flex-1 bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl py-2.5 text-sm font-medium hover:bg-red-500/30 transition-colors">Delete</button>
+              <button onClick={() => setDeleteId(null)} className="flex-1 btn-outline py-2.5">Hủy</button>
+              <button onClick={handleDelete} className="flex-1 bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl py-2.5 text-sm font-medium hover:bg-red-500/30 transition-colors">Xóa</button>
             </div>
           </div>
         </div>

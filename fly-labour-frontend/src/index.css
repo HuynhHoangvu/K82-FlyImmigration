@@ -204,3 +204,15 @@
 .animate-slide-in { animation: slideIn 0.5s ease forwards; }
 .animate-float    { animation: float   3s ease-in-out infinite; }
 .animate-glow     { animation: glow    2.5s ease-in-out infinite; }
+
+@keyframes kenBurns {
+  0%   { transform: scale(1)    translateX(0%)   translateY(0%); }
+  25%  { transform: scale(1.06) translateX(-1%)  translateY(-1%); }
+  50%  { transform: scale(1.10) translateX(1%)   translateY(-2%); }
+  75%  { transform: scale(1.06) translateX(-0.5%) translateY(1%); }
+  100% { transform: scale(1)    translateX(0%)   translateY(0%); }
+}
+.animate-ken-burns {
+  animation: kenBurns 20s ease-in-out infinite;
+  transform-origin: center center;
+}

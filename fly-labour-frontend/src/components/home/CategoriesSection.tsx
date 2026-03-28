@@ -7,7 +7,7 @@ import type { Category } from "@/types";
 
 export default function CategoriesSection() {
   const [cats, setCats] = useState<Category[]>([]);
-  const { t } = useT()
+  const { t, lang } = useT()
   const h = t('home')
 
   useEffect(() => {
@@ -41,10 +41,12 @@ export default function CategoriesSection() {
                 {cat.icon}
               </div>
               <h3 className="font-semibold text-white text-sm group-hover:text-brand-yellow transition-colors">
-                {cat.name}
+                {lang === 'en' ? (cat.nameEn || cat.name) : cat.name}
               </h3>
-              {cat.nameEn && (
-                <p className="text-brand-muted text-xs mt-0.5">{cat.nameEn}</p>
+              {lang === 'en' ? (
+                cat.nameEn && <p className="text-brand-muted text-xs mt-0.5">{cat.name}</p>
+              ) : (
+                cat.nameEn && <p className="text-brand-muted text-xs mt-0.5">{cat.nameEn}</p>
               )}
             </Link>
           ))}

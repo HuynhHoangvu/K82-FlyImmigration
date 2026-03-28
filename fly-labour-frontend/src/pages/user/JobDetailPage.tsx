@@ -19,10 +19,48 @@ const FLAG_MAP: Record<string, string> = {
 }
 
 const FALLBACK_IMAGES: Record<string, string> = {
-  australia: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&q=80&fit=crop',
-  canada:    'https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=1200&q=80&fit=crop',
+  australia:   'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&q=80&fit=crop',
+  canada:      'https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=1200&q=80&fit=crop',
   new_zealand: 'https://images.unsplash.com/photo-1469521669194-babb45599def?w=1200&q=80&fit=crop',
+  germany:     'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=1200&q=80&fit=crop',
+  uk:          'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1200&q=80&fit=crop',
+  japan:       'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1200&q=80&fit=crop',
+  south_korea: 'https://images.unsplash.com/photo-1549692520-acc6669e2f0c?w=1200&q=80&fit=crop',
 }
+
+// Gallery ảnh theo quốc gia (3 ảnh cảnh quan + cuộc sống)
+const COUNTRY_GALLERY: Record<string, string[]> = {
+  australia: [
+    'https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=800&q=75',
+    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=75',
+    'https://images.unsplash.com/photo-1529108190281-9a4f620bc2d8?w=800&q=75',
+  ],
+  canada: [
+    'https://images.unsplash.com/photo-1517935706615-2717063c2225?w=800&q=75',
+    'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=75',
+    'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=75',
+  ],
+  new_zealand: [
+    'https://images.unsplash.com/photo-1507699622108-4be3abd695ad?w=800&q=75',
+    'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=75',
+    'https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=800&q=75',
+  ],
+  germany: [
+    'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=800&q=75',
+    'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&q=75',
+    'https://images.unsplash.com/photo-1564415314949-f8a4c1f4f7a0?w=800&q=75',
+  ],
+  uk: [
+    'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=75',
+    'https://images.unsplash.com/photo-1534430480872-3498386e7856?w=800&q=75',
+    'https://images.unsplash.com/photo-1486299267070-83823f5448dd?w=800&q=75',
+  ],
+}
+const DEFAULT_GALLERY = [
+  'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&q=75',
+  'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&q=75',
+  'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=75',
+]
 
 export default function JobDetailPage() {
   const { id } = useParams();
@@ -58,12 +96,14 @@ export default function JobDetailPage() {
     jobsApi.getOne(id)
       .then((r) => {
         setJob(r.data);
+        document.title = `${r.data.title} — Fly Labour`;
         jobsApi.getAll({ country: r.data.country, limit: 3 })
           .then((res) => setRelatedJobs(res.data.data.filter((j: Job) => j.id !== id)))
           .catch(() => {});
       })
       .catch(() => setJob(null))
       .finally(() => setLoading(false));
+    return () => { document.title = 'Fly Labour — Việc làm nước ngoài'; };
   }, [id]);
 
   useEffect(() => {
@@ -249,6 +289,26 @@ export default function JobDetailPage() {
               </div>
             </div>
 
+            {/* Photo gallery */}
+            {(() => {
+              const imgs = COUNTRY_GALLERY[job.country] ?? DEFAULT_GALLERY
+              return (
+                <div className="grid grid-cols-3 gap-2 rounded-2xl overflow-hidden">
+                  <div className="col-span-2 h-48 overflow-hidden">
+                    <img src={imgs[0]} alt="" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" loading="lazy" />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex-1 overflow-hidden">
+                      <img src={imgs[1]} alt="" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" loading="lazy" />
+                    </div>
+                    <div className="flex-1 overflow-hidden">
+                      <img src={imgs[2]} alt="" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" loading="lazy" />
+                    </div>
+                  </div>
+                </div>
+              )
+            })()}
+
             {/* Description */}
             <div className="card-dark p-6">
               <h2 className="font-semibold text-white text-lg mb-4 flex items-center gap-2">
@@ -379,9 +439,16 @@ export default function JobDetailPage() {
                 <p className="text-brand-muted text-xs">{d.estSalary}</p>
               </div>
               {!submitted ? (
-                <button onClick={handleApply} className="btn-primary w-full py-3.5 text-base flex items-center justify-center gap-2">
-                  {d.applyNow}
-                </button>
+                job.deadline && new Date(job.deadline) < new Date(new Date().toDateString())
+                  ? (
+                    <div className="w-full py-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-center text-sm font-medium">
+                      Đã hết hạn nộp đơn
+                    </div>
+                  ) : (
+                    <button onClick={handleApply} className="btn-primary w-full py-3.5 text-base flex items-center justify-center gap-2">
+                      {d.applyNow}
+                    </button>
+                  )
               ) : (
                 <div className="w-full py-3.5 rounded-xl bg-green-500/10 border border-green-500/30 text-green-400 text-center text-sm font-medium">
                   {d.applied}

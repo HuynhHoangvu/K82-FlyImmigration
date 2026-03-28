@@ -28,8 +28,10 @@ export default function Footer() {
             <a href="#" className="w-9 h-9 rounded-lg bg-brand-border flex items-center justify-center text-brand-muted hover:text-brand-yellow hover:bg-brand-yellow/10 transition-colors">
               <Youtube size={16} />
             </a>
-            <a href="#" className="w-9 h-9 rounded-lg bg-brand-border flex items-center justify-center text-brand-muted hover:text-[#06C755] hover:bg-[#06C755]/10 transition-colors">
-              <span className="text-xs font-bold">Z</span>
+            <a href="https://www.tiktok.com/@flylabour" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-lg bg-brand-border flex items-center justify-center text-brand-muted hover:text-white hover:bg-white/10 transition-colors">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/>
+              </svg>
             </a>
           </div>
         </div>
@@ -48,9 +50,12 @@ export default function Footer() {
         <div>
           <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-widest" style={{color:'#fdd52f'}}>{f.support}</h4>
           <ul className="space-y-2">
-            {(f.supportLinks as string[]).map((item: string) => (
-              <li key={item}><Link to="/" className="text-brand-muted hover:text-white text-sm transition-colors">{item}</Link></li>
-            ))}
+            <li><Link to="/about"   className="text-brand-muted hover:text-white text-sm transition-colors">{f.supportLinks[0]}</Link></li>
+            <li><Link to="/process" className="text-brand-muted hover:text-white text-sm transition-colors">{f.supportLinks[1]}</Link></li>
+            <li><Link to="/faq"     className="text-brand-muted hover:text-white text-sm transition-colors">{f.supportLinks[2]}</Link></li>
+            <li><Link to="/news"    className="text-brand-muted hover:text-white text-sm transition-colors">{f.supportLinks[3]}</Link></li>
+            <li><Link to="/contact" className="text-brand-muted hover:text-white text-sm transition-colors">{f.supportLinks[4]}</Link></li>
+            <li><Link to="/privacy" className="text-brand-muted hover:text-white text-sm transition-colors">{f.supportLinks[5]}</Link></li>
           </ul>
         </div>
 
@@ -60,7 +65,7 @@ export default function Footer() {
           <ul className="space-y-3">
             <li className="flex items-start gap-2 text-sm text-brand-muted">
               <MapPin size={15} className="mt-0.5 shrink-0" style={{color:'#fdd52f'}} />
-              <span>123 Nguyen Van Linh, District 7, Ho Chi Minh City</span>
+              <span>219A, No Trang Long, Binh Thanh, Ho Chi Minh City</span>
             </li>
             <li className="flex items-center gap-2 text-sm text-brand-muted">
               <Phone size={15} style={{color:'#fdd52f'}} />
@@ -83,8 +88,8 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-brand-muted">
           <p>{f.copyright}</p>
           <div className="flex gap-4">
-            <Link to="/" className="hover:text-white transition-colors">{f.privacy}</Link>
-            <Link to="/" className="hover:text-white transition-colors">{f.terms}</Link>
+            <Link to="/privacy" className="hover:text-white transition-colors">{f.privacy}</Link>
+            <Link to="/faq"     className="hover:text-white transition-colors">{f.terms}</Link>
           </div>
         </div>
       </div>

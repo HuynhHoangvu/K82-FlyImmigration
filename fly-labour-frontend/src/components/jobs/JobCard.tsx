@@ -25,8 +25,13 @@ const CATEGORY_IMAGES: Record<string, string> = {
 
 interface Props { job: Job; compact?: boolean }
 
+function isExpired(deadline?: string) {
+  if (!deadline) return false
+  return new Date(deadline) < new Date(new Date().toDateString())
+}
+
 export default function JobCard({ job, compact }: Props) {
-  const { t } = useT()
+  const { t, lang } = useT()
   const jc = t('jobCard')
   const countryLabels = getCountryLabels()
   const countryLabel = countryLabels[job.country] ?? job.country
@@ -41,6 +46,8 @@ export default function JobCard({ job, compact }: Props) {
   }
   const flag = countryFlagMap[job.country] ?? ''
 
+  const expired = isExpired(job.deadline)
+
   const thumbUrl = job.image
     || CATEGORY_IMAGES[job.categoryId || '']
     || COUNTRY_IMAGES[job.country]
@@ -48,7 +55,7 @@ export default function JobCard({ job, compact }: Props) {
   return (
     <Link
       to={`/jobs/${job.id}`}
-      className="card-dark block group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-brand-yellow/10"
+      className="card-dark flex flex-col h-full group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-brand-yellow/10"
     >
       {/* Thumbnail image */}
       {!compact && (
@@ -67,8 +74,9 @@ export default function JobCard({ job, compact }: Props) {
           <div className="absolute inset-0 bg-gradient-to-t from-brand-card/90 via-brand-card/20 to-transparent" />
 
           <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap">
-            {job.isHot && <span className="badge-hot text-[10px]">🔥 Hot</span>}
-            {job.isFeatured && <span className="bg-brand-yellow/90 text-black text-[10px] font-bold px-2 py-0.5 rounded-full">{jc.featured}</span>}
+            {expired && <span className="bg-red-500/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">Hết hạn</span>}
+            {!expired && job.isHot && <span className="badge-hot text-[10px]">🔥 Hot</span>}
+            {!expired && job.isFeatured && <span className="bg-brand-yellow/90 text-black text-[10px] font-bold px-2 py-0.5 rounded-full">{jc.featured}</span>}
           </div>
 
           <div className="absolute top-3 right-3">
@@ -84,10 +92,11 @@ export default function JobCard({ job, compact }: Props) {
       )}
 
       {/* Card body */}
-      <div className={compact ? 'p-4' : 'p-4'}>
+      <div className="p-4 flex flex-col flex-1">
         {compact && (
           <div className="flex gap-1.5 flex-wrap mb-2">
-            {job.isHot && <span className="badge-hot text-[10px]">🔥 Hot</span>}
+            {expired && <span className="bg-red-500/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">Hết hạn</span>}
+            {!expired && job.isHot && <span className="badge-hot text-[10px]">🔥 Hot</span>}
             <span className="badge-country text-[10px]">{flag} {countryName}</span>
           </div>
         )}
@@ -106,7 +115,7 @@ export default function JobCard({ job, compact }: Props) {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 text-[11px] text-brand-muted">
+        <div className="flex flex-wrap items-center gap-3 text-[11px] text-brand-muted flex-1">
           {job.location && (
             <span className="flex items-center gap-1"><MapPin size={10} /> {job.location}</span>
           )}
@@ -119,10 +128,10 @@ export default function JobCard({ job, compact }: Props) {
           )}
         </div>
 
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-brand-border/60">
+        <div className="flex items-center justify-between mt-auto pt-3 border-t border-brand-border/60">
           {job.category ? (
             <span className="text-[11px] px-2 py-0.5 bg-white/5 rounded-lg text-gray-400">
-              {job.category.icon} {job.category.name}
+              {job.category.icon} {lang === 'en' ? (job.category.nameEn || job.category.name) : job.category.name}
             </span>
           ) : <span />}
           <span className="text-[11px] text-brand-muted">{timeAgo(job.createdAt)}</span>

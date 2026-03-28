@@ -6,7 +6,7 @@ import { useT } from '@/hooks/useT'
 import type { Job } from '@/types'
 
 function Countdown() {
-  const [time, setTime] = useState({ h: 23, m: 59, s: 47 })
+  const [time, setTime] = useState({ h: 1, m: 59, s: 47 })
   const { t } = useT()
   const h = t('home')
 
@@ -16,7 +16,7 @@ function Countdown() {
         if (prev.s > 0) return { ...prev, s: prev.s - 1 }
         if (prev.m > 0) return { ...prev, m: prev.m - 1, s: 59 }
         if (prev.h > 0) return { h: prev.h - 1, m: 59, s: 59 }
-        return { h: 23, m: 59, s: 59 }
+        return { h: 1, m: 59, s: 59 }
       })
     }, 1000)
     return () => clearInterval(timer)

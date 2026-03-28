@@ -11,7 +11,9 @@
       "Bash(npm install:*)",
       "Bash(node -e \"require\\(''''@google-cloud/storage''''\\); console.log\\(''''OK''''\\)\")",
       "Bash(npm run:*)",
-      "Bash(node -e \":*)"
+      "Bash(node -e \":*)",
+      "Bash(node -e \"require\\(''@nestjs/websockets''\\); console.log\\(''ok''\\)\")",
+      "Bash(node_modules/.bin/tsc --noEmit)"
     ]
   }
 }

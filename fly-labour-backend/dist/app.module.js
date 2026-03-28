@@ -20,6 +20,7 @@ const contact_module_1 = require("./modules/contact/contact.module");
 const settings_module_1 = require("./modules/settings/settings.module");
 const upload_module_1 = require("./modules/upload/upload.module");
 const gcs_module_1 = require("./common/services/gcs.module");
+const chores_module_1 = require("./modules/chores/chores.module");
 const path_1 = require("path");
 const logger = new common_1.Logger('TypeORM');
 let AppModule = class AppModule {
@@ -82,6 +83,7 @@ exports.AppModule = AppModule = __decorate([
             contact_module_1.ContactModule,
             settings_module_1.SettingsModule,
             upload_module_1.UploadModule,
+            chores_module_1.ChoresModule,
         ],
     })
 ], AppModule);

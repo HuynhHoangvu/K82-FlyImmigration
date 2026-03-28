@@ -48,8 +48,8 @@ export default function EmployerApplicationsPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-bold text-white">Applications Received</h1>
-        <p className="text-brand-muted text-sm">{apps.length} total application{apps.length !== 1 ? 's' : ''}</p>
+        <h1 className="text-xl font-bold text-white">Hồ sơ ứng viên</h1>
+        <p className="text-brand-muted text-sm">{apps.length} hồ sơ đã nhận</p>
       </div>
 
       {/* Search */}
@@ -58,7 +58,7 @@ export default function EmployerApplicationsPage() {
         <input
           value={search}
           onChange={e => setSearch(e.target.value)}
-          placeholder="Search by name, email or job title..."
+          placeholder="Tìm theo tên, email hoặc tên vị trí..."
           className="input-dark pl-10"
         />
       </div>
@@ -68,8 +68,8 @@ export default function EmployerApplicationsPage() {
       ) : filtered.length === 0 ? (
         <div className="card-dark p-12 text-center">
           <p className="text-4xl mb-3">📋</p>
-          <p className="text-white font-semibold mb-1">{search ? 'No results found' : 'No applications yet'}</p>
-          <p className="text-brand-muted text-sm">Applications will appear here once candidates apply to your jobs.</p>
+          <p className="text-white font-semibold mb-1">{search ? 'Không tìm thấy kết quả' : 'Chưa có hồ sơ nào'}</p>
+          <p className="text-brand-muted text-sm">Hồ sơ sẽ xuất hiện tại đây khi ứng viên nộp vào các tin tuyển dụng của bạn.</p>
         </div>
       ) : (
         <div className="space-y-2">

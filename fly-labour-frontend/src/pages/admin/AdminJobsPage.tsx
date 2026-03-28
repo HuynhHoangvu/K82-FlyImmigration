@@ -1,18 +1,18 @@
 import { useState, useRef, useEffect } from 'react'
-import { Plus, Pencil, Trash2, X, CheckCircle, Eye, Upload, Image as ImageIcon } from 'lucide-react'
-import { MOCK_JOBS, MOCK_CATEGORIES } from '@/utils/mockData'
+import { Plus, Pencil, Trash2, X, CheckCircle, XCircle, Eye, Upload, Image as ImageIcon, Clock } from 'lucide-react'
 import type { Category, Job } from '@/types'
 import { getCountryLabels, JOBTYPE_LABELS, formatSalary, formatDate } from '@/utils/helpers'
 import toast from 'react-hot-toast'
 import { categoriesApi, jobsApi, getImageUrl } from '@/services/api'
 
 const STATUS_COLORS = {
-  active:  'text-green-400 bg-green-400/10 border-green-400/20',
-  paused:  'text-yellow-400 bg-yellow-400/10 border-yellow-400/20',
-  closed:  'text-red-400 bg-red-400/10 border-red-400/20',
-  draft:   'text-gray-400 bg-gray-400/10 border-gray-400/20',
+  active:         'text-green-400 bg-green-400/10 border-green-400/20',
+  paused:         'text-yellow-400 bg-yellow-400/10 border-yellow-400/20',
+  closed:         'text-red-400 bg-red-400/10 border-red-400/20',
+  draft:          'text-gray-400 bg-gray-400/10 border-gray-400/20',
+  pending_review: 'text-orange-400 bg-orange-400/10 border-orange-400/20',
 }
-const STATUS_LABELS = { active: 'Hoạt động', paused: 'Tạm dừng', closed: 'Đã đóng', draft: 'Nháp' }
+const STATUS_LABELS = { active: 'Hoạt động', paused: 'Tạm dừng', closed: 'Đã đóng', draft: 'Nháp', pending_review: 'Chờ duyệt' }
 
 // Danh sách quốc gia có sẵn
 const PRESET_COUNTRIES = [
@@ -66,6 +66,7 @@ export default function AdminJobsPage() {
   const [cats, setCats] = useState<Category[]>([]);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState<"add" | "edit" | null>(null);
   const [editing, setEditing] = useState<Job | null>(null);
@@ -77,10 +78,13 @@ export default function AdminJobsPage() {
   const fileRef = useRef<HTMLInputElement>(null);
   const fileObjRef = useRef<File | null>(null);
 
-  const filtered = jobs.filter(j =>
-    !search || j.title.toLowerCase().includes(search.toLowerCase()) ||
-    j.company?.toLowerCase().includes(search.toLowerCase())
-  )
+  const pendingJobs = jobs.filter(j => j.status === 'pending_review')
+  const filtered = jobs.filter(j => {
+    const matchSearch = !search || j.title.toLowerCase().includes(search.toLowerCase()) ||
+      j.company?.toLowerCase().includes(search.toLowerCase())
+    const matchStatus = !statusFilter || j.status === statusFilter
+    return matchSearch && matchStatus
+  })
 
   const openAdd = () => { setForm(EMPTY_FORM); setEditing(null); setUrlInput(''); fileObjRef.current = null; setModal('add') }
   const openEdit = (job: Job) => {
@@ -211,6 +215,26 @@ export default function AdminJobsPage() {
     }
   };
 
+  const handleApprove = async (id: string) => {
+    try {
+      await jobsApi.approveJob(id);
+      toast.success("Đã duyệt bài đăng — tin đã lên live");
+      loadJobs();
+    } catch {
+      toast.error("Duyệt thất bại");
+    }
+  };
+
+  const handleReject = async (id: string) => {
+    try {
+      await jobsApi.rejectJob(id);
+      toast.success("Đã từ chối bài đăng");
+      loadJobs();
+    } catch {
+      toast.error("Từ chối thất bại");
+    }
+  };
+
   const set = (k: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
     setForm(f => ({ ...f, [k]: e.target.value }))
 
@@ -219,7 +243,14 @@ export default function AdminJobsPage() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-bold text-white">Quản lý Việc làm</h1>
+          <h1 className="text-xl font-bold text-white flex items-center gap-2">
+            Quản lý Việc làm
+            {pendingJobs.length > 0 && (
+              <span className="text-xs px-2 py-0.5 rounded-full bg-orange-400/20 text-orange-400 border border-orange-400/30 font-semibold">
+                {pendingJobs.length} chờ duyệt
+              </span>
+            )}
+          </h1>
           <p className="text-brand-muted text-sm">{jobs.length} bài đăng</p>
         </div>
         <button
@@ -228,6 +259,30 @@ export default function AdminJobsPage() {
         >
           <Plus size={15} /> Thêm bài đăng
         </button>
+      </div>
+
+      {/* Filter tabs */}
+      <div className="flex flex-wrap gap-2">
+        {[
+          { value: '', label: 'Tất cả', count: jobs.length },
+          { value: 'pending_review', label: '⏳ Chờ duyệt', count: jobs.filter(j => j.status === 'pending_review').length },
+          { value: 'active', label: '✅ Hoạt động', count: jobs.filter(j => j.status === 'active').length },
+          { value: 'paused', label: '⏸ Tạm dừng', count: jobs.filter(j => j.status === 'paused').length },
+          { value: 'closed', label: '❌ Đã đóng', count: jobs.filter(j => j.status === 'closed').length },
+        ].map(tab => (
+          <button
+            key={tab.value}
+            onClick={() => setStatusFilter(tab.value)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+              statusFilter === tab.value
+                ? 'bg-brand-yellow/15 border-brand-yellow/40 text-brand-yellow'
+                : 'border-brand-border text-brand-muted hover:border-white/20 hover:text-white'
+            }`}
+          >
+            {tab.label}
+            <span className="opacity-70">({tab.count})</span>
+          </button>
+        ))}
       </div>
 
       {/* Search */}
@@ -262,6 +317,9 @@ export default function AdminJobsPage() {
                 </th>
                 <th className="text-left px-4 py-3 text-xs text-brand-muted uppercase tracking-wide font-semibold hidden md:table-cell">
                   Lương
+                </th>
+                <th className="text-left px-4 py-3 text-xs text-brand-muted uppercase tracking-wide font-semibold hidden lg:table-cell">
+                  Nguồn đăng
                 </th>
                 <th className="text-left px-4 py-3 text-xs text-brand-muted uppercase tracking-wide font-semibold hidden lg:table-cell">
                   Ngày đăng
@@ -330,6 +388,23 @@ export default function AdminJobsPage() {
                       )}
                     </span>
                   </td>
+                  {/* Nguồn đăng */}
+                  <td className="px-4 py-3 hidden lg:table-cell">
+                    {job.createdBy ? (
+                      <div>
+                        <p className="text-xs text-white font-medium truncate max-w-[120px]">
+                          {job.createdBy.companyName || job.createdBy.fullName}
+                        </p>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-500/15 text-blue-400 border border-blue-400/20 font-medium">
+                          Doanh nghiệp
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-brand-yellow/15 text-brand-yellow border border-brand-yellow/20 font-medium">
+                        Fly Labour
+                      </span>
+                    )}
+                  </td>
                   <td className="px-4 py-3 hidden lg:table-cell text-brand-muted text-xs">
                     {formatDate(job.createdAt)}
                   </td>
@@ -342,6 +417,24 @@ export default function AdminJobsPage() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-1">
+                      {job.status === 'pending_review' && (
+                        <>
+                          <button
+                            onClick={() => handleApprove(job.id)}
+                            title="Duyệt bài"
+                            className="w-7 h-7 rounded-lg flex items-center justify-center text-green-400 hover:bg-green-500/10 transition-colors"
+                          >
+                            <CheckCircle size={13} />
+                          </button>
+                          <button
+                            onClick={() => handleReject(job.id)}
+                            title="Từ chối"
+                            className="w-7 h-7 rounded-lg flex items-center justify-center text-red-400 hover:bg-red-500/10 transition-colors"
+                          >
+                            <XCircle size={13} />
+                          </button>
+                        </>
+                      )}
                       <a
                         href={`/jobs/${job.id}`}
                         target="_blank"

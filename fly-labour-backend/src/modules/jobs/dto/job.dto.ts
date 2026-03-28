@@ -100,4 +100,10 @@ export class QueryJobDto {
 
   @IsOptional() @Transform(({ value }) => value === 'true')
   isHot?: boolean
+
+  @IsOptional()
+  sort?: string  // 'newest' | 'hot' | 'salary_desc'
+
+  @IsOptional()
+  status?: string
 }

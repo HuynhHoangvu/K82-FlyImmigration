@@ -42,6 +42,7 @@ export default function Header() {
       })),
     },
     { label: t('nav.news'), href: '/news' },
+    { label: t('nav.about'), href: '/about' },
     { label: t('nav.contact'), href: '/contact' },
   ]
 

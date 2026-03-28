@@ -28,7 +28,33 @@ export declare class JobsController {
         message: string;
     }>;
     findAllAdmin(query: QueryJobDto): Promise<{
-        data: import("./job.entity").Job[];
+        data: {
+            createdBy: any;
+            id: string;
+            title: string;
+            description: string;
+            requirements: string;
+            benefits: string;
+            company: string;
+            location: string;
+            country: string;
+            jobType: import("./job.entity").JobType;
+            status: import("./job.entity").JobStatus;
+            salaryMin: number;
+            salaryMax: number;
+            salaryCurrency: string;
+            slots: number;
+            deadline: string;
+            image: string;
+            isHot: boolean;
+            isFeatured: boolean;
+            viewCount: number;
+            category: import("../categories/category.entity").Category;
+            categoryId: string;
+            createdById: string;
+            createdAt: Date;
+            updatedAt: Date;
+        }[];
         meta: {
             total: number;
             page: number;
@@ -43,6 +69,11 @@ export declare class JobsController {
         totalViews: number;
         byCountry: any[];
     }>;
+    getPendingCount(): Promise<{
+        count: number;
+    }>;
+    approveJob(id: string): Promise<import("./job.entity").Job>;
+    rejectJob(id: string): Promise<import("./job.entity").Job>;
     create(dto: CreateJobDto, file?: Express.Multer.File): Promise<import("./job.entity").Job>;
     update(id: string, dto: UpdateJobDto, file?: Express.Multer.File): Promise<import("./job.entity").Job>;
     remove(id: string): Promise<{

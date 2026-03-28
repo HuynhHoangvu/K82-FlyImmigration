@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { Job } from './job.entity';
+import { Job, JobStatus } from './job.entity';
 import { CreateJobDto, UpdateJobDto, QueryJobDto } from './dto/job.dto';
 import { GcsService } from '../../common/services/gcs.service';
 export declare class JobsService {
@@ -17,7 +17,33 @@ export declare class JobsService {
     }>;
     findHot(): Promise<Job[]>;
     findAllAdmin(query: QueryJobDto): Promise<{
-        data: Job[];
+        data: {
+            createdBy: any;
+            id: string;
+            title: string;
+            description: string;
+            requirements: string;
+            benefits: string;
+            company: string;
+            location: string;
+            country: string;
+            jobType: import("./job.entity").JobType;
+            status: JobStatus;
+            salaryMin: number;
+            salaryMax: number;
+            salaryCurrency: string;
+            slots: number;
+            deadline: string;
+            image: string;
+            isHot: boolean;
+            isFeatured: boolean;
+            viewCount: number;
+            category: import("../categories/category.entity").Category;
+            categoryId: string;
+            createdById: string;
+            createdAt: Date;
+            updatedAt: Date;
+        }[];
         meta: {
             total: number;
             page: number;
@@ -41,6 +67,11 @@ export declare class JobsService {
         };
     }>;
     createByEmployer(dto: CreateJobDto, employerId: string, file?: Express.Multer.File): Promise<Job>;
+    approveJob(id: string): Promise<Job>;
+    rejectJob(id: string): Promise<Job>;
+    getPendingCount(): Promise<{
+        count: number;
+    }>;
     updateByEmployer(id: string, employerId: string, dto: UpdateJobDto, file?: Express.Multer.File): Promise<Job>;
     deleteByEmployer(id: string, employerId: string): Promise<{
         message: string;

@@ -22,20 +22,48 @@ const SLIDE_CONFIG = [
     imageAlt: 'New Zealand nature',
     accent: '#D97706',
   },
+  {
+    ctaLink: '/jobs?country=japan',
+    image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1600&q=80&fit=crop',
+    imageAlt: 'Japan Tokyo night skyline',
+    accent: '#E83929',
+  },
+  {
+    ctaLink: '/jobs?country=south_korea',
+    image: 'https://images.unsplash.com/photo-1549692520-acc6669e2f0c?w=1600&q=80&fit=crop',
+    imageAlt: 'South Korea Seoul',
+    accent: '#4A90D9',
+  },
+  {
+    ctaLink: '/jobs?country=uk',
+    image: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1600&q=80&fit=crop',
+    imageAlt: 'United Kingdom London',
+    accent: '#C8102E',
+  },
+  {
+    ctaLink: '/jobs?country=germany',
+    image: 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=1600&q=80&fit=crop',
+    imageAlt: 'Germany landscape',
+    accent: '#F5A623',
+  },
 ]
 
 const TICKER_ITEMS = [
   '🇦🇺 Sydney · NSW', '🇦🇺 Melbourne · VIC', '🇦🇺 Brisbane · QLD',
-  '🇦🇺 Perth · WA', '🇦🇺 Adelaide · SA', '🇨🇦 Toronto · ON',
-  '🇨🇦 Vancouver · BC', '🇨🇦 Calgary · AB', '🇨🇦 Montreal · QC',
+  '🇦🇺 Perth · WA', '🇦🇺 Adelaide · SA',
+  '🇨🇦 Toronto · ON', '🇨🇦 Vancouver · BC', '🇨🇦 Calgary · AB', '🇨🇦 Montreal · QC',
   '🇳🇿 Auckland', '🇳🇿 Wellington', '🇳🇿 Christchurch',
+  '🇯🇵 Tokyo', '🇯🇵 Osaka', '🇯🇵 Nagoya', '🇯🇵 Yokohama',
+  '🇰🇷 Seoul', '🇰🇷 Busan', '🇰🇷 Incheon',
+  '🇬🇧 London', '🇬🇧 Manchester', '🇬🇧 Birmingham',
+  '🇩🇪 Berlin', '🇩🇪 Munich', '🇩🇪 Hamburg', '🇩🇪 Frankfurt',
 ]
 
 export default function HeroBanner() {
   const [current, setCurrent] = useState(0)
   const [search, setSearch] = useState('')
   const [playing, setPlaying] = useState(true)
-  const [loaded, setLoaded] = useState<boolean[]>(SLIDE_CONFIG.map(() => false))
+  const [loaded, setLoaded] = useState<boolean[]>(() => SLIDE_CONFIG.map(() => false))
   const navigate = useNavigate()
   const { t } = useT()
   const h = t('home')
@@ -45,7 +73,7 @@ export default function HeroBanner() {
 
   useEffect(() => {
     if (!playing) return
-    const timer = setInterval(next, 5500)
+    const timer = setInterval(next, 9000)
     return () => clearInterval(timer)
   }, [next, playing])
 
@@ -70,7 +98,7 @@ export default function HeroBanner() {
           <img
             src={s.image}
             alt={s.imageAlt}
-            className="w-full h-full object-cover"
+            className={`w-full h-full object-cover ${i === current ? 'animate-ken-burns' : ''}`}
             onLoad={() => setLoaded(prev => { const n = [...prev]; n[i] = true; return n })}
             style={{ display: loaded[i] ? 'block' : 'none' }}
           />
@@ -100,7 +128,7 @@ export default function HeroBanner() {
       {/* Main content */}
       <div className="relative z-20 flex-1 flex items-center">
         <div className="max-w-7xl w-full mx-auto px-6 pt-24 pb-20">
-          <div className="max-w-2xl">
+          <div className="max-w-6xl">
 
             {/* Badge */}
             <div
@@ -113,7 +141,10 @@ export default function HeroBanner() {
             </div>
 
             {/* Headline */}
-            <h1 className="font-display text-5xl sm:text-6xl md:text-7xl text-white tracking-wide leading-none mb-4 animate-slide-in">
+            <h1
+              className="font-display text-white tracking-wide leading-tight mb-4 animate-slide-in"
+              style={{ fontSize: 'clamp(2rem, 4.5vw, 3.75rem)' }}
+            >
               {slide.title}
               <br />
               <span style={{ color: config.accent }}>{slide.titleAccent}</span>

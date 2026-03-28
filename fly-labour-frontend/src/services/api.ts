@@ -46,14 +46,17 @@ export const authApi = {
 
 // ── Jobs ──────────────────────────────────────
 export const jobsApi = {
-  getAll:     (params?: Record<string, any>) => api.get('/jobs', { params }),
-  getHot:     () => api.get('/jobs/hot'),
-  getOne:     (id: string) => api.get(`/jobs/${id}`),
-  getAllAdmin: (params?: Record<string, any>) => api.get('/jobs/admin/all', { params }),
-  create:     (data: FormData) => api.post('/jobs', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
-  update:     (id: string, data: FormData) => api.patch(`/jobs/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
-  remove:     (id: string) => api.delete(`/jobs/${id}`),
-  getStats:   () => api.get('/jobs/admin/stats'),
+  getAll:          (params?: Record<string, any>) => api.get('/jobs', { params }),
+  getHot:          () => api.get('/jobs/hot'),
+  getOne:          (id: string) => api.get(`/jobs/${id}`),
+  getAllAdmin:      (params?: Record<string, any>) => api.get('/jobs/admin/all', { params }),
+  create:          (data: FormData) => api.post('/jobs', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  update:          (id: string, data: FormData) => api.patch(`/jobs/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  remove:          (id: string) => api.delete(`/jobs/${id}`),
+  getStats:        () => api.get('/jobs/admin/stats'),
+  getPendingCount: () => api.get('/jobs/admin/pending-count'),
+  approveJob:      (id: string) => api.patch(`/jobs/admin/${id}/approve`),
+  rejectJob:       (id: string) => api.patch(`/jobs/admin/${id}/reject`),
 }
 
 // ── Applications ──────────────────────────────
@@ -133,6 +136,18 @@ export const uploadApi = {
     fd.append('file', file)
     return api.post('/upload/cv', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
   },
+}
+
+// ── Chores ────────────────────────────────────
+export const choresApi = {
+  getAll:  (params?: { date?: string; month?: string; assignedToId?: string }) =>
+    api.get('/chores', { params }),
+  getOne:  (id: string) => api.get(`/chores/${id}`),
+  create:  (data: { title: string; description?: string; date: string; assignedToId?: string; status?: string }) =>
+    api.post('/chores', data),
+  update:  (id: string, data: Partial<{ title: string; description: string; date: string; assignedToId: string; status: string }>) =>
+    api.patch(`/chores/${id}`, data),
+  remove:  (id: string) => api.delete(`/chores/${id}`),
 }
 
 // Helper: chuyển path ảnh upload (/uploads/...) thành URL đầy đủ

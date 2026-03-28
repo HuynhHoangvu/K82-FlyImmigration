@@ -3,7 +3,7 @@ import { Category } from '../categories/category.entity'
 import { User } from '../users/user.entity'
 
 export enum JobType { FULL_TIME = 'full_time', PART_TIME = 'part_time', CONTRACT = 'contract', SEASONAL = 'seasonal' }
-export enum JobStatus { ACTIVE = 'active', PAUSED = 'paused', CLOSED = 'closed', DRAFT = 'draft' }
+export enum JobStatus { ACTIVE = 'active', PAUSED = 'paused', CLOSED = 'closed', DRAFT = 'draft', PENDING_REVIEW = 'pending_review' }
 
 @Entity('jobs')
 export class Job {

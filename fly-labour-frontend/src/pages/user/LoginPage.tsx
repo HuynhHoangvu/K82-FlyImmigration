@@ -24,7 +24,15 @@ export default function LoginPage() {
     try {
       await login(email, password);
       toast.success(a.welcome);
-      navigate(from, { replace: true });
+      // Redirect theo role nếu không có trang cụ thể cần quay lại
+      if (from === '/') {
+        const role = useAuthStore.getState().user?.role
+        if (role === 'admin')    navigate('/admin', { replace: true })
+        else if (role === 'employer') navigate('/employer', { replace: true })
+        else navigate('/', { replace: true })
+      } else {
+        navigate(from, { replace: true })
+      }
     } catch (err: any) {
       const msg = err?.response?.data?.message || "Login failed";
       toast.error(Array.isArray(msg) ? msg[0] : msg);

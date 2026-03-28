@@ -24,7 +24,7 @@ let JobsService = class JobsService {
         this.gcsService = gcsService;
     }
     async findAll(query) {
-        const { page = 1, limit = 12, search, country, categoryId, jobType, isHot } = query;
+        const { page = 1, limit = 12, search, country, categoryId, jobType, isHot, sort } = query;
         const qb = this.jobsRepo.createQueryBuilder('job')
             .leftJoinAndSelect('job.category', 'category')
             .where('job.status = :status', { status: job_entity_1.JobStatus.ACTIVE });
@@ -39,11 +39,16 @@ let JobsService = class JobsService {
             qb.andWhere('job.jobType = :jobType', { jobType });
         if (isHot !== undefined)
             qb.andWhere('job.isHot = :isHot', { isHot });
-        qb.orderBy('job.isHot', 'DESC')
-            .addOrderBy('job.isFeatured', 'DESC')
-            .addOrderBy('job.createdAt', 'DESC')
-            .skip((page - 1) * limit)
-            .take(limit);
+        if (sort === 'hot') {
+            qb.orderBy('job.isHot', 'DESC').addOrderBy('job.isFeatured', 'DESC').addOrderBy('job.createdAt', 'DESC');
+        }
+        else if (sort === 'salary_desc') {
+            qb.orderBy('job.salaryMax', 'DESC').addOrderBy('job.salaryMin', 'DESC').addOrderBy('job.createdAt', 'DESC');
+        }
+        else {
+            qb.orderBy('job.isHot', 'DESC').addOrderBy('job.isFeatured', 'DESC').addOrderBy('job.createdAt', 'DESC');
+        }
+        qb.skip((page - 1) * limit).take(limit);
         const [data, total] = await qb.getManyAndCount();
         return { data, meta: { total, page: +page, limit: +limit, totalPages: Math.ceil(total / limit) } };
     }
@@ -58,13 +63,21 @@ let JobsService = class JobsService {
     async findAllAdmin(query) {
         const { page = 1, limit = 20, search } = query;
         const qb = this.jobsRepo.createQueryBuilder('job')
-            .leftJoinAndSelect('job.category', 'category');
+            .leftJoinAndSelect('job.category', 'category')
+            .leftJoinAndSelect('job.createdBy', 'createdBy');
         if (search) {
-            qb.where('(job.title ILIKE :s OR job.company ILIKE :s)', { s: `%${search}%` });
+            qb.where('(job.title ILIKE :s OR job.company ILIKE :s OR createdBy.companyName ILIKE :s)', { s: `%${search}%` });
         }
         qb.orderBy('job.createdAt', 'DESC').skip((page - 1) * limit).take(limit);
         const [data, total] = await qb.getManyAndCount();
-        return { data, meta: { total, page: +page, limit: +limit, totalPages: Math.ceil(total / limit) } };
+        const safeData = data.map(job => {
+            if (job.createdBy) {
+                const { password, ...safeUser } = job.createdBy;
+                return { ...job, createdBy: safeUser };
+            }
+            return job;
+        });
+        return { data: safeData, meta: { total, page: +page, limit: +limit, totalPages: Math.ceil(total / limit) } };
     }
     async findOne(id) {
         const job = await this.jobsRepo.findOne({ where: { id }, relations: ['category'] });
@@ -103,10 +116,24 @@ let JobsService = class JobsService {
         return { data, meta: { total, page: +page, limit: +limit, totalPages: Math.ceil(total / limit) } };
     }
     async createByEmployer(dto, employerId, file) {
-        const job = this.jobsRepo.create({ ...dto, createdById: employerId });
+        const job = this.jobsRepo.create({ ...dto, createdById: employerId, status: job_entity_1.JobStatus.PENDING_REVIEW });
         if (file)
             job.image = await this.saveFile(file);
         return this.jobsRepo.save(job);
+    }
+    async approveJob(id) {
+        const job = await this.findOneRaw(id);
+        job.status = job_entity_1.JobStatus.ACTIVE;
+        return this.jobsRepo.save(job);
+    }
+    async rejectJob(id) {
+        const job = await this.findOneRaw(id);
+        job.status = job_entity_1.JobStatus.CLOSED;
+        return this.jobsRepo.save(job);
+    }
+    async getPendingCount() {
+        const count = await this.jobsRepo.count({ where: { status: job_entity_1.JobStatus.PENDING_REVIEW } });
+        return { count };
     }
     async updateByEmployer(id, employerId, dto, file) {
         const job = await this.findOneRaw(id);

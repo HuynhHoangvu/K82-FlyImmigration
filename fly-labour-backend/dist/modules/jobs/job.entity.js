@@ -26,6 +26,7 @@ var JobStatus;
     JobStatus["PAUSED"] = "paused";
     JobStatus["CLOSED"] = "closed";
     JobStatus["DRAFT"] = "draft";
+    JobStatus["PENDING_REVIEW"] = "pending_review";
 })(JobStatus || (exports.JobStatus = JobStatus = {}));
 let Job = class Job {
 };

@@ -8,6 +8,7 @@ import { contactApi } from "@/services/api";
 
 // Layouts
 import Header from "@/components/layout/Header";
+import ScrollToTop from "@/components/ui/ScrollToTop";
 import Footer from "@/components/layout/Footer";
 import FloatingContact from "@/components/ui/FloatingContact";
 import AdminLayout from "@/components/admin/AdminLayout";
@@ -21,6 +22,10 @@ import NewsDetailPage from "@/pages/user/NewsDetailPage";
 import LoginPage from "@/pages/user/LoginPage";
 import RegisterPage from "@/pages/user/RegisterPage";
 import ProfilePage from "@/pages/user/ProfilePage";
+import AboutPage from "@/pages/user/AboutPage";
+import ProcessPage from "@/pages/user/ProcessPage";
+import FaqPage from "@/pages/user/FaqPage";
+import PrivacyPage from "@/pages/user/PrivacyPage";
 
 // Admin pages
 import AdminDashboard from "@/pages/admin/AdminDashboard";
@@ -30,12 +35,15 @@ import AdminUsersPage from "@/pages/admin/AdminUsersPage";
 import AdminCategoriesPage from "@/pages/admin/AdminCategoriesPage";
 import AdminNewsPage from "@/pages/admin/AdminNewsPage";
 import AdminSettingsPage from "@/pages/admin/AdminSettingsPage";
+import AdminChoresPage from "@/pages/admin/AdminChoresPage";
+import AdminContactsPage from "@/pages/admin/AdminContactsPage";
 
 // Employer pages
 import EmployerLayout from "@/pages/employer/EmployerLayout";
 import EmployerDashboard from "@/pages/employer/EmployerDashboard";
 import EmployerJobsPage from "@/pages/employer/EmployerJobsPage";
 import EmployerApplicationsPage from "@/pages/employer/EmployerApplicationsPage";
+import EmployerProfilePage from "@/pages/employer/EmployerProfilePage";
 
 
 function UserLayout({ children }: { children: React.ReactNode }) {
@@ -143,6 +151,7 @@ function NotFound() {
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Toaster
         position="top-right"
         toastOptions={{
@@ -164,6 +173,10 @@ export default function App() {
         <Route path="/jobs/:id" element={<UserLayout><JobDetailPage /></UserLayout>} />
         <Route path="/news" element={<UserLayout><NewsPage /></UserLayout>} />
         <Route path="/news/:slug" element={<UserLayout><NewsDetailPage /></UserLayout>} />
+        <Route path="/about" element={<UserLayout><AboutPage /></UserLayout>} />
+        <Route path="/process" element={<UserLayout><ProcessPage /></UserLayout>} />
+        <Route path="/faq" element={<UserLayout><FaqPage /></UserLayout>} />
+        <Route path="/privacy" element={<UserLayout><PrivacyPage /></UserLayout>} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
@@ -174,6 +187,7 @@ export default function App() {
           <Route index element={<EmployerDashboard />} />
           <Route path="jobs" element={<EmployerJobsPage />} />
           <Route path="applications" element={<EmployerApplicationsPage />} />
+          <Route path="profile" element={<EmployerProfilePage />} />
         </Route>
 
         {/* Admin routes */}
@@ -185,6 +199,8 @@ export default function App() {
           <Route path="categories" element={<AdminCategoriesPage />} />
           <Route path="news" element={<AdminNewsPage />} />
           <Route path="settings" element={<AdminSettingsPage />} />
+          <Route path="chores" element={<AdminChoresPage />} />
+          <Route path="contacts" element={<AdminContactsPage />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

@@ -1,14 +1,15 @@
 ﻿import { useState } from 'react'
 import { Outlet, Navigate, Link, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Briefcase, ClipboardList, LogOut, X, Home, ChevronRight } from 'lucide-react'
+import { LayoutDashboard, Briefcase, ClipboardList, LogOut, X, Home, ChevronRight, UserCircle } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 
 const NAV = [
-  { label: 'Dashboard',    icon: LayoutDashboard, href: '/employer' },
-  { label: 'My Jobs',      icon: Briefcase,       href: '/employer/jobs' },
-  { label: 'Applications', icon: ClipboardList,   href: '/employer/applications' },
+  { label: 'Tổng quan',       icon: LayoutDashboard, href: '/employer' },
+  { label: 'Tin tuyển dụng',  icon: Briefcase,       href: '/employer/jobs' },
+  { label: 'Hồ sơ ứng viên',  icon: ClipboardList,   href: '/employer/applications' },
+  { label: 'Hồ sơ công ty',   icon: UserCircle,      href: '/employer/profile' },
 ]
 
 function Sidebar({ mobile, onClose }: { mobile?: boolean; onClose?: () => void }) {
@@ -31,7 +32,7 @@ function Sidebar({ mobile, onClose }: { mobile?: boolean; onClose?: () => void }
           </div>
           <div>
             <p className="font-display text-sm text-white tracking-wider">FLY <span style={{ color: '#fdd52f' }}>LABOUR</span></p>
-            <p className="text-xs text-brand-muted -mt-0.5">Employer Portal</p>
+            <p className="text-xs text-brand-muted -mt-0.5">Cổng Nhà tuyển dụng</p>
           </div>
         </Link>
         {mobile && (
@@ -48,7 +49,7 @@ function Sidebar({ mobile, onClose }: { mobile?: boolean; onClose?: () => void }
           </div>
           <div className="min-w-0">
             <p className="text-white text-sm font-medium truncate">{user?.companyName || user?.fullName}</p>
-            <p className="text-brand-yellow text-xs">Employer</p>
+            <p className="text-brand-yellow text-xs">Nhà tuyển dụng</p>
           </div>
         </div>
       </div>
@@ -77,10 +78,10 @@ function Sidebar({ mobile, onClose }: { mobile?: boolean; onClose?: () => void }
 
       <div className="p-3 border-t border-brand-border">
         <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-red-400 hover:bg-red-500/10 transition-colors">
-          <LogOut size={16} /> Sign Out
+          <LogOut size={16} /> Đăng xuất
         </button>
         <Link to="/" className="mt-1 w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-brand-muted hover:text-white hover:bg-white/5 transition-colors">
-          <Home size={16} /> Back to Site
+          <Home size={16} /> Về trang chính
         </Link>
       </div>
     </div>
@@ -113,7 +114,7 @@ export default function EmployerLayout() {
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <header className="flex items-center justify-between px-5 py-3 border-b border-brand-border bg-brand-card/80 backdrop-blur shrink-0">
           <button onClick={() => setSidebarOpen(true)} className="md:hidden text-gray-400 hover:text-white">☰</button>
-          <p className="text-xs text-brand-muted hidden md:block">Fly Labour · Employer Portal</p>
+          <p className="text-xs text-brand-muted hidden md:block">Fly Labour · Cổng Nhà tuyển dụng</p>
           <div className="w-8 h-8 rounded-xl flex items-center justify-center text-black font-bold text-xs" style={{ background: 'linear-gradient(135deg,#e4a808,#fdd52f)' }}>
             {user?.fullName?.charAt(0)}
           </div>

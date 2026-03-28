@@ -165,4 +165,12 @@ __decorate([
     (0, class_transformer_1.Transform)(({ value }) => value === 'true'),
     __metadata("design:type", Boolean)
 ], QueryJobDto.prototype, "isHot", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], QueryJobDto.prototype, "sort", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], QueryJobDto.prototype, "status", void 0);
 //# sourceMappingURL=job.dto.js.map

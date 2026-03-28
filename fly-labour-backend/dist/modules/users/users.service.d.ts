@@ -59,6 +59,9 @@ export declare class UsersService {
         phone?: string;
         address?: string;
         avatar?: string;
+        companyName?: string;
+        companyDescription?: string;
+        website?: string;
     }): Promise<{
         id: string;
         email: string;

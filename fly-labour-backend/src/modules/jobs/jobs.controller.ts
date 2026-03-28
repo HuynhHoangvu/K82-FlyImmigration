@@ -89,6 +89,30 @@ export class JobsController {
     return this.jobsService.getStats()
   }
 
+  @Get('admin/pending-count')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @ApiBearerAuth('JWT')
+  @ApiOperation({ summary: '[Admin] Count pending review jobs' })
+  getPendingCount() {
+    return this.jobsService.getPendingCount()
+  }
+
+  @Patch('admin/:id/approve')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @ApiBearerAuth('JWT')
+  @ApiOperation({ summary: '[Admin] Approve employer job listing' })
+  approveJob(@Param('id') id: string) {
+    return this.jobsService.approveJob(id)
+  }
+
+  @Patch('admin/:id/reject')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @ApiBearerAuth('JWT')
+  @ApiOperation({ summary: '[Admin] Reject employer job listing' })
+  rejectJob(@Param('id') id: string) {
+    return this.jobsService.rejectJob(id)
+  }
+
   @Post()
   @UseGuards(JwtAuthGuard, AdminGuard)
   @ApiBearerAuth('JWT')

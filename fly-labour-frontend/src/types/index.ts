@@ -1,6 +1,6 @@
 export type Country = string
 export type JobType = 'full_time' | 'part_time' | 'contract' | 'seasonal'
-export type JobStatus = 'active' | 'paused' | 'closed' | 'draft'
+export type JobStatus = 'active' | 'paused' | 'closed' | 'draft' | 'pending_review'
 export type AppStatus = 'pending' | 'reviewing' | 'approved' | 'rejected' | 'withdrawn'
 export type UserRole = 'admin' | 'user' | 'employer'
 
@@ -39,6 +39,7 @@ export interface Job {
   category?: Category
   categoryId?: string
   createdById?: string
+  createdBy?: Pick<User, 'id' | 'fullName' | 'companyName' | 'email'>
   _count?: { applications: number }
   createdAt: string
   updatedAt: string
@@ -116,6 +117,21 @@ export interface RegisterData {
   role?: 'user' | 'employer'
   companyName?: string
   website?: string
+}
+
+export type ChoreStatus = 'pending' | 'in_progress' | 'done'
+
+export interface Chore {
+  id: string
+  title: string
+  description?: string
+  date: string          // 'YYYY-MM-DD'
+  status: ChoreStatus
+  assignedToId?: string
+  assignedTo?: User
+  createdById?: string
+  createdAt: string
+  updatedAt: string
 }
 
 export interface DashboardStats {
