@@ -64,6 +64,15 @@ export class CreateJobDto {
   @IsString() @IsOptional()
   image?: string
 
+  @ApiProperty({ required: false, type: [String] })
+  @IsOptional()
+  @Transform(({ value }) => {
+    if (!value) return undefined
+    if (Array.isArray(value)) return value
+    try { return JSON.parse(value) } catch { return undefined }
+  })
+  images?: string[]
+
   @ApiProperty({ required: false })
   @IsOptional() @Transform(({ value }) => value === 'true' || value === true)
   isHot?: boolean

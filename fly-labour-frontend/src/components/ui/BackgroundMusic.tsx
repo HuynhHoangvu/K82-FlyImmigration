@@ -1,58 +1,97 @@
-import { useState, useEffect, useRef } from 'react'
-import { Volume2, VolumeX, Music } from 'lucide-react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { Volume2, VolumeX, Music, SkipForward } from 'lucide-react'
 
-interface Props {
-  src: string        // đường dẫn file nhạc
-  autoPlay?: boolean // tự phát khi vào web
+const PLAYLIST = [
+  { src: '/music/background.mp3',              name: 'Fly Labour' },
+  { src: '/music/Chuyến Bay Ước Mơ.mp3',       name: 'Chuyến Bay Ước Mơ' },
+  { src: '/music/Du Lịch.mp3',                 name: 'Du Lịch' },
+  { src: '/music/Fly Visa ( pass 2 ).mp3',     name: 'Fly Visa' },
+  { src: '/music/Viet Nam - Hello World.mp3',  name: 'Việt Nam - Hello World' },
+]
+
+function shuffledIndices(current: number, total: number): number[] {
+  const others = Array.from({ length: total }, (_, i) => i).filter(i => i !== current)
+  for (let i = others.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [others[i], others[j]] = [others[j], others[i]]
+  }
+  return [current, ...others]
 }
 
-export default function BackgroundMusic({ src, autoPlay = true }: Props) {
+interface Props {
+  autoPlay?: boolean
+}
+
+export default function BackgroundMusic({ autoPlay = true }: Props) {
   const audioRef = useRef<HTMLAudioElement>(null)
   const [playing, setPlaying] = useState(false)
   const [volume, setVolume] = useState(0.3)
   const [showVolume, setShowVolume] = useState(false)
-  const [started, setStarted] = useState(false) // browser cần user interaction trước
+  const [started, setStarted] = useState(false)
+  const [trackIndex, setTrackIndex] = useState(() => Math.floor(Math.random() * PLAYLIST.length))
+  const queueRef = useRef<number[]>(shuffledIndices(trackIndex, PLAYLIST.length))
+  const queuePosRef = useRef(0)
   const volumeRef = useRef<HTMLDivElement>(null)
 
-  // Autoplay sau khi user tương tác lần đầu
-  useEffect(() => {
-    if (!autoPlay) return
-    const handleFirstInteraction = () => {
-      if (!started) {
-        setStarted(true)
-        audioRef.current?.play()
-          .then(() => setPlaying(true))
-          .catch(() => {})
-        // Chỉ cần trigger 1 lần
-        document.removeEventListener('click', handleFirstInteraction)
-        document.removeEventListener('keydown', handleFirstInteraction)
-        document.removeEventListener('scroll', handleFirstInteraction)
-      }
-    }
-    document.addEventListener('click', handleFirstInteraction)
-    document.addEventListener('keydown', handleFirstInteraction)
-    document.addEventListener('scroll', handleFirstInteraction)
-    return () => {
-      document.removeEventListener('click', handleFirstInteraction)
-      document.removeEventListener('keydown', handleFirstInteraction)
-      document.removeEventListener('scroll', handleFirstInteraction)
-    }
-  }, [autoPlay, started])
+  const currentTrack = PLAYLIST[trackIndex]
 
-  // Điều chỉnh volume
+  const playNext = useCallback(() => {
+    queuePosRef.current = (queuePosRef.current + 1) % PLAYLIST.length
+    if (queuePosRef.current === 0) {
+      // reshuffle khi hết playlist
+      const next = Math.floor(Math.random() * PLAYLIST.length)
+      queueRef.current = shuffledIndices(next, PLAYLIST.length)
+    }
+    setTrackIndex(queueRef.current[queuePosRef.current])
+  }, [])
+
+  // Khi đổi bài, tự phát nếu đang chạy
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio) return
+    audio.src = currentTrack.src
+    audio.load()
+    if (playing) {
+      audio.play().then(() => setPlaying(true)).catch(() => {})
+    }
+  }, [trackIndex]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Volume
   useEffect(() => {
     if (audioRef.current) audioRef.current.volume = volume
   }, [volume])
 
+  // Autoplay sau user interaction lần đầu
+  useEffect(() => {
+    if (!autoPlay) return
+    const handle = () => {
+      if (!started) {
+        setStarted(true)
+        audioRef.current?.play().then(() => setPlaying(true)).catch(() => {})
+        document.removeEventListener('click', handle)
+        document.removeEventListener('keydown', handle)
+        document.removeEventListener('scroll', handle)
+      }
+    }
+    document.addEventListener('click', handle)
+    document.addEventListener('keydown', handle)
+    document.addEventListener('scroll', handle)
+    return () => {
+      document.removeEventListener('click', handle)
+      document.removeEventListener('keydown', handle)
+      document.removeEventListener('scroll', handle)
+    }
+  }, [autoPlay, started])
+
   // Đóng volume slider khi click ra ngoài
   useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
+    const handle = (e: MouseEvent) => {
       if (volumeRef.current && !volumeRef.current.contains(e.target as Node)) {
         setShowVolume(false)
       }
     }
-    document.addEventListener('mousedown', handleClick)
-    return () => document.removeEventListener('mousedown', handleClick)
+    document.addEventListener('mousedown', handle)
+    return () => document.removeEventListener('mousedown', handle)
   }, [])
 
   const togglePlay = () => {
@@ -66,21 +105,27 @@ export default function BackgroundMusic({ src, autoPlay = true }: Props) {
     setStarted(true)
   }
 
+  const handleSkip = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    playNext()
+    setStarted(true)
+  }
+
   return (
     <>
       <audio
         ref={audioRef}
-        src={src}
-        loop
+        src={currentTrack.src}
         preload="auto"
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
+        onEnded={playNext}
       />
 
       {/* Widget nổi góc dưới trái */}
       <div className="fixed bottom-8 left-5 z-40 flex flex-col items-start gap-2">
 
-        {/* Volume slider — hiện khi hover */}
+        {/* Volume slider */}
         {showVolume && (
           <div ref={volumeRef}
             className="bg-brand-card border border-brand-border rounded-2xl px-4 py-3 shadow-2xl shadow-black/50 animate-fade-up">
@@ -99,7 +144,14 @@ export default function BackgroundMusic({ src, autoPlay = true }: Props) {
           </div>
         )}
 
-        {/* Main button */}
+        {/* Tên bài khi đang phát */}
+        {playing && (
+          <div className="bg-brand-card border border-brand-border rounded-xl px-3 py-1.5 shadow-lg max-w-[180px]">
+            <p className="text-[10px] text-brand-muted truncate">{currentTrack.name}</p>
+          </div>
+        )}
+
+        {/* Main controls */}
         <div className="flex items-center gap-2">
           {/* Play/Pause */}
           <button
@@ -107,7 +159,6 @@ export default function BackgroundMusic({ src, autoPlay = true }: Props) {
             className="flex items-center gap-2 bg-brand-card border border-brand-border hover:border-brand-yellow/50 rounded-2xl px-3 py-2 transition-all duration-200 group shadow-lg"
             title={playing ? 'Tắt nhạc' : 'Bật nhạc'}
           >
-            {/* Visualizer bars khi đang phát */}
             {playing ? (
               <div className="flex items-end gap-0.5 h-4">
                 {[1, 2, 3, 4].map(i => (
@@ -129,7 +180,16 @@ export default function BackgroundMusic({ src, autoPlay = true }: Props) {
             </span>
           </button>
 
-          {/* Volume button */}
+          {/* Skip */}
+          <button
+            onClick={handleSkip}
+            className="w-8 h-8 rounded-xl bg-brand-card border border-brand-border hover:border-brand-yellow/50 flex items-center justify-center text-brand-muted hover:text-brand-yellow transition-colors shadow-lg"
+            title="Bài kế tiếp"
+          >
+            <SkipForward size={13} />
+          </button>
+
+          {/* Volume */}
           <button
             onClick={() => setShowVolume(s => !s)}
             className="w-8 h-8 rounded-xl bg-brand-card border border-brand-border hover:border-brand-yellow/50 flex items-center justify-center text-brand-muted hover:text-brand-yellow transition-colors shadow-lg"
@@ -147,7 +207,6 @@ export default function BackgroundMusic({ src, autoPlay = true }: Props) {
         )}
       </div>
 
-      {/* CSS animation cho visualizer */}
       <style>{`
         @keyframes musicBar {
           from { transform: scaleY(0.4); }

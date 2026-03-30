@@ -96,6 +96,10 @@ __decorate([
     __metadata("design:type", String)
 ], Job.prototype, "image", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ type: 'simple-json', nullable: true }),
+    __metadata("design:type", Array)
+], Job.prototype, "images", void 0);
+__decorate([
     (0, typeorm_1.Column)({ default: false }),
     __metadata("design:type", Boolean)
 ], Job.prototype, "isHot", void 0);

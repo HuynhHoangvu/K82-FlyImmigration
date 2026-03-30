@@ -44,7 +44,7 @@ exports.AppModule = AppModule = __decorate([
                             url: databaseUrl,
                             ssl: isInternalUrl ? false : { rejectUnauthorized: false },
                             entities: [(0, path_1.join)(__dirname, '**', '*.entity{.ts,.js}')],
-                            synchronize: !isProduction,
+                            synchronize: true,
                             logging: !isProduction,
                             retryAttempts: 5,
                             retryDelay: 3000,

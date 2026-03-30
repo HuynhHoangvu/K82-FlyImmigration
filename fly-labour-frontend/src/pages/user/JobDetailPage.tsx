@@ -291,7 +291,13 @@ export default function JobDetailPage() {
 
             {/* Photo gallery */}
             {(() => {
-              const imgs = COUNTRY_GALLERY[job.country] ?? DEFAULT_GALLERY
+              // Ưu tiên ảnh phụ do admin đặt, nếu không có thì dùng ảnh theo quốc gia
+              const customGallery = job.images && job.images.length >= 2 ? job.images.slice(0, 3) : null
+              const mainImg = job.image || FALLBACK_IMAGES[job.country]
+              const countryGallery = COUNTRY_GALLERY[job.country] ?? DEFAULT_GALLERY
+              const imgs = customGallery
+                ? [mainImg || countryGallery[0], ...customGallery].slice(0, 3)
+                : countryGallery
               return (
                 <div className="grid grid-cols-3 gap-2 rounded-2xl overflow-hidden">
                   <div className="col-span-2 h-48 overflow-hidden">

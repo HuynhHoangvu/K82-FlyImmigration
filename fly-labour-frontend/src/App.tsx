@@ -53,7 +53,7 @@ function UserLayout({ children }: { children: React.ReactNode }) {
       {children}
       <Footer />
       <FloatingContact />
-      <BackgroundMusic src="/music/background.mp3" autoPlay={true} />
+      <BackgroundMusic autoPlay={true} />
     </div>
   );
 }

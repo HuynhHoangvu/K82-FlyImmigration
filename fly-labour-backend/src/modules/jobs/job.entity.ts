@@ -55,6 +55,9 @@ export class Job {
   @Column({ nullable: true })
   image: string
 
+  @Column({ type: 'simple-json', nullable: true })
+  images: string[]
+
   @Column({ default: false })
   isHot: boolean
 

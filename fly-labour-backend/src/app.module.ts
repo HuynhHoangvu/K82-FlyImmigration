@@ -38,7 +38,7 @@ const logger = new Logger('TypeORM')
             // Nếu là nội bộ -> Tắt SSL (false). Nếu là Public -> Bật SSL
             ssl: isInternalUrl ? false : { rejectUnauthorized: false }, 
             entities: [join(__dirname, '**', '*.entity{.ts,.js}')],
-            synchronize: !isProduction,
+            synchronize: true,
             logging: !isProduction,
             retryAttempts: 5,
             retryDelay: 3000,

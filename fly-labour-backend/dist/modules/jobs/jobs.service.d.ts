@@ -35,6 +35,7 @@ export declare class JobsService {
             slots: number;
             deadline: string;
             image: string;
+            images: string[];
             isHot: boolean;
             isFeatured: boolean;
             viewCount: number;

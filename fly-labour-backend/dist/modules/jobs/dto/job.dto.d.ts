@@ -15,6 +15,7 @@ export declare class CreateJobDto {
     slots?: number;
     deadline?: string;
     image?: string;
+    images?: string[];
     isHot?: boolean;
     isFeatured?: boolean;
     categoryId?: string;
