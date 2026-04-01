@@ -61,10 +61,8 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-white backdrop-blur-lg border-b border-gray-200 shadow-md shadow-black/6"
-          : "bg-white border-b border-gray-100"
+      className={`fixed top-0 left-0 right-0 z-50 border-b transition-all duration-300 header-theme ${
+        isScrolled ? "backdrop-blur-lg shadow-md shadow-black/6" : ""
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -82,7 +80,7 @@ export default function Header() {
               </span>
             </div>
             <div>
-              <span className="font-display text-xl text-gray-900 tracking-wider">
+              <span className="font-display text-xl text-gray-900 dark:text-white tracking-wider">
                 FLY
               </span>
               <span
@@ -102,8 +100,8 @@ export default function Header() {
               to="/"
               className={`px-3 py-2 text-sm font-semibold rounded-lg transition-colors ${
                 isActive("/")
-                  ? "text-amber-600 bg-amber-50"
-                  : "text-gray-700 hover:text-amber-600 hover:bg-amber-50/60"
+                  ? "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20"
+                  : "text-gray-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20"
               }`}
             >
               {lang === "vi" ? "Trang chủ" : "Home"}
@@ -114,8 +112,8 @@ export default function Header() {
               to="/about"
               className={`px-3 py-2 text-sm font-semibold rounded-lg transition-colors ${
                 isActive("/about")
-                  ? "text-amber-600 bg-amber-50"
-                  : "text-gray-700 hover:text-amber-600 hover:bg-amber-50/60"
+                  ? "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20"
+                  : "text-gray-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20"
               }`}
             >
               {lang === "vi" ? "Du học" : "Study Abroad"}
@@ -130,8 +128,8 @@ export default function Header() {
               <button
                 className={`flex items-center gap-1 px-3 py-2 text-sm font-semibold rounded-lg transition-colors ${
                   location.pathname === "/jobs"
-                    ? "text-amber-600 bg-amber-50"
-                    : "text-gray-700 hover:text-amber-600 hover:bg-amber-50/60"
+                    ? "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20"
+                    : "text-gray-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20"
                 }`}
               >
                 {lang === "vi" ? "Lao động" : "Labour"}
@@ -143,7 +141,7 @@ export default function Header() {
 
               {labourOpen && (
                 <div className="absolute top-full left-0 w-52 pt-2">
-                  <div className="bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
+                  <div className="header-theme border rounded-xl shadow-xl overflow-hidden">
                     <div className="px-3 pt-2.5 pb-1">
                       <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
                         {lang === "vi" ? "Chọn quốc gia" : "Select country"}
@@ -153,7 +151,7 @@ export default function Header() {
                       <Link
                         key={c.value}
                         to={`/jobs?country=${c.value}`}
-                        className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:text-amber-700 hover:bg-amber-50 transition-colors"
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:text-amber-700 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors"
                         onClick={() => setLabourOpen(false)}
                       >
                         {c.label}
@@ -180,8 +178,8 @@ export default function Header() {
               to="/news"
               className={`px-3 py-2 text-sm font-semibold rounded-lg transition-colors ${
                 isActive("/news")
-                  ? "text-amber-600 bg-amber-50"
-                  : "text-gray-700 hover:text-amber-600 hover:bg-amber-50/60"
+                  ? "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20"
+                  : "text-gray-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20"
               }`}
             >
               {lang === "vi" ? "Tin tức" : "News"}
@@ -192,8 +190,8 @@ export default function Header() {
               to="/contact"
               className={`px-3 py-2 text-sm font-semibold rounded-lg transition-colors ${
                 isActive("/contact")
-                  ? "text-amber-600 bg-amber-50"
-                  : "text-gray-700 hover:text-amber-600 hover:bg-amber-50/60"
+                  ? "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20"
+                  : "text-gray-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20"
               }`}
             >
               {lang === "vi" ? "Liên hệ" : "Contact"}
@@ -202,7 +200,7 @@ export default function Header() {
             {/* Số điện thoại */}
             <a
               href="tel:+84901234567"
-              className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
             >
               <Phone size={14} />
               0901 234 567
@@ -214,8 +212,12 @@ export default function Header() {
             {/* Theme toggle */}
             <button
               onClick={toggleTheme}
-              title={theme === "dark" ? "Chuyển sang Light Mode" : "Chuyển sang Dark Mode"}
-              className="hidden md:flex items-center justify-center w-9 h-9 rounded-xl border border-gray-200 hover:border-amber-400 transition-colors shadow-sm text-gray-600 hover:text-amber-600"
+              title={
+                theme === "dark"
+                  ? "Chuyển sang Light Mode"
+                  : "Chuyển sang Dark Mode"
+              }
+              className="hidden md:flex items-center justify-center w-9 h-9 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-amber-400 transition-colors shadow-sm text-gray-600 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400"
             >
               {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
             </button>
@@ -224,23 +226,23 @@ export default function Header() {
             <button
               onClick={toggle}
               title="Switch language / Đổi ngôn ngữ"
-              className="hidden md:flex items-center rounded-xl border border-gray-200 overflow-hidden hover:border-amber-400 transition-colors text-xs font-bold shadow-sm"
+              className="hidden md:flex items-center rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:border-amber-400 transition-colors text-xs font-bold shadow-sm"
             >
               <span
                 className={`flex items-center gap-1 px-2.5 py-1.5 transition-colors ${
                   lang === "vi"
                     ? "bg-amber-400 text-black"
-                    : "text-gray-500 hover:text-gray-700"
+                    : "text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                 }`}
               >
                 🇻🇳 Tiếng Việt
               </span>
-              <span className="w-px h-4 bg-gray-200" />
+              <span className="w-px h-4 bg-gray-200 dark:bg-gray-700" />
               <span
                 className={`flex items-center gap-1 px-2.5 py-1.5 transition-colors ${
                   lang === "en"
                     ? "bg-amber-400 text-black"
-                    : "text-gray-500 hover:text-gray-700"
+                    : "text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                 }`}
               >
                 🇬🇧 English
@@ -251,7 +253,7 @@ export default function Header() {
               <div className="relative">
                 <button
                   onClick={() => setUserMenu(!userMenu)}
-                  className="flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-3 py-2 hover:border-amber-400 transition-colors shadow-sm"
+                  className="flex items-center gap-2 header-theme border rounded-xl px-3 py-2 hover:border-amber-400 transition-colors shadow-sm"
                 >
                   <div
                     className="w-7 h-7 rounded-lg flex items-center justify-center text-black font-bold text-xs"
@@ -261,17 +263,17 @@ export default function Header() {
                   >
                     {user.fullName.charAt(0)}
                   </div>
-                  <span className="text-sm text-gray-800 hidden sm:block max-w-[100px] truncate">
+                  <span className="text-sm text-gray-800 dark:text-gray-200 hidden sm:block max-w-[100px] truncate">
                     {user.fullName}
                   </span>
                   <ChevronDown size={14} className="text-gray-400" />
                 </button>
                 {userMenu && (
-                  <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
+                  <div className="absolute right-0 top-full mt-2 w-56 header-theme border rounded-xl shadow-xl overflow-hidden">
                     {user.role === "admin" && (
                       <Link
                         to="/admin"
-                        className="flex items-center gap-2 px-4 py-3 text-sm text-amber-600 hover:bg-amber-50 transition-colors"
+                        className="flex items-center gap-2 px-4 py-3 text-sm text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors"
                         onClick={() => setUserMenu(false)}
                       >
                         <LayoutDashboard size={16} /> {t("nav.adminDashboard")}
@@ -280,7 +282,7 @@ export default function Header() {
                     {user.role === "employer" && (
                       <Link
                         to="/employer"
-                        className="flex items-center gap-2 px-4 py-3 text-sm text-amber-600 hover:bg-amber-50 transition-colors"
+                        className="flex items-center gap-2 px-4 py-3 text-sm text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors"
                         onClick={() => setUserMenu(false)}
                       >
                         <Briefcase size={16} /> {t("nav.employerDashboard")}
@@ -288,14 +290,14 @@ export default function Header() {
                     )}
                     <Link
                       to="/profile"
-                      className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-colors"
+                      className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900/20 transition-colors"
                       onClick={() => setUserMenu(false)}
                     >
                       <User size={16} /> {t("nav.myProfile")}
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                      className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                     >
                       <LogOut size={16} /> {t("nav.signOut")}
                     </button>
@@ -306,7 +308,7 @@ export default function Header() {
               <div className="hidden md:flex items-center gap-2">
                 <Link
                   to="/login"
-                  className="px-4 py-2 text-sm font-semibold text-gray-700 border border-gray-200 rounded-xl hover:border-amber-400 hover:text-amber-700 transition-colors"
+                  className="px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-amber-400 dark:hover:border-amber-400 hover:text-amber-700 dark:hover:text-amber-400 transition-colors"
                 >
                   {lang === "vi" ? "Đăng nhập" : "Sign In"}
                 </Link>
@@ -318,7 +320,7 @@ export default function Header() {
 
             {/* Mobile hamburger */}
             <button
-              className="lg:hidden text-gray-700 p-2"
+              className="lg:hidden text-gray-700 dark:text-gray-300 p-2"
               onClick={() => setMobileOpen(!mobileOpen)}
             >
               {mobileOpen ? <X size={22} /> : <Menu size={22} />}
@@ -329,11 +331,11 @@ export default function Header() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="lg:hidden bg-white border-t border-gray-200 shadow-lg">
+        <div className="lg:hidden header-theme border-t shadow-lg">
           {/* Trang chủ */}
           <Link
             to="/"
-            className="block px-6 py-3 text-gray-700 hover:text-amber-600 hover:bg-amber-50 transition-colors border-b border-gray-100 text-sm font-semibold"
+            className="block px-6 py-3 text-gray-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors border-b border-gray-100 dark:border-gray-800 text-sm font-semibold"
             onClick={() => setMobileOpen(false)}
           >
             {lang === "vi" ? "Trang chủ" : "Home"}
@@ -342,22 +344,22 @@ export default function Header() {
           {/* Du học */}
           <Link
             to="/about"
-            className="block px-6 py-3 text-gray-700 hover:text-amber-600 hover:bg-amber-50 transition-colors border-b border-gray-100 text-sm font-semibold"
+            className="block px-6 py-3 text-gray-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors border-b border-gray-100 dark:border-gray-800 text-sm font-semibold"
             onClick={() => setMobileOpen(false)}
           >
             {lang === "vi" ? "Du học" : "Study Abroad"}
           </Link>
 
           {/* Lao động */}
-          <div className="border-b border-gray-100">
-            <div className="px-6 py-3 text-amber-700 text-sm font-bold bg-amber-50">
+          <div className="border-b border-gray-100 dark:border-gray-800">
+            <div className="px-6 py-3 text-amber-700 dark:text-amber-400 text-sm font-bold bg-amber-50 dark:bg-amber-900/20">
               {lang === "vi" ? "Lao động theo quốc gia" : "Labour by Country"}
             </div>
             {LABOUR_COUNTRIES.map((c) => (
               <Link
                 key={c.value}
                 to={`/jobs?country=${c.value}`}
-                className="block px-8 py-2.5 text-gray-600 hover:text-amber-700 hover:bg-amber-50 transition-colors text-sm border-b border-gray-50"
+                className="block px-8 py-2.5 text-gray-600 dark:text-gray-400 hover:text-amber-700 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors text-sm border-b border-gray-50 dark:border-gray-900"
                 onClick={() => setMobileOpen(false)}
               >
                 {c.label}
@@ -367,7 +369,7 @@ export default function Header() {
 
           <Link
             to="/news"
-            className="block px-6 py-3 text-gray-700 hover:text-amber-600 hover:bg-amber-50 transition-colors border-b border-gray-100 text-sm font-semibold"
+            className="block px-6 py-3 text-gray-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors border-b border-gray-100 dark:border-gray-800 text-sm font-semibold"
             onClick={() => setMobileOpen(false)}
           >
             {lang === "vi" ? "Tin tức" : "News"}
@@ -375,7 +377,7 @@ export default function Header() {
 
           <Link
             to="/contact"
-            className="block px-6 py-3 text-gray-700 hover:text-amber-600 hover:bg-amber-50 transition-colors border-b border-gray-100 text-sm font-semibold"
+            className="block px-6 py-3 text-gray-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors border-b border-gray-100 dark:border-gray-800 text-sm font-semibold"
             onClick={() => setMobileOpen(false)}
           >
             {lang === "vi" ? "Liên hệ" : "Contact"}
@@ -384,21 +386,25 @@ export default function Header() {
           {/* Số điện thoại */}
           <a
             href="tel:+84901234567"
-            className="flex items-center gap-2 px-6 py-3 text-green-600 hover:bg-green-50 transition-colors border-b border-gray-100 text-sm font-semibold"
+            className="flex items-center gap-2 px-6 py-3 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors border-b border-gray-100 dark:border-gray-800 text-sm font-semibold"
           >
             <Phone size={15} /> 0901 234 567
           </a>
 
           {/* Theme toggle mobile */}
-          <div className="px-6 py-3 border-b border-gray-100">
+          <div className="px-6 py-3 border-b border-gray-100 dark:border-gray-800">
             <button
               onClick={toggleTheme}
-              className="flex items-center gap-2 text-sm font-semibold text-gray-700 hover:text-amber-600"
+              className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400"
             >
               {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
               {theme === "dark"
-                ? lang === "vi" ? "Chế độ sáng" : "Light Mode"
-                : lang === "vi" ? "Chế độ tối" : "Dark Mode"}
+                ? lang === "vi"
+                  ? "Chế độ sáng"
+                  : "Light Mode"
+                : lang === "vi"
+                  ? "Chế độ tối"
+                  : "Dark Mode"}
             </button>
           </div>
 

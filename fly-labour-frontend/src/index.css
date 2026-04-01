@@ -6,25 +6,34 @@
 
 /* ── Theme variables ──────────────────────────────────────── */
 :root {
-  --surface:       #ffffff;
-  --surface-card:  #f8f9fa;
-  --surface-panel: #f1f3f5;
-  --text-base:     #1f2937;
-  --text-muted:    #6b7280;
-  --border-col:    #e5e7eb;
-  --border-line:   #d1d5db;
-  --scrollbar-track: #f1f1f1;
+  --surface:       #FAFBFC;       /* Light gray background - nhẹ hơn */
+  --surface-card:  #FFFFFF;       /* White cards */
+  --surface-panel: #F5F6F8;       /* Slightly darker for panel/input bg */
+  --text-base:     #1F2937;       /* Dark gray text */
+  --text-muted:    #6B7280;       /* Medium gray for muted text */
+  --border-col:    #E5E7EB;       /* Light border */
+  --border-line:   #D1D5DB;       /* Slightly darker border */
+  --scrollbar-track: #EEF2F5;     /* Light scrollbar */
+  --accent-primary: #e4a808;      /* Gold remains constant */
+  --accent-secondary: #fdd52f;    /* Light gold */
+}
+
+/* Smooth transition for all color properties when theme changes */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 html.dark {
-  --surface:       #121212;
-  --surface-card:  #1E1E1E;
-  --surface-panel: #2A2A2A;
-  --text-base:     #E0E0E0;
-  --text-muted:    #9ca3af;
-  --border-col:    #333333;
-  --border-line:   #404040;
-  --scrollbar-track: #1E1E1E;
+  --surface:       #121212;        /* Dark background */
+  --surface-card:  #1E1E1E;        /* Card background */
+  --surface-panel: #2A2A2A;        /* Panel background */
+  --text-base:     #E0E0E0;        /* Light text */
+  --text-muted:    #9ca3af;        /* Muted light text */
+  --border-col:    #333333;        /* Dark border */
+  --border-line:   #404040;        /* Darker border */
+  --scrollbar-track: #1E1E1E;      /* Dark scrollbar */
+  --accent-primary: #e4a808;       /* Gold remains constant */
+  --accent-secondary: #fdd52f;     /* Light gold */
 }
 
 @layer base {
@@ -50,13 +59,36 @@ html.dark {
     font-weight: 700;
     letter-spacing: -0.01em;
     line-height: 1.15;
-    color: #e4a808;
+    color: var(--accent-primary);
   }
 
-  /* Text color overrides — chỉ áp dụng trong dark mode */
+  /* Light mode text color overrides - override Tailwind utilities */
+  html:not(.dark) .text-white { color: #1F2937 !important; }
+  html:not(.dark) .text-gray-300 { color: #6B7280 !important; }
+  html:not(.dark) .text-gray-400 { color: #9CA3AF !important; }
+  html:not(.dark) .text-gray-500 { color: #6B7280 !important; }
+  html:not(.dark) .text-gray-600 { color: #4B5563 !important; }
+  html:not(.dark) .text-gray-700 { color: #374151 !important; }
+  html:not(.dark) .text-gray-800 { color: #1F2937 !important; }
+  html:not(.dark) .text-gray-900 { color: #111827 !important; }
+  html:not(.dark) .bg-gray-50 { background-color: #F9FAFB !important; }
+  html:not(.dark) .bg-gray-100 { background-color: #F3F4F6 !important; }
+  html:not(.dark) .bg-white { background-color: #FFFFFF !important; }
+  html:not(.dark) .border-gray-100 { border-color: #F3F4F6 !important; }
+  html:not(.dark) .border-gray-200 { border-color: #E5E7EB !important; }
+  html:not(.dark) .border-gray-300 { border-color: #D1D5DB !important; }
+  html:not(.dark) .bg-brand-dark { background: var(--surface-panel) !important; }
+  html:not(.dark) .bg-brand-card { background: var(--surface-card) !important; }
+
+  /* Dark mode text color overrides */
   html.dark .text-white { color: #E0E0E0 !important; }
   html.dark .text-gray-300 { color: #B0B0B0 !important; }
   html.dark .text-gray-400 { color: #9ca3af !important; }
+  html.dark .text-gray-500 { color: #9ca3af !important; }
+  html.dark .text-gray-600 { color: #9ca3af !important; }
+  html.dark .text-gray-700 { color: #B0B0B0 !important; }
+  html.dark .text-gray-800 { color: #D0D0D0 !important; }
+  html.dark .text-gray-900 { color: #E0E0E0 !important; }
   html.dark .text-brand-muted { color: #9ca3af !important; }
 
   /* Giữ nguyên màu trắng trong section có ảnh nền tối */
@@ -121,14 +153,15 @@ html.dark {
   /* ── Cards ────────────────────────────────────────────── */
   .card-dark {
     background: var(--surface-card);
-    border: 1px solid var(--border-col);
+    border: 1.5px solid var(--border-col);
     border-radius: 16px;
     color: var(--text-base);
-    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease;
   }
   .card-dark:hover {
-    border-color: rgba(228, 168, 8, 0.40);
-    box-shadow: 0 4px 20px rgba(228, 168, 8, 0.15);
+    border-color: var(--accent-primary);
+    box-shadow: 0 8px 24px rgba(228, 168, 8, 0.15);
   }
 
   /* ── Inputs ───────────────────────────────────────────── */
@@ -189,6 +222,13 @@ html.dark {
   }
 
   /* ── Utility ──────────────────────────────────────────– */
+  .header-theme {
+    background: var(--surface);
+    border-color: var(--border-col);
+    color: var(--text-base);
+    transition: all 0.3s ease;
+  }
+
   .glass {
     background: rgba(var(--surface-card), 0.85);
     backdrop-filter: blur(12px);

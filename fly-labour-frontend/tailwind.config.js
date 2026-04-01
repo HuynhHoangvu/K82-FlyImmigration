@@ -5,22 +5,37 @@ export default {
   theme: {
     extend: {
       colors: {
+        // ────────────────────────────────────────────────────────────────
+        // BRAND COLORS (Static - không đổi theo theme)
+        // ────────────────────────────────────────────────────────────────
         brand: {
-          // ── Gold palette ──────────────────────────────
-          yellow:  '#fdd52f',   // Primary CTA / accent
-          gold:    '#e4a808',   // Dark gold — gradient / hover
-          lime:    '#f2ee8c',   // Soft lime-gold
+          yellow:  '#fdd52f',   // Light gold accent
+          gold:    '#e4a808',   // Primary accent
+          lime:    '#f2ee8c',   // Soft lime accent
           cream:   '#ffea80',   // Cream yellow
-          orange:  '#e4a808',   // alias
-          // ── Dark Mode Neutrals ────────────────────────
-          gray:    '#9ca3af',   // Mid gray
-          muted:   '#9ca3af',   // Muted text — readable on dark
-          // ── Dark Mode Surfaces ────────────────────────
-          dark:    '#121212',   // Main background — charcoal black
-          card:    '#1E1E1E',   // Card background — slightly lighter
-          panel:   '#2A2A2A',   // Panel / Hover state
-          border:  '#333333',   // Border — dark
-          line:    '#404040',   // Divider line — dark
+          orange:  '#e4a808',   // Alias for gold
+          secondary: '#505050', // Secondary color
+        },
+
+        // ────────────────────────────────────────────────────────────────
+        // THEME COLORS (Dynamic - map với CSS Variables)
+        // ────────────────────────────────────────────────────────────────
+        theme: {
+          surface:      'var(--surface)',       // Background
+          card:         'var(--surface-card)',  // Cards
+          panel:        'var(--surface-panel)', // Panels/inputs
+          text: {
+            base:       'var(--text-base)',
+            muted:      'var(--text-muted)',
+          },
+          border: {
+            col:        'var(--border-col)',
+            line:       'var(--border-line)',
+          },
+          accent: {
+            primary:    'var(--accent-primary)',
+            secondary:  'var(--accent-secondary)',
+          },
         },
       },
       fontFamily: {
