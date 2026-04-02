@@ -29,7 +29,12 @@ async function bootstrap() {
   ].filter(Boolean)
 
   app!.enableCors({
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      // Mobile app (React Native) không gửi Origin header → cho qua
+      if (!origin) return callback(null, true)
+      if (allowedOrigins.includes(origin)) return callback(null, true)
+      callback(new Error(`Origin ${origin} not allowed`))
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT', 'OPTIONS'],
   })
