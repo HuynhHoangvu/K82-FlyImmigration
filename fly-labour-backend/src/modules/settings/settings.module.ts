@@ -32,10 +32,16 @@ export class SettingsController {
   constructor(private settingsService: SettingsService) {}
 
   @Get()
+  @ApiOperation({ summary: 'Lấy cài đặt hệ thống (công khai)' })
+  getAll() {
+    return this.settingsService.getAll()
+  }
+
+  @Get('admin')
   @UseGuards(JwtAuthGuard, AdminGuard)
   @ApiBearerAuth('JWT')
   @ApiOperation({ summary: '[Admin] Lấy cài đặt hệ thống' })
-  getAll() {
+  getAllAdmin() {
     return this.settingsService.getAll()
   }
 
