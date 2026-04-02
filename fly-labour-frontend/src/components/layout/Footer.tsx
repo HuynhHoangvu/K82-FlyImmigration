@@ -30,7 +30,7 @@ export default function Footer() {
           </p>
           <div className="flex gap-3 mt-5">
             <a
-              href="#"
+              href="https://www.facebook.com/flyimmigration.vn "
               className="w-9 h-9 rounded-lg flex items-center justify-center text-white transition-colors"
               style={{ backgroundColor: "#1877F2" }}
             >
@@ -44,7 +44,7 @@ export default function Footer() {
               <Youtube size={16} />
             </a>
             <a
-              href="https://www.tiktok.com/@flylabour"
+              href="https://www.tiktok.com/@flyvisa.immigration?_r=1&_t=ZS-952PBR111k5"
               target="_blank"
               rel="noreferrer"
               className="w-9 h-9 rounded-lg flex items-center justify-center text-white transition-colors"
