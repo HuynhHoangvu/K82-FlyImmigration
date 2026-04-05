@@ -24,7 +24,7 @@ let JobsService = class JobsService {
         this.gcsService = gcsService;
     }
     async findAll(query) {
-        const { page = 1, limit = 12, search, country, categoryId, jobType, isHot, sort } = query;
+        const { page = 1, limit = 12, search, country, categoryId, jobType, isHot, isFeatured, sort } = query;
         const qb = this.jobsRepo.createQueryBuilder('job')
             .leftJoinAndSelect('job.category', 'category')
             .where('job.status = :status', { status: job_entity_1.JobStatus.ACTIVE });
@@ -39,6 +39,8 @@ let JobsService = class JobsService {
             qb.andWhere('job.jobType = :jobType', { jobType });
         if (isHot !== undefined)
             qb.andWhere('job.isHot = :isHot', { isHot });
+        if (isFeatured !== undefined)
+            qb.andWhere('job.isFeatured = :isFeatured', { isFeatured });
         if (sort === 'hot') {
             qb.orderBy('job.isHot', 'DESC').addOrderBy('job.isFeatured', 'DESC').addOrderBy('job.createdAt', 'DESC');
         }

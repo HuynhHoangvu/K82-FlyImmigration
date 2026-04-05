@@ -13,7 +13,7 @@ export class JobsService {
   ) {}
 
   async findAll(query: QueryJobDto) {
-    const { page = 1, limit = 12, search, country, categoryId, jobType, isHot, sort } = query;
+    const { page = 1, limit = 12, search, country, categoryId, jobType, isHot, isFeatured, sort } = query;
 
     const qb = this.jobsRepo.createQueryBuilder('job')
       .leftJoinAndSelect('job.category', 'category')
@@ -26,6 +26,7 @@ export class JobsService {
     if (categoryId) qb.andWhere('job.categoryId = :categoryId', { categoryId });
     if (jobType) qb.andWhere('job.jobType = :jobType', { jobType });
     if (isHot !== undefined) qb.andWhere('job.isHot = :isHot', { isHot });
+    if (isFeatured !== undefined) qb.andWhere('job.isFeatured = :isFeatured', { isFeatured });
 
     if (sort === 'hot') {
       qb.orderBy('job.isHot', 'DESC').addOrderBy('job.isFeatured', 'DESC').addOrderBy('job.createdAt', 'DESC');

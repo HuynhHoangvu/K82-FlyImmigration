@@ -29,7 +29,7 @@ export default function HomeScreen() {
 
   const { data: featuredJobs, refetch: refetchFeatured } = useQuery<{ data: Job[] }>({
     queryKey: ['jobs', 'featured'],
-    queryFn: () => jobsApi.getAll({ isFeatured: true, limit: 6 }).then(r => r.data),
+    queryFn: () => jobsApi.getAll({ isFeatured: true }).then(r => r.data),
   })
 
   const onRefresh = useCallback(async () => {

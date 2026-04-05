@@ -1,79 +1,102 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback } from "react";
 import {
-  View, Text, TextInput, FlatList, StyleSheet,
-  TouchableOpacity, RefreshControl, ActivityIndicator,
-} from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { useQuery } from '@tanstack/react-query'
-import { useLocalSearchParams } from 'expo-router'
-import { Search, SlidersHorizontal, X } from 'lucide-react-native'
-import { Colors } from '@/constants/colors'
-import { jobsApi, categoriesApi } from '@/services/api'
-import { JobCard } from '@/components/jobs/JobCard'
-import { CategoryGrid } from '@/components/home/CategoryGrid'
-import type { Job, Category } from '@/types'
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  RefreshControl,
+  ActivityIndicator,
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useQuery } from "@tanstack/react-query";
+import { useLocalSearchParams } from "expo-router";
+import { Search, SlidersHorizontal, X } from "lucide-react-native";
+import { Colors } from "@/constants/colors";
+import { jobsApi, categoriesApi } from "@/services/api";
+import { JobCard } from "@/components/jobs/JobCard";
+import { CategoryGrid } from "@/components/home/CategoryGrid";
+import type { Job, Category } from "@/types";
 
 const COUNTRIES = [
-  { value: '', label: '🌐 Tất cả' },
-  { value: 'australia', label: '🇦🇺 Úc' },
-  { value: 'canada', label: '🇨🇦 Canada' },
-  { value: 'new_zealand', label: '🇳🇿 New Zealand' },
-  { value: 'germany', label: '🇩🇪 Đức' },
-  { value: 'uk', label: '🇬🇧 Anh' },
-]
+  { value: "", label: "🌐 Tất cả" },
+  { value: "australia", label: "🇦🇺 Úc" },
+  { value: "canada", label: "🇨🇦 Canada" },
+  { value: "new_zealand", label: "🇳🇿 New Zealand" },
+  { value: "germany", label: "🇩🇪 Đức" },
+  { value: "uk", label: "🇬🇧 Anh" },
+];
 
 export default function JobsScreen() {
-  const insets = useSafeAreaInsets()
-  const params = useLocalSearchParams<{ categoryId?: string }>()
-  const [search, setSearch] = useState('')
-  const [categoryId, setCategoryId] = useState<string | undefined>(params.categoryId)
-  const [country, setCountry] = useState('')
-  const [showFilters, setShowFilters] = useState(false)
-  const [refreshing, setRefreshing] = useState(false)
+  const insets = useSafeAreaInsets();
+  const params = useLocalSearchParams<{ categoryId?: string }>();
+  const [search, setSearch] = useState("");
+  const [categoryId, setCategoryId] = useState<string | undefined>(
+    params.categoryId,
+  );
+  const [country, setCountry] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   // Fetch available filters (countries & categoryIds có việc làm)
   const { data: availableFilters } = useQuery({
-    queryKey: ['filters', 'available'],
-    queryFn: () => jobsApi.getAvailableFilters().then(r => r.data),
-  })
+    queryKey: ["filters", "available"],
+    queryFn: () => jobsApi.getAvailableFilters().then((r) => r.data),
+  });
 
   // Fetch all categories (để hiển thị trong filter)
   const { data: allCategories } = useQuery<Category[]>({
-    queryKey: ['categories'],
-    queryFn: () => categoriesApi.getAll().then(r => r.data),
-  })
+    queryKey: ["categories"],
+    queryFn: () => categoriesApi.getAll().then((r) => r.data),
+  });
 
   // Lọc categories chỉ những có việc làm
-  const availableCategoryIds = availableFilters?.categoryIds || []
-  const categories = allCategories?.filter(cat => availableCategoryIds.includes(cat.id)) || []
+  const availableCategoryIds = availableFilters?.categoryIds || [];
+  const categories =
+    allCategories?.filter((cat) => availableCategoryIds.includes(cat.id)) || [];
 
   // Lọc countries chỉ những có việc làm
-  const availableCountryCodes = availableFilters?.countries || []
+  const availableCountryCodes = availableFilters?.countries || [];
   const availableCountries = COUNTRIES.filter(
-    c => c.value === '' || availableCountryCodes.includes(c.value)
-  )
+    (c) => c.value === "" || availableCountryCodes.includes(c.value),
+  );
 
   const { data, refetch, isLoading } = useQuery<{ data: Job[]; meta: any }>({
-    queryKey: ['jobs', search, categoryId, country],
-    queryFn: () => jobsApi.getAll({ search: search || undefined, categoryId: categoryId || undefined, country: country || undefined, limit: 50 }).then(r => r.data),
-  })
+    queryKey: ["jobs", search, categoryId, country],
+    queryFn: () =>
+      jobsApi
+        .getAll({
+          search: search || undefined,
+          categoryId: categoryId || undefined,
+          country: country || undefined,
+          limit: 50,
+        })
+        .then((r) => r.data),
+  });
 
   const onRefresh = useCallback(async () => {
-    setRefreshing(true)
-    await refetch()
-    setRefreshing(false)
-  }, [])
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }, []);
 
-  const jobs = data?.data ?? []
-  const hasFilters = !!(categoryId || country)
+  const jobs = data?.data ?? [];
+  const hasFilters = !!(categoryId || country);
 
   return (
     <View style={[styles.safe, { paddingTop: insets.top }]}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Việc làm</Text>
-        <TouchableOpacity onPress={() => setShowFilters(v => !v)} style={[styles.filterBtn, hasFilters && styles.filterBtnActive]}>
-          <SlidersHorizontal size={16} color={hasFilters ? Colors.yellow : Colors.muted} />
+        <TouchableOpacity
+          onPress={() => setShowFilters((v) => !v)}
+          style={[styles.filterBtn, hasFilters && styles.filterBtnActive]}
+        >
+          <SlidersHorizontal
+            size={16}
+            color={hasFilters ? Colors.yellow : Colors.muted}
+          />
           {hasFilters && <View style={styles.filterDot} />}
         </TouchableOpacity>
       </View>
@@ -90,7 +113,7 @@ export default function JobsScreen() {
           selectionColor={Colors.yellow}
         />
         {search ? (
-          <TouchableOpacity onPress={() => setSearch('')}>
+          <TouchableOpacity onPress={() => setSearch("")}>
             <X size={16} color={Colors.muted} />
           </TouchableOpacity>
         ) : null}
@@ -101,30 +124,53 @@ export default function JobsScreen() {
         <View style={styles.filtersBlock}>
           <Text style={styles.filterLabel}>Danh mục</Text>
           {categories && categories.length > 0 ? (
-            <CategoryGrid categories={categories} selected={categoryId} onSelect={setCategoryId} />
+            <CategoryGrid
+              categories={categories}
+              selected={categoryId}
+              onSelect={setCategoryId}
+            />
           ) : (
             <Text style={styles.emptyFilterText}>Không có danh mục</Text>
           )}
 
-          <Text style={[styles.filterLabel, { marginTop: 8, paddingHorizontal: 16 }]}>Quốc gia</Text>
+          <Text
+            style={[
+              styles.filterLabel,
+              { marginTop: 8, paddingHorizontal: 16 },
+            ]}
+          >
+            Quốc gia
+          </Text>
           {availableCountries.length > 1 ? (
             <FlatList
               horizontal
               data={availableCountries}
-              keyExtractor={i => i.value}
+              keyExtractor={(i) => i.value}
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.countryRow}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   onPress={() => setCountry(item.value)}
-                  style={[styles.countryChip, country === item.value && styles.countryChipActive]}
+                  style={[
+                    styles.countryChip,
+                    country === item.value && styles.countryChipActive,
+                  ]}
                 >
-                  <Text style={[styles.countryText, country === item.value && styles.countryTextActive]}>{item.label}</Text>
+                  <Text
+                    style={[
+                      styles.countryText,
+                      country === item.value && styles.countryTextActive,
+                    ]}
+                  >
+                    {item.label}
+                  </Text>
                 </TouchableOpacity>
               )}
             />
           ) : (
-            <Text style={[styles.emptyFilterText, { paddingHorizontal: 16 }]}>Tất cả việc làm ở một quốc gia</Text>
+            <Text style={[styles.emptyFilterText, { paddingHorizontal: 16 }]}>
+              Tất cả việc làm ở một quốc gia
+            </Text>
           )}
         </View>
       )}
@@ -133,7 +179,12 @@ export default function JobsScreen() {
       <View style={styles.resultsRow}>
         <Text style={styles.resultsText}>{jobs.length} việc làm</Text>
         {hasFilters && (
-          <TouchableOpacity onPress={() => { setCategoryId(undefined); setCountry('') }}>
+          <TouchableOpacity
+            onPress={() => {
+              setCategoryId(undefined);
+              setCountry("");
+            }}
+          >
             <Text style={styles.clearText}>Xóa bộ lọc</Text>
           </TouchableOpacity>
         )}
@@ -146,60 +197,136 @@ export default function JobsScreen() {
       ) : (
         <FlatList
           data={jobs}
-          keyExtractor={item => item.id}
+          keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.yellow} />}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor={Colors.yellow}
+            />
+          }
           renderItem={({ item }) => <JobCard job={item} />}
           ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
           ListEmptyComponent={
             <View style={styles.empty}>
               <Text style={styles.emptyIcon}>🔍</Text>
               <Text style={styles.emptyTitle}>Không tìm thấy</Text>
-              <Text style={styles.emptyText}>Thử thay đổi từ khóa hoặc bộ lọc</Text>
+              <Text style={styles.emptyText}>
+                Thử thay đổi từ khóa hoặc bộ lọc
+              </Text>
             </View>
           }
         />
       )}
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
-  safe:   { flex: 1, backgroundColor: Colors.dark },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 14 },
-  title:  { color: Colors.text, fontSize: 22, fontWeight: '800' },
-  filterBtn: { width: 40, height: 40, borderRadius: 12, backgroundColor: Colors.card, borderWidth: 1, borderColor: Colors.border, alignItems: 'center', justifyContent: 'center' },
+  safe: { flex: 1, backgroundColor: Colors.dark },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  title: { color: Colors.text, fontSize: 22, fontWeight: "800" },
+  filterBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: Colors.card,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   filterBtnActive: { borderColor: Colors.yellow },
-  filterDot: { position: 'absolute', top: 6, right: 6, width: 7, height: 7, borderRadius: 4, backgroundColor: Colors.yellow },
+  filterDot: {
+    position: "absolute",
+    top: 6,
+    right: 6,
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: Colors.yellow,
+  },
 
   searchRow: {
-    flexDirection: 'row', alignItems: 'center', gap: 10,
-    marginHorizontal: 16, marginBottom: 12,
-    backgroundColor: Colors.surface, borderRadius: 12, borderWidth: 1, borderColor: Colors.border,
-    paddingHorizontal: 14, paddingVertical: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginHorizontal: 16,
+    marginBottom: 12,
+    backgroundColor: Colors.surface,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
   },
-  searchIcon:  {},
+  searchIcon: {},
   searchInput: { flex: 1, color: Colors.text, fontSize: 14 },
 
-  filtersBlock: { paddingBottom: 12, borderBottomWidth: 1, borderBottomColor: Colors.border, marginBottom: 10 },
-  filterLabel:  { color: Colors.muted, fontSize: 12, fontWeight: '600', paddingHorizontal: 16, marginBottom: 8, textTransform: 'uppercase' },
-  emptyFilterText: { color: Colors.muted, fontSize: 12, paddingHorizontal: 16, marginBottom: 8, fontStyle: 'italic' },
-  countryRow:   { paddingHorizontal: 16, gap: 8 },
-  countryChip:  { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 99, borderWidth: 1, borderColor: Colors.border, backgroundColor: Colors.card },
-  countryChipActive: { borderColor: Colors.yellow, backgroundColor: `${Colors.yellow}15` },
-  countryText:       { color: Colors.muted, fontSize: 13 },
+  filtersBlock: {
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+    marginBottom: 10,
+  },
+  filterLabel: {
+    color: Colors.muted,
+    fontSize: 12,
+    fontWeight: "600",
+    paddingHorizontal: 16,
+    marginBottom: 8,
+    textTransform: "uppercase",
+  },
+  emptyFilterText: {
+    color: Colors.muted,
+    fontSize: 12,
+    paddingHorizontal: 16,
+    marginBottom: 8,
+    fontStyle: "italic",
+  },
+  countryRow: { paddingHorizontal: 16, gap: 8 },
+  countryChip: {
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 99,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    backgroundColor: Colors.card,
+  },
+  countryChipActive: {
+    borderColor: Colors.yellow,
+    backgroundColor: `${Colors.yellow}15`,
+  },
+  countryText: { color: Colors.muted, fontSize: 13 },
   countryTextActive: { color: Colors.yellow },
 
-  resultsRow:  { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 16, marginBottom: 10 },
+  resultsRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    marginBottom: 10,
+  },
   resultsText: { color: Colors.muted, fontSize: 13 },
-  clearText:   { color: Colors.yellow, fontSize: 13, fontWeight: '500' },
+  clearText: { color: Colors.yellow, fontSize: 13, fontWeight: "500" },
 
-  list:       { paddingHorizontal: 16, paddingBottom: 20 },
-  loadingWrap:{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: 60 },
+  list: { paddingHorizontal: 16, paddingBottom: 20 },
+  loadingWrap: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: 60,
+  },
 
-  empty:      { alignItems: 'center', paddingTop: 60, gap: 8 },
-  emptyIcon:  { fontSize: 40 },
-  emptyTitle: { color: Colors.text, fontSize: 16, fontWeight: '600' },
-  emptyText:  { color: Colors.muted, fontSize: 13 },
-})
+  empty: { alignItems: "center", paddingTop: 60, gap: 8 },
+  emptyIcon: { fontSize: 40 },
+  emptyTitle: { color: Colors.text, fontSize: 16, fontWeight: "600" },
+  emptyText: { color: Colors.muted, fontSize: 13 },
+});

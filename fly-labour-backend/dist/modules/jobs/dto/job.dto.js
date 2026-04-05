@@ -179,9 +179,14 @@ __decorate([
 ], QueryJobDto.prototype, "jobType", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_transformer_1.Transform)(({ value }) => value === 'true'),
+    (0, class_transformer_1.Transform)(({ value }) => value === 'true' ? true : value === 'false' ? false : undefined),
     __metadata("design:type", Boolean)
 ], QueryJobDto.prototype, "isHot", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_transformer_1.Transform)(({ value }) => value === 'true' ? true : value === 'false' ? false : undefined),
+    __metadata("design:type", Boolean)
+], QueryJobDto.prototype, "isFeatured", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)

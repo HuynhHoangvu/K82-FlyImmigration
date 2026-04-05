@@ -30,6 +30,7 @@ export declare class QueryJobDto {
     categoryId?: string;
     jobType?: string;
     isHot?: boolean;
+    isFeatured?: boolean;
     sort?: string;
     status?: string;
 }
