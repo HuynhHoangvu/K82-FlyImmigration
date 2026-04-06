@@ -2,53 +2,53 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
-import BackgroundMusic from "@/components/ui/BackgroundMusic";
-import { useT } from "@/hooks/useT";
-import { contactApi } from "@/services/api";
-import { useThemeStore } from "@/store/themeStore";
+import BackgroundMusic from "@/themes/fly-labour/parts/widgets/BackgroundMusic";
+import { useT } from "@/core/hooks/useT";
+import { contactApi } from "@/core/services/api";
+import { useThemeStore } from "@/core/store/themeStore";
 
 // Layouts
-import Header from "@/components/layout/Header";
-import ScrollToTop from "@/components/ui/ScrollToTop";
-import Footer from "@/components/layout/Footer";
-import FloatingContact from "@/components/ui/FloatingContact";
-import AdminLayout from "@/components/admin/AdminLayout";
-import { AdminEditBar } from "@/components/admin/AdminEditBar";
-import { useContentStore } from "@/hooks/usePageContent";
+import Header from "@/themes/fly-labour/parts/Header";
+import ScrollToTop from "@/themes/fly-labour/parts/widgets/ScrollToTop";
+import Footer from "@/themes/fly-labour/parts/Footer";
+import FloatingContact from "@/themes/fly-labour/parts/widgets/FloatingContact";
+import AdminLayout from "@/admin/layout/AdminLayout";
+import { AdminEditBar } from "@/admin/components/AdminEditBar";
+import { useContentStore } from "@/core/hooks/usePageContent";
 
 // User pages
-import HomePage from "@/pages/user/HomePage";
-import JobsPage from "@/pages/user/JobsPage";
-import JobDetailPage from "@/pages/user/JobDetailPage";
-import NewsPage from "@/pages/user/NewsPage";
-import NewsDetailPage from "@/pages/user/NewsDetailPage";
-import LoginPage from "@/pages/user/LoginPage";
-import RegisterPage from "@/pages/user/RegisterPage";
-import ProfilePage from "@/pages/user/ProfilePage";
-import AboutPage from "@/pages/user/AboutPage";
-import ProcessPage from "@/pages/user/ProcessPage";
-import FaqPage from "@/pages/user/FaqPage";
-import PrivacyPage from "@/pages/user/PrivacyPage";
-import PolicyPage from "@/pages/user/PolicyPage";
+import HomePage from "@/plugins/home/pages/HomePage";
+import JobsPage from "@/plugins/jobs/pages/JobsPage";
+import JobDetailPage from "@/plugins/jobs/pages/JobDetailPage";
+import NewsPage from "@/plugins/news/pages/NewsPage";
+import NewsDetailPage from "@/plugins/news/pages/NewsDetailPage";
+import LoginPage from "@/plugins/auth/pages/LoginPage";
+import RegisterPage from "@/plugins/auth/pages/RegisterPage";
+import ProfilePage from "@/plugins/profile/pages/ProfilePage";
+import AboutPage from "@/plugins/static-pages/pages/AboutPage";
+import ProcessPage from "@/plugins/static-pages/pages/ProcessPage";
+import FaqPage from "@/plugins/static-pages/pages/FaqPage";
+import PrivacyPage from "@/plugins/static-pages/pages/PrivacyPage";
+import PolicyPage from "@/plugins/static-pages/pages/PolicyPage";
 
 // Admin pages
-import AdminDashboard from "@/pages/admin/AdminDashboard";
-import AdminJobsPage from "@/pages/admin/AdminJobsPage";
-import AdminApplicationsPage from "@/pages/admin/AdminApplicationsPage";
-import AdminUsersPage from "@/pages/admin/AdminUsersPage";
-import AdminCategoriesPage from "@/pages/admin/AdminCategoriesPage";
-import AdminNewsPage from "@/pages/admin/AdminNewsPage";
-import AdminSettingsPage from "@/pages/admin/AdminSettingsPage";
-import AdminChoresPage from "@/pages/admin/AdminChoresPage";
-import AdminContactsPage from "@/pages/admin/AdminContactsPage";
-import AdminPoliciesPage from "@/pages/admin/AdminPoliciesPage";
+import AdminDashboard from "@/admin/pages/AdminDashboard";
+import AdminJobsPage from "@/admin/pages/AdminJobsPage";
+import AdminApplicationsPage from "@/admin/pages/AdminApplicationsPage";
+import AdminUsersPage from "@/admin/pages/AdminUsersPage";
+import AdminCategoriesPage from "@/admin/pages/AdminCategoriesPage";
+import AdminNewsPage from "@/admin/pages/AdminNewsPage";
+import AdminSettingsPage from "@/admin/pages/AdminSettingsPage";
+import AdminChoresPage from "@/admin/pages/AdminChoresPage";
+import AdminContactsPage from "@/admin/pages/AdminContactsPage";
+import AdminPoliciesPage from "@/admin/pages/AdminPoliciesPage";
 
 // Employer pages
-import EmployerLayout from "@/pages/employer/EmployerLayout";
-import EmployerDashboard from "@/pages/employer/EmployerDashboard";
-import EmployerJobsPage from "@/pages/employer/EmployerJobsPage";
-import EmployerApplicationsPage from "@/pages/employer/EmployerApplicationsPage";
-import EmployerProfilePage from "@/pages/employer/EmployerProfilePage";
+import EmployerLayout from "@/plugins/employer/pages/EmployerLayout";
+import EmployerDashboard from "@/plugins/employer/pages/EmployerDashboard";
+import EmployerJobsPage from "@/plugins/employer/pages/EmployerJobsPage";
+import EmployerApplicationsPage from "@/plugins/employer/pages/EmployerApplicationsPage";
+import EmployerProfilePage from "@/plugins/employer/pages/EmployerProfilePage";
 
 function UserLayout({ children }: { children: React.ReactNode }) {
   return (

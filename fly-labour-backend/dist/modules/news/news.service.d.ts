@@ -21,5 +21,6 @@ export declare class NewsService {
     remove(id: string): Promise<{
         message: string;
     }>;
+    private parseBoolean;
     private saveFile;
 }

@@ -14,7 +14,11 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.flylabour.app"
+      "bundleIdentifier": "com.flylabour.app",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Ứng dụng cần truy cập thư viện ảnh để tải CV lên.",
+        "NSCameraUsageDescription": "Ứng dụng cần camera để chụp ảnh CV."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -24,8 +28,14 @@
       "package": "com.flylabour.app",
       "versionCode": 1,
       "permissions": [
-        "READ_EXTERNAL_STORAGE"
-      ]
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.INTERNET",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.VIBRATE",
+        "android.permission.POST_NOTIFICATIONS"
+      ],
+
     },
     "web": {
       "bundler": "metro",
@@ -40,7 +50,15 @@
         "expo-notifications",
         {
           "icon": "./assets/notification-icon.png",
-          "color": "#fdd52f"
+          "color": "#fdd52f",
+          "defaultChannel": "default"
+        }
+      ],
+      [
+        "@sentry/react-native/expo",
+        {
+          "organization": "fly-labour",
+          "project": "fly-labour-mobile"
         }
       ],
       "expo-asset",
@@ -48,6 +66,11 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "YOUR_EAS_PROJECT_ID"
+      }
     }
   }
 }

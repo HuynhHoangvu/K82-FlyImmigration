@@ -18,7 +18,6 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const news_entity_1 = require("./news.entity");
 const class_validator_1 = require("class-validator");
-const class_transformer_1 = require("class-transformer");
 const swagger_1 = require("@nestjs/swagger");
 const gcs_service_1 = require("../../common/services/gcs.service");
 class CreateNewsDto {
@@ -52,7 +51,6 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)({ required: false }),
     (0, class_validator_1.IsOptional)(),
-    (0, class_transformer_1.Transform)(({ value }) => value === 'true' || value === true),
     __metadata("design:type", Boolean)
 ], CreateNewsDto.prototype, "isPublished", void 0);
 let NewsService = class NewsService {
@@ -73,7 +71,10 @@ let NewsService = class NewsService {
         return n;
     }
     async create(dto, file) {
-        const n = this.newsRepo.create(dto);
+        const n = this.newsRepo.create({
+            ...dto,
+            isPublished: this.parseBoolean(dto.isPublished),
+        });
         if (file)
             n.image = await this.saveFile(file);
         return this.newsRepo.save(n);
@@ -82,7 +83,10 @@ let NewsService = class NewsService {
         const n = await this.newsRepo.findOne({ where: { id } });
         if (!n)
             throw new common_1.NotFoundException();
-        Object.assign(n, dto);
+        Object.assign(n, {
+            ...dto,
+            isPublished: dto.isPublished !== undefined ? this.parseBoolean(dto.isPublished) : n.isPublished,
+        });
         if (file)
             n.image = await this.saveFile(file);
         return this.newsRepo.save(n);
@@ -93,6 +97,13 @@ let NewsService = class NewsService {
             throw new common_1.NotFoundException();
         await this.newsRepo.remove(n);
         return { message: 'Đã xóa bài viết' };
+    }
+    parseBoolean(value) {
+        if (typeof value === 'boolean')
+            return value;
+        if (typeof value === 'string')
+            return value === 'true' || value === '1';
+        return !!value;
     }
     async saveFile(file) {
         return this.gcsService.uploadFile(file, 'news');
