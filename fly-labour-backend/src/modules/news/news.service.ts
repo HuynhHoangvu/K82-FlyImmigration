@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { News } from './news.entity'
 import { IsString, IsOptional } from 'class-validator'
+import { Transform } from 'class-transformer'
 import { ApiProperty } from '@nestjs/swagger'
 import { GcsService } from '../../common/services/gcs.service'
 
@@ -12,7 +13,7 @@ export class CreateNewsDto {
   @ApiProperty({ required: false }) @IsOptional() excerpt?: string
   @ApiProperty({ required: false }) @IsOptional() content?: string
   @ApiProperty({ required: false }) @IsOptional() image?: string
-  @ApiProperty({ required: false }) @IsOptional() isPublished?: boolean
+  @ApiProperty({ required: false }) @IsOptional() @Transform(({ value }) => value === 'true' || value === true) isPublished?: boolean
 }
 
 @Injectable()

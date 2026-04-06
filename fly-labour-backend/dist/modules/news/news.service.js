@@ -18,6 +18,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const news_entity_1 = require("./news.entity");
 const class_validator_1 = require("class-validator");
+const class_transformer_1 = require("class-transformer");
 const swagger_1 = require("@nestjs/swagger");
 const gcs_service_1 = require("../../common/services/gcs.service");
 class CreateNewsDto {
@@ -51,6 +52,7 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)({ required: false }),
     (0, class_validator_1.IsOptional)(),
+    (0, class_transformer_1.Transform)(({ value }) => value === 'true' || value === true),
     __metadata("design:type", Boolean)
 ], CreateNewsDto.prototype, "isPublished", void 0);
 let NewsService = class NewsService {
