@@ -78,12 +78,32 @@ export default {
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'ticker':     'ticker 40s linear infinite',
         'float':      'float 3s ease-in-out infinite',
+        'glow':       'glow 2.5s ease-in-out infinite',
+        'ken-burns':         'kenBurns 12s ease-in-out infinite alternate',
+        'ken-burns-reverse': 'kenBurnsReverse 12s ease-in-out infinite alternate',
+        'shine':      'shine 0.6s ease forwards',
       },
       keyframes: {
-        slideIn: { from: { opacity: 0, transform: 'translateX(-30px)' }, to: { opacity: 1, transform: 'translateX(0)' } },
-        fadeUp:  { from: { opacity: 0, transform: 'translateY(20px)' }, to: { opacity: 1, transform: 'translateY(0)' } },
-        ticker:  { from: { transform: 'translateX(0)' }, to: { transform: 'translateX(-50%)' } },
-        float:   { '0%,100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-8px)' } },
+        slideIn:  { from: { opacity: '0', transform: 'translateX(-24px)' }, to: { opacity: '1', transform: 'translateX(0)' } },
+        fadeUp:   { from: { opacity: '0', transform: 'translateY(24px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
+        ticker:   { from: { transform: 'translateX(0)' }, to: { transform: 'translateX(-50%)' } },
+        float:    { '0%,100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-8px)' } },
+        glow: {
+          '0%,100%': { boxShadow: '0 0 18px rgba(228,168,8,0.15)' },
+          '50%':      { boxShadow: '0 0 36px rgba(228,168,8,0.35)' },
+        },
+        shine: {
+          '0%':   { transform: 'translateX(-100%) skewX(-12deg)' },
+          '100%': { transform: 'translateX(200%) skewX(-12deg)' },
+        },
+        kenBurns: {
+          '0%':   { transform: 'scale(1) translate(0%, 0%)' },
+          '100%': { transform: 'scale(1.18) translate(-2.5%, -1.5%)' },
+        },
+        kenBurnsReverse: {
+          '0%':   { transform: 'scale(1.18) translate(-2.5%, -1.5%)' },
+          '100%': { transform: 'scale(1) translate(0%, 0%)' },
+        },
       },
       backgroundImage: {
         'hero-gradient':   'linear-gradient(135deg, #0C0C0C 0%, #181200 55%, #0C0C0C 100%)',

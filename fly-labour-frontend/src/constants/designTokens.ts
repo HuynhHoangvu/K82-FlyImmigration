@@ -1,9 +1,12 @@
 /**
  * Design System Tokens - Fly Labour Premium Brand
  * Color Palette: Gold + Orange + Modern Gray
- * 
- * Last Updated: April 5, 2026
- * See: /COLOR_PALETTE_GUIDE.md for full documentation
+ *
+ * Last Updated: April 6, 2026
+ * Documentation: /DESIGN_SYSTEM.md (single source of truth)
+ *
+ * Dùng file này cho: inline styles, chart colors, JS logic cần giá trị màu.
+ * Dùng Tailwind classes (bg-theme-*, text-theme-*) cho JSX thông thường.
  */
 
 // ════════════════════════════════════════════════════════════════════

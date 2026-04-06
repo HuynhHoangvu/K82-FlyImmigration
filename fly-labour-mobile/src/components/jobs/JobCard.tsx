@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
 import { useRouter } from 'expo-router'
 import { MapPin, Clock, Users } from 'lucide-react-native'
-import { Colors } from '@/constants/colors'
+import { Colors, BrandColors } from '@/constants/colors'
 import { Badge } from '@/components/ui/Badge'
 import { formatSalary, getCountryLabel, JOBTYPE_LABELS, getImageUrl, timeAgo } from '@/utils/helpers'
 import type { Job } from '@/types'
@@ -98,6 +98,6 @@ const styles = StyleSheet.create({
   metaText: { color: Colors.muted, fontSize: 12 },
 
   footer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  salary: { color: Colors.yellow, fontSize: 13, fontWeight: '600', flex: 1 },
+  salary: { color: BrandColors.gold.soft, fontSize: 13, fontWeight: '700', flex: 1 },
   time: { color: Colors.muted, fontSize: 11 },
 })

@@ -43,13 +43,6 @@ const SLIDE_CONFIG = [
     accent: "#E83929",
   },
   {
-    ctaLink: "/jobs?country=south_korea",
-    image:
-      "https://images.unsplash.com/photo-1549692520-acc6669e2f0c?w=1600&q=80&fit=crop",
-    imageAlt: "South Korea Seoul",
-    accent: "#4A90D9",
-  },
-  {
     ctaLink: "/jobs?country=uk",
     image:
       "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1600&q=80&fit=crop",
@@ -63,6 +56,17 @@ const SLIDE_CONFIG = [
     imageAlt: "Germany landscape",
     accent: "#F5A623",
   },
+];
+
+// Ken Burns variants — mỗi slide zoom từ hướng khác nhau
+const KB_VARIANTS = [
+  { transformOrigin: "center center",  animationName: "kenBurns" },
+  { transformOrigin: "top left",       animationName: "kenBurnsReverse" },
+  { transformOrigin: "bottom right",   animationName: "kenBurns" },
+  { transformOrigin: "center left",    animationName: "kenBurnsReverse" },
+  { transformOrigin: "top right",      animationName: "kenBurns" },
+  { transformOrigin: "bottom center",  animationName: "kenBurnsReverse" },
+  { transformOrigin: "center right",   animationName: "kenBurns" },
 ];
 
 const TICKER_ITEMS = [
@@ -128,7 +132,7 @@ export default function HeroBanner() {
           <img
             src={s.image}
             alt={s.imageAlt}
-            className={`w-full h-full object-cover ${i === current ? "animate-ken-burns" : ""}`}
+            className="w-full h-full object-cover"
             onLoad={() =>
               setLoaded((prev) => {
                 const n = [...prev];
@@ -136,7 +140,12 @@ export default function HeroBanner() {
                 return n;
               })
             }
-            style={{ display: loaded[i] ? "block" : "none" }}
+            style={{
+              display: loaded[i] ? "block" : "none",
+              animation: `${KB_VARIANTS[i].animationName} 12s ease-in-out infinite alternate`,
+              transformOrigin: KB_VARIANTS[i].transformOrigin,
+              willChange: "transform",
+            }}
           />
           {!loaded[i] && (
             <div className="w-full h-full bg-gradient-to-br from-brand-card to-brand-dark animate-pulse" />
@@ -358,7 +367,7 @@ export default function HeroBanner() {
           <ChevronLeft size={16} />
         </button>
         <div className="flex gap-2 items-center">
-          {SLIDE_CONFIG.map((s, i) => (
+          {SLIDE_CONFIG.map((_, i) => (
             <button
               key={i}
               onClick={() => setCurrent(i)}

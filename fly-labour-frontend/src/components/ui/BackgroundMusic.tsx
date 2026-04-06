@@ -38,14 +38,12 @@ export default function BackgroundMusic({ autoPlay = true }: Props) {
   const playNext = useCallback(() => {
     queuePosRef.current = (queuePosRef.current + 1) % PLAYLIST.length
     if (queuePosRef.current === 0) {
-      // reshuffle khi hết playlist
       const next = Math.floor(Math.random() * PLAYLIST.length)
       queueRef.current = shuffledIndices(next, PLAYLIST.length)
     }
     setTrackIndex(queueRef.current[queuePosRef.current])
   }, [])
 
-  // Khi đổi bài, tự phát nếu đang chạy
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
@@ -56,12 +54,10 @@ export default function BackgroundMusic({ autoPlay = true }: Props) {
     }
   }, [trackIndex]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Volume
   useEffect(() => {
     if (audioRef.current) audioRef.current.volume = volume
   }, [volume])
 
-  // Autoplay sau user interaction lần đầu
   useEffect(() => {
     if (!autoPlay) return
     const handle = () => {
@@ -83,7 +79,6 @@ export default function BackgroundMusic({ autoPlay = true }: Props) {
     }
   }, [autoPlay, started])
 
-  // Đóng volume slider khi click ra ngoài
   useEffect(() => {
     const handle = (e: MouseEvent) => {
       if (volumeRef.current && !volumeRef.current.contains(e.target as Node)) {
@@ -122,32 +117,31 @@ export default function BackgroundMusic({ autoPlay = true }: Props) {
         onEnded={playNext}
       />
 
-      {/* Widget nổi góc dưới trái */}
       <div className="fixed bottom-8 left-5 z-40 flex flex-col items-start gap-2">
 
         {/* Volume slider */}
         {showVolume && (
           <div ref={volumeRef}
-            className="bg-brand-card border border-brand-border rounded-2xl px-4 py-3 shadow-2xl shadow-black/50 animate-fade-up">
-            <p className="text-xs text-brand-muted mb-2 text-center">Âm lượng</p>
+            className="bg-gradient-to-br from-amber-50 to-yellow-50 dark:from-[#1a1a19] dark:to-[#262624] border border-amber-300 dark:border-amber-700/50 rounded-2xl px-4 py-3 shadow-xl shadow-amber-200/50 dark:shadow-black/50 animate-fade-up">
+            <p className="text-xs text-amber-700 dark:text-amber-400 mb-2 text-center font-semibold">Âm lượng</p>
             <div className="flex items-center gap-2">
-              <VolumeX size={12} className="text-brand-muted" />
+              <VolumeX size={12} className="text-amber-500" />
               <input
                 type="range" min="0" max="1" step="0.05"
                 value={volume}
                 onChange={e => setVolume(parseFloat(e.target.value))}
-                className="w-24 accent-brand-gold cursor-pointer"
+                className="w-24 accent-amber-500 cursor-pointer"
               />
-              <Volume2 size={12} className="text-brand-gold" />
+              <Volume2 size={12} className="text-amber-600" />
             </div>
-            <p className="text-center text-xs text-brand-muted mt-1">{Math.round(volume * 100)}%</p>
+            <p className="text-center text-xs text-amber-600 dark:text-amber-400 mt-1 font-medium">{Math.round(volume * 100)}%</p>
           </div>
         )}
 
         {/* Tên bài khi đang phát */}
         {playing && (
-          <div className="bg-brand-card border border-brand-border rounded-xl px-3 py-1.5 shadow-lg max-w-[180px]">
-            <p className="text-[10px] text-brand-muted truncate">{currentTrack.name}</p>
+          <div className="bg-gradient-to-r from-amber-400 to-yellow-300 rounded-xl px-3 py-1.5 shadow-md shadow-amber-300/40 max-w-[180px]">
+            <p className="text-[10px] text-amber-900 font-semibold truncate">{currentTrack.name}</p>
           </div>
         )}
 
@@ -156,14 +150,15 @@ export default function BackgroundMusic({ autoPlay = true }: Props) {
           {/* Play/Pause */}
           <button
             onClick={togglePlay}
-            className="flex items-center gap-2 bg-brand-card border border-brand-border hover:border-brand-gold/50 rounded-2xl px-3 py-2 transition-all duration-200 group shadow-lg"
+            className="flex items-center gap-2 rounded-2xl px-3 py-2 transition-all duration-200 shadow-lg shadow-amber-300/40 dark:shadow-amber-900/30 border border-amber-400 dark:border-amber-600/60"
+            style={{ background: 'linear-gradient(135deg, #e4a808 0%, #fdd52f 60%, #f2ee8c 100%)' }}
             title={playing ? 'Tắt nhạc' : 'Bật nhạc'}
           >
             {playing ? (
               <div className="flex items-end gap-0.5 h-4">
                 {[1, 2, 3, 4].map(i => (
                   <div key={i}
-                    className="w-0.5 bg-brand-gold rounded-full"
+                    className="w-0.5 bg-amber-900 rounded-full"
                     style={{
                       height: `${Math.random() * 60 + 40}%`,
                       animation: `musicBar 0.${4 + i}s ease-in-out infinite alternate`,
@@ -173,9 +168,9 @@ export default function BackgroundMusic({ autoPlay = true }: Props) {
                 ))}
               </div>
             ) : (
-              <Music size={14} className="text-brand-muted group-hover:text-brand-gold transition-colors" />
+              <Music size={14} className="text-amber-900" />
             )}
-            <span className="text-xs text-brand-muted group-hover:text-white transition-colors">
+            <span className="text-xs text-amber-900 font-semibold">
               {playing ? 'Đang phát' : 'Nhạc nền'}
             </span>
           </button>
@@ -183,25 +178,37 @@ export default function BackgroundMusic({ autoPlay = true }: Props) {
           {/* Skip */}
           <button
             onClick={handleSkip}
-            className="w-8 h-8 rounded-xl bg-brand-card border border-brand-border hover:border-brand-gold/50 flex items-center justify-center text-brand-muted hover:text-brand-gold transition-colors shadow-lg"
+            className="w-8 h-8 rounded-xl border border-amber-400 dark:border-amber-600/60 flex items-center justify-center text-amber-700 dark:text-amber-400 hover:text-amber-900 transition-colors shadow-md"
+            style={{ background: 'linear-gradient(135deg, #fdd52f 0%, #e4a808 100%)' }}
             title="Bài kế tiếp"
           >
-            <SkipForward size={13} />
+            <SkipForward size={13} className="text-amber-900" />
           </button>
 
           {/* Volume */}
           <button
             onClick={() => setShowVolume(s => !s)}
-            className="w-8 h-8 rounded-xl bg-brand-card border border-brand-border hover:border-brand-gold/50 flex items-center justify-center text-brand-muted hover:text-brand-gold transition-colors shadow-lg"
+            className={`w-8 h-8 rounded-xl border flex items-center justify-center transition-all duration-200 shadow-md ${
+              showVolume
+                ? 'border-amber-500 shadow-amber-300/50'
+                : 'border-amber-400 dark:border-amber-600/60'
+            }`}
+            style={{ background: showVolume
+              ? 'linear-gradient(135deg, #e4a808, #fdd52f)'
+              : 'linear-gradient(135deg, #fdd52f 0%, #e4a808 100%)'
+            }}
             title="Âm lượng"
           >
-            {volume === 0 ? <VolumeX size={13} /> : <Volume2 size={13} />}
+            {volume === 0
+              ? <VolumeX size={13} className="text-amber-900" />
+              : <Volume2 size={13} className="text-amber-900" />
+            }
           </button>
         </div>
 
         {/* Hint lần đầu */}
         {!started && autoPlay && (
-          <p className="text-[10px] text-brand-muted ml-1 animate-pulse">
+          <p className="text-[10px] text-amber-600 dark:text-amber-400 ml-1 animate-pulse font-medium">
             Click bất kỳ để phát nhạc
           </p>
         )}

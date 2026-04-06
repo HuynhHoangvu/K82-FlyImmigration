@@ -52,10 +52,10 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     backgroundColor: Colors.card,
   },
-  chipActive: { borderColor: Colors.yellow, backgroundColor: `${Colors.yellow}15` },
+  chipActive: { borderColor: Colors.gold, backgroundColor: `${Colors.gold}18` },
   chipIcon:   { fontSize: 14 },
   chipText:   { color: Colors.muted, fontSize: 13, fontWeight: '500' },
-  chipTextActive: { color: Colors.yellow },
+  chipTextActive: { color: Colors.gold },
   count: {
     backgroundColor: Colors.surface,
     borderRadius: 99,

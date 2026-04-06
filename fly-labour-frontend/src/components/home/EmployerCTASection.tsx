@@ -16,7 +16,7 @@ export default function EmployerCTASection() {
   return (
     <section className="py-16 px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="relative overflow-hidden rounded-3xl border border-brand-border bg-brand-card">
+        <div className="relative overflow-hidden rounded-3xl border border-theme-border-default bg-theme-surface">
           {/* Background glow */}
           <div className="absolute inset-0 bg-gradient-to-br from-brand-gold/5 via-transparent to-brand-orange/8 pointer-events-none" />
           <div
@@ -37,7 +37,7 @@ export default function EmployerCTASection() {
                 <span className="text-brand-yellow"><EditableText settingKey="emp.titleAccent" defaultValue={empTitleAccent} /></span>
               </h2>
 
-              <p className="text-slate-900 dark:text-gray-100 mb-8 max-w-md leading-relaxed">
+              <p className="text-theme-text-secondary mb-8 max-w-md leading-relaxed">
                 <EditableText settingKey="emp.desc" defaultValue={empDesc} multiline />
               </p>
 
@@ -46,7 +46,7 @@ export default function EmployerCTASection() {
                 {h.empFeatures.map((f: string, i: number) => (
                   <li
                     key={i}
-                    className="flex items-start gap-3 text-slate-900 dark:text-gray-100 text-sm"
+                    className="flex items-start gap-3 text-theme-text-base text-sm"
                   >
                     <CheckCircle
                       size={17}
@@ -76,14 +76,14 @@ export default function EmployerCTASection() {
             </div>
 
             {/* Right: stats */}
-            <div className="flex items-center justify-center p-10 lg:p-14 bg-white/[0.02] border-t lg:border-t-0 lg:border-l border-brand-border">
+            <div className="flex items-center justify-center p-10 lg:p-14 bg-theme-surfaceSecondary border-t lg:border-t-0 lg:border-l border-theme-border-default">
               <div className="grid grid-cols-1 gap-8 w-full max-w-xs">
                 {h.empStats.map((val: string, i: number) => (
                   <div key={i} className="text-center">
                     <p className="font-display text-5xl gradient-text mb-1">
                       {val}
                     </p>
-                    <p className="text-slate-900 dark:text-gray-100 text-sm">
+                    <p className="text-theme-text-secondary text-sm">
                       {h.empStatsLabels[i]}
                     </p>
                   </div>

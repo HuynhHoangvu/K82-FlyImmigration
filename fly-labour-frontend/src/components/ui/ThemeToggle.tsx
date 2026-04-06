@@ -20,10 +20,10 @@ export const ThemeToggle = () => {
       className="
         relative inline-flex items-center justify-center
         w-10 h-10 rounded-lg
-        bg-theme-panel hover:bg-theme-card
-        border border-theme-border-col
+        bg-theme-surface hover:bg-theme-surfaceSecondary
+        border border-theme-border-default
         transition-all duration-300
-        text-theme-text-base hover:text-brand-gold
+        text-theme-text-base hover:text-brand-gold-primary
       "
     >
       {theme === "light" ? (

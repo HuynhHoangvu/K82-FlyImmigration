@@ -51,10 +51,10 @@ const styles = StyleSheet.create({
   disabled: { opacity: 0.5 },
 
   // Variants
-  primary: { backgroundColor: Colors.yellow, borderColor: Colors.yellow },
-  outline: { backgroundColor: 'transparent', borderColor: Colors.yellow },
+  primary: { backgroundColor: Colors.gold, borderColor: Colors.gold },
+  outline: { backgroundColor: `${Colors.gold}15`, borderColor: Colors.gold },
   ghost:   { backgroundColor: 'transparent', borderColor: 'transparent' },
-  danger:  { backgroundColor: '#f8514920', borderColor: Colors.red },
+  danger:  { backgroundColor: `${Colors.red}20`, borderColor: Colors.red },
 
   // Sizes
   sm: { paddingHorizontal: 14, paddingVertical: 8 },
@@ -62,9 +62,9 @@ const styles = StyleSheet.create({
   lg: { paddingHorizontal: 24, paddingVertical: 16 },
 
   // Text
-  text: { fontWeight: '600', fontSize: 15 },
+  text: { fontWeight: '700', fontSize: 15 },
   text_primary: { color: Colors.dark },
-  text_outline:  { color: Colors.yellow },
+  text_outline:  { color: Colors.gold },
   text_ghost:    { color: Colors.muted },
   text_danger:   { color: Colors.red },
 })

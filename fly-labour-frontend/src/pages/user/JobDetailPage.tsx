@@ -349,36 +349,36 @@ export default function JobDetailPage() {
                     <p className="text-brand-muted text-xs">{d.salary}</p>
                   </div>
                   {job.location && (
-                    <div className="bg-white/5 rounded-xl p-3 text-center">
+                    <div className="bg-theme-surfaceSecondary border border-theme-border-subtle rounded-xl p-3 text-center">
                       <MapPin
                         size={16}
                         className="text-brand-muted mx-auto mb-1"
                       />
-                      <p className="text-slate-700 dark:text-white text-sm font-medium">
+                      <p className="text-theme-text-base text-sm font-medium">
                         {job.location}
                       </p>
                       <p className="text-brand-muted text-xs">{d.location}</p>
                     </div>
                   )}
                   {job.slots && (
-                    <div className="bg-white/5 rounded-xl p-3 text-center">
+                    <div className="bg-theme-surfaceSecondary border border-theme-border-subtle rounded-xl p-3 text-center">
                       <Users
                         size={16}
                         className="text-brand-muted mx-auto mb-1"
                       />
-                      <p className="text-slate-700 dark:text-white text-sm font-medium">
+                      <p className="text-theme-text-base text-sm font-medium">
                         {job.slots} {d.slots_label}
                       </p>
                       <p className="text-brand-muted text-xs">{d.slots}</p>
                     </div>
                   )}
                   {job.deadline && (
-                    <div className="bg-white/5 rounded-xl p-3 text-center">
+                    <div className="bg-theme-surfaceSecondary border border-theme-border-subtle rounded-xl p-3 text-center">
                       <Calendar
                         size={16}
                         className="text-brand-muted mx-auto mb-1"
                       />
-                      <p className="text-slate-700 dark:text-white text-sm font-medium">
+                      <p className="text-theme-text-base text-sm font-medium">
                         {formatDate(job.deadline)}
                       </p>
                       <p className="text-brand-muted text-xs">{d.deadline}</p>
@@ -736,9 +736,9 @@ export default function JobDetailPage() {
                     <Link
                       key={rj.id}
                       to={`/jobs/${rj.id}`}
-                      className="block p-3 bg-brand-dark rounded-xl hover:bg-white/5 transition-colors group"
+                      className="block p-3 bg-theme-surfaceSecondary rounded-xl hover:border hover:border-theme-border-default transition-colors group"
                     >
-                      <p className="text-sm text-slate-900 dark:text-white group-hover:text-brand-gold transition-colors line-clamp-1">
+                      <p className="text-sm text-theme-text-base group-hover:text-theme-accent-primary transition-colors line-clamp-1">
                         {rj.title}
                       </p>
                       <p className="text-xs text-brand-muted mt-0.5">

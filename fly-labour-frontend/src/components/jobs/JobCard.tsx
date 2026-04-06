@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { MapPin, Clock, Users, TrendingUp, Eye } from "lucide-react";
+import { MapPin, Clock, Users, TrendingUp, Eye, Star, Flame, TimerOff } from "lucide-react";
 import type { Job } from "@/types";
 import {
   getCountryLabels,
@@ -99,16 +99,18 @@ export default function JobCard({ job, compact }: Props) {
 
           <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap">
             {expired && (
-              <span className="bg-red-500/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                Hết hạn
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-slate-700/80 text-slate-200 backdrop-blur-sm border border-slate-500/40 shadow-sm">
+                <TimerOff size={9} /> Hết hạn
               </span>
             )}
             {!expired && job.isHot && (
-              <span className="badge-hot text-[10px]">🔥 Hot</span>
+              <span className="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-1 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-[0_2px_8px_rgba(239,68,68,0.45)] border border-red-400/30">
+                <Flame size={9} className="fill-yellow-300 text-yellow-300" /> HOT
+              </span>
             )}
             {!expired && job.isFeatured && (
-              <span className="bg-brand-gold/90 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-full">
-                {jc.featured}
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 text-amber-900 shadow-[0_2px_8px_rgba(251,191,36,0.4)] border border-yellow-300/50">
+                <Star size={9} className="fill-amber-800 text-amber-800" /> {jc.featured}
               </span>
             )}
           </div>
@@ -136,12 +138,14 @@ export default function JobCard({ job, compact }: Props) {
         {compact && (
           <div className="flex gap-1.5 flex-wrap mb-2">
             {expired && (
-              <span className="bg-red-500/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                Hết hạn
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-slate-200 dark:bg-slate-700/80 text-slate-600 dark:text-slate-200 border border-slate-300 dark:border-slate-500/40">
+                <TimerOff size={9} /> Hết hạn
               </span>
             )}
             {!expired && job.isHot && (
-              <span className="badge-hot text-[10px]">🔥 Hot</span>
+              <span className="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-1 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-[0_2px_8px_rgba(239,68,68,0.4)] border border-red-400/30">
+                <Flame size={9} className="fill-yellow-300 text-yellow-300" /> HOT
+              </span>
             )}
             <span className="badge-country text-[10px]">
               {flag} {countryName}
