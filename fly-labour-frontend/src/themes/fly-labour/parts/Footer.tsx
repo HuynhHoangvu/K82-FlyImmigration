@@ -29,6 +29,8 @@ export default function Footer() {
   const hoursText = usePageContent("footer.hoursText", f.hoursText);
   const copyright = usePageContent("footer.copyright", f.copyright);
 
+  const bct = usePageContent("footer.bct", "Đã đăng ký với Bộ Công Thương — ĐKKD số 0316444315");
+
   const [policies, setPolicies] = useState<Policy[]>([]);
   const [loadingPolicies, setLoadingPolicies] = useState(true);
 
@@ -166,7 +168,6 @@ export default function Footer() {
               { to: "/faq", label: f.supportLinks[2] },
               { to: "/news", label: f.supportLinks[3] },
               { to: "/contact", label: f.supportLinks[4] },
-              { to: "/privacy", label: f.supportLinks[5] },
             ].map(({ to, label }) => (
               <li key={to}>
                 <Link
@@ -177,21 +178,17 @@ export default function Footer() {
                 </Link>
               </li>
             ))}
-            {/* 🔥 Dynamic Policy Links */}
-            {!loadingPolicies && policies.length > 0 && (
-              <>
-                {policies.map((p) => (
-                  <li key={p.slug}>
-                    <Link
-                      to={`/policy/${p.slug}`}
-                      className="text-gray-500 dark:text-[#7a7a78] hover:text-amber-600 dark:hover:text-white text-sm transition-colors"
-                    >
-                      {p.title}
-                    </Link>
-                  </li>
-                ))}
-              </>
-            )}
+            {/* Dynamic Policy Links — quản lý qua Admin > Chính sách */}
+            {!loadingPolicies && policies.map((p) => (
+              <li key={p.slug}>
+                <Link
+                  to={`/policy/${p.slug}`}
+                  className="text-gray-500 dark:text-[#7a7a78] hover:text-amber-600 dark:hover:text-white text-sm transition-colors"
+                >
+                  {p.title}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 
@@ -240,26 +237,41 @@ export default function Footer() {
 
       {/* Bottom */}
       <div className="border-t border-gray-200 dark:border-[#3a3a38] py-5 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-gray-400 dark:text-[#7a7a78]">
-          <p>
-            <EditableText
-              settingKey="footer.copyright"
-              defaultValue={copyright}
+        <div className="max-w-7xl mx-auto space-y-3">
+          {/* BCT registration */}
+          <div className="flex items-center justify-center gap-2 text-xs text-gray-400 dark:text-[#7a7a78]">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/20px-Flag_of_Vietnam.svg.png"
+              alt="VN"
+              className="w-4 h-3 object-cover rounded-sm"
             />
-          </p>
-          <div className="flex gap-4 flex-wrap justify-center sm:justify-end">
-            <Link
-              to="/privacy"
-              className="hover:text-amber-600 dark:hover:text-white transition-colors"
-            >
-              {f.privacy}
-            </Link>
-            <Link
-              to="/policy/terms-of-service"
-              className="hover:text-amber-600 dark:hover:text-white transition-colors"
-            >
-              {f.terms}
-            </Link>
+            <EditableText
+              settingKey="footer.bct"
+              defaultValue={bct}
+            />
+          </div>
+          {/* Copyright + Policy links */}
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-gray-400 dark:text-[#7a7a78]">
+            <p>
+              <EditableText
+                settingKey="footer.copyright"
+                defaultValue={copyright}
+              />
+            </p>
+            {/* Dynamic bottom policy links */}
+            {!loadingPolicies && policies.length > 0 && (
+              <div className="flex gap-4 flex-wrap justify-center sm:justify-end">
+                {policies.map((p) => (
+                  <Link
+                    key={p.slug}
+                    to={`/policy/${p.slug}`}
+                    className="hover:text-amber-600 dark:hover:text-white transition-colors"
+                  >
+                    {p.title}
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

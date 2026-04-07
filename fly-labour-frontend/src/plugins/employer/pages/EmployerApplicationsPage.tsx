@@ -6,9 +6,9 @@ import toast from 'react-hot-toast'
 import type { Application } from '@/core/types'
 
 const EMPLOYER_STATUS_OPTIONS = [
-  { value: 'reviewing', label: '�ang xem x�t', icon: Clock, color: 'text-blue-400 border-blue-400/30 bg-blue-400/5' },
-  { value: 'approved', label: 'Ph� duy?t', icon: CheckCircle, color: 'text-green-400 border-green-400/30 bg-green-400/5' },
-  { value: 'rejected', label: 'T? ch?i', icon: XCircle, color: 'text-red-400 border-red-400/30 bg-red-400/5' },
+  { value: 'reviewing', label: 'Đang xem xét', icon: Clock, color: 'text-blue-400 border-blue-400/30 bg-blue-400/5' },
+  { value: 'approved', label: 'Phê duyệt', icon: CheckCircle, color: 'text-green-400 border-green-400/30 bg-green-400/5' },
+  { value: 'rejected', label: 'Từ chối', icon: XCircle, color: 'text-red-400 border-red-400/30 bg-red-400/5' },
 ]
 
 export default function EmployerApplicationsPage() {
@@ -21,7 +21,7 @@ export default function EmployerApplicationsPage() {
   useEffect(() => {
     employerApi.getApplications()
       .then(r => setApps(r.data || []))
-      .catch(() => toast.error('Failed to load applications'))
+      .catch(() => toast.error('Không tải được hồ sơ'))
       .finally(() => setLoading(false))
   }, [])
 
@@ -30,9 +30,9 @@ export default function EmployerApplicationsPage() {
     try {
       const res = await applicationsApi.employerUpdateStatus(appId, status)
       setApps(prev => prev.map(a => a.id === appId ? { ...a, status: res.data.status } : a))
-      toast.success('�� c?p nh?t tr?ng th�i')
+      toast.success('Đã cập nhật trạng thái')
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || 'C?p nh?t th?t b?i')
+      toast.error(err?.response?.data?.message || 'Cập nhật thất bại')
     } finally {
       setUpdatingId(null)
     }
@@ -48,28 +48,36 @@ export default function EmployerApplicationsPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-bold text-white">H? so ?ng vi�n</h1>
-        <p className="text-brand-muted text-sm">{apps.length} h? so d� nh?n</p>
+        <h1 className="text-xl font-bold text-theme-text-base">Hồ sơ ứng viên</h1>
+        <p className="text-theme-text-tertiary text-sm">{apps.length} hồ sơ đã nhận</p>
       </div>
 
       {/* Search */}
       <div className="relative">
-        <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-brand-muted" />
+        <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-theme-text-tertiary" />
         <input
           value={search}
           onChange={e => setSearch(e.target.value)}
-          placeholder="T�m theo t�n, email ho?c t�n v? tr�..."
+          placeholder="Tìm theo tên, email hoặc tên vị trí..."
           className="input-dark pl-10"
         />
       </div>
 
       {loading ? (
-        <div className="space-y-3">{[...Array(5)].map((_, i) => <div key={i} className="h-20 bg-brand-card rounded-2xl animate-pulse border border-brand-border" />)}</div>
+        <div className="space-y-3">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="h-20 bg-theme-surface rounded-2xl animate-pulse border border-theme-border-default" />
+          ))}
+        </div>
       ) : filtered.length === 0 ? (
         <div className="card-dark p-12 text-center">
-          <p className="text-4xl mb-3">??</p>
-          <p className="text-white font-semibold mb-1">{search ? 'Kh�ng t�m th?y k?t qu?' : 'Chua c� h? so n�o'}</p>
-          <p className="text-brand-muted text-sm">H? so s? xu?t hi?n t?i d�y khi ?ng vi�n n?p v�o c�c tin tuy?n d?ng c?a b?n.</p>
+          <p className="text-4xl mb-3">📂</p>
+          <p className="text-theme-text-base font-semibold mb-1">
+            {search ? 'Không tìm thấy kết quả' : 'Chưa có hồ sơ nào'}
+          </p>
+          <p className="text-theme-text-tertiary text-sm">
+            Hồ sơ sẽ xuất hiện tại đây khi ứng viên nộp vào các tin tuyển dụng của bạn.
+          </p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -77,62 +85,71 @@ export default function EmployerApplicationsPage() {
             const status = APP_STATUS_LABELS[app.status]
             const isOpen = expanded === app.id
             return (
-              <div key={app.id} className="card-dark border border-brand-border rounded-2xl overflow-hidden">
+              <div key={app.id} className="card-dark border border-theme-border-default rounded-2xl overflow-hidden">
                 {/* Row */}
                 <button
                   onClick={() => setExpanded(isOpen ? null : app.id)}
-                  className="w-full flex items-center gap-4 p-4 text-left hover:bg-white/2 transition-colors"
+                  className="w-full flex items-center gap-4 p-4 text-left hover:bg-theme-surfaceSecondary transition-colors"
                 >
-                  <div className="w-9 h-9 rounded-lg flex items-center justify-center text-slate-900 font-bold text-xs shrink-0" style={{ background: 'linear-gradient(135deg,#e4a808,#fdd52f)' }}>
+                  <div
+                    className="w-9 h-9 rounded-lg flex items-center justify-center text-slate-900 font-bold text-xs shrink-0"
+                    style={{ background: 'linear-gradient(135deg,#e4a808,#fdd52f)' }}
+                  >
                     {app.fullName.charAt(0)}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <p className="text-white font-medium text-sm">{app.fullName}</p>
+                      <p className="text-theme-text-base font-medium text-sm">{app.fullName}</p>
                       <span className={`text-xs px-2 py-0.5 rounded-full border ${status?.color}`}>{status?.label}</span>
                     </div>
-                    <p className="text-brand-muted text-xs truncate">{app.email} � {app.job?.title}</p>
+                    <p className="text-theme-text-tertiary text-xs truncate">
+                      {app.email} · {app.job?.title}
+                    </p>
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
-                    <p className="text-brand-muted text-xs hidden sm:block">{formatDate(app.createdAt)}</p>
-                    {isOpen ? <ChevronUp size={15} className="text-brand-muted" /> : <ChevronDown size={15} className="text-brand-muted" />}
+                    <p className="text-theme-text-tertiary text-xs hidden sm:block">{formatDate(app.createdAt)}</p>
+                    {isOpen
+                      ? <ChevronUp size={15} className="text-theme-text-tertiary" />
+                      : <ChevronDown size={15} className="text-theme-text-tertiary" />}
                   </div>
                 </button>
 
                 {/* Expanded details */}
                 {isOpen && (
-                  <div className="border-t border-brand-border p-4 space-y-3 bg-brand-dark/30">
+                  <div className="border-t border-theme-border-default p-4 space-y-3 bg-theme-background/50">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
                       {[
-                        { label: 'Phone', value: app.phone },
-                        { label: 'Date of Birth', value: app.dateOfBirth || '�' },
-                        { label: 'Address', value: app.address || '�' },
-                        { label: 'Education', value: app.education || '�' },
-                        { label: 'Experience', value: app.experience || '�' },
-                        { label: 'Language Level', value: app.languageLevel || '�' },
+                        { label: 'Điện thoại', value: app.phone },
+                        { label: 'Ngày sinh', value: app.dateOfBirth ? formatDate(app.dateOfBirth) : '—' },
+                        { label: 'Địa chỉ', value: app.address || '—' },
+                        { label: 'Học vấn', value: app.education || '—' },
+                        { label: 'Kinh nghiệm', value: app.experience || '—' },
+                        { label: 'Tiếng Anh', value: app.languageLevel || '—' },
                       ].map(f => (
-                        <div key={f.label}>
-                          <p className="text-brand-muted text-xs">{f.label}</p>
-                          <p className="text-white">{f.value}</p>
+                        <div key={f.label} className="p-3 bg-theme-surface border border-theme-border-default rounded-xl">
+                          <p className="text-theme-text-tertiary text-xs mb-0.5">{f.label}</p>
+                          <p className="text-theme-text-base text-sm">{f.value}</p>
                         </div>
                       ))}
                     </div>
 
                     {app.coverLetter && (
-                      <div>
-                        <p className="text-brand-muted text-xs mb-1">Cover Letter</p>
-                        <p className="text-white text-sm bg-brand-dark rounded-xl p-3 leading-relaxed">{app.coverLetter}</p>
+                      <div className="p-3 bg-theme-surface border border-theme-border-default rounded-xl">
+                        <p className="text-theme-text-tertiary text-xs mb-1">Thư xin việc</p>
+                        <p className="text-theme-text-secondary text-sm leading-relaxed whitespace-pre-wrap">
+                          {app.coverLetter}
+                        </p>
                       </div>
                     )}
 
                     {app.cvUrl && (
                       <div>
-                        <p className="text-brand-muted text-xs mb-1">CV / Resume</p>
+                        <p className="text-theme-text-tertiary text-xs mb-1">CV / Hồ sơ</p>
                         <a
-                          href={app.cvUrl.startsWith('http') ? app.cvUrl : `${(import.meta as any).env?.VITE_API_URL || 'http://localhost:3000'}${app.cvUrl}`}
+                          href={getImageUrl(app.cvUrl)}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 text-brand-gold hover:text-brand-orange text-sm transition-colors"
+                          className="inline-flex items-center gap-2 text-brand-gold-primary hover:text-brand-orange-primary text-sm transition-colors"
                         >
                           <FileText size={14} /> Xem CV <ExternalLink size={12} />
                         </a>
@@ -142,14 +159,18 @@ export default function EmployerApplicationsPage() {
                     {/* Status actions */}
                     {app.status !== 'withdrawn' && (
                       <div>
-                        <p className="text-brand-muted text-xs mb-2">C?p nh?t tr?ng th�i</p>
+                        <p className="text-theme-text-tertiary text-xs mb-2">Cập nhật trạng thái</p>
                         <div className="flex flex-wrap gap-2">
                           {EMPLOYER_STATUS_OPTIONS.map(opt => (
                             <button
                               key={opt.value}
                               disabled={app.status === opt.value || updatingId === app.id}
                               onClick={() => handleStatusChange(app.id, opt.value)}
-                              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${app.status === opt.value ? opt.color + ' opacity-100' : 'border-brand-border text-brand-muted hover:border-white/20 hover:text-white'} disabled:opacity-50 disabled:cursor-not-allowed`}
+                              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+                                app.status === opt.value
+                                  ? opt.color
+                                  : 'border-theme-border-default text-theme-text-tertiary hover:border-brand-gold-primary/40 hover:text-theme-text-base bg-theme-surface'
+                              }`}
                             >
                               <opt.icon size={12} /> {opt.label}
                             </button>

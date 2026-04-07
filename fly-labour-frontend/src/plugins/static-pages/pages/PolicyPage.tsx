@@ -228,8 +228,8 @@ export default function PolicyPage() {
       </section>
 
       {/* Contact CTA */}
-      <section className="py-12 px-6 border-t border-brand-border text-center bg-brand-card">
-        <p className="text-brand-muted text-sm mb-4">
+      <section className="py-12 px-6 border-t border-theme-border-default text-center bg-theme-surface">
+        <p className="text-theme-text-tertiary text-sm mb-4">
           Có câu hỏi hay nhận xét?
         </p>
         <Link

@@ -40,7 +40,7 @@ export default function NewsDetailPage() {
       <div className="min-h-screen pt-28 flex items-center justify-center">
         <div className="text-center">
           <p className="text-5xl mb-4">😕</p>
-          <p className="text-white font-semibold mb-4">Không tìm thấy bài viết</p>
+          <p className="text-theme-text-base font-semibold mb-4">Không tìm thấy bài viết</p>
           <Link to="/news" className="btn-primary text-sm px-5 py-2">Quay lại Tin tức</Link>
         </div>
       </div>
@@ -82,7 +82,7 @@ export default function NewsDetailPage() {
             <Calendar size={14} />
             {formatDate(article.createdAt)}
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-white leading-snug mb-4">
+          <h1 className="text-3xl md:text-4xl font-bold text-theme-text-base leading-snug mb-4">
             {article.title}
           </h1>
           {article.excerpt && (
@@ -95,7 +95,7 @@ export default function NewsDetailPage() {
         {/* Content */}
         {article.content && (
           <div className="card-dark p-8">
-            <div className="prose prose-invert max-w-none text-slate-900 leading-relaxed whitespace-pre-line text-sm">
+            <div className="text-theme-text-secondary leading-relaxed whitespace-pre-line text-sm">
               {article.content}
             </div>
           </div>

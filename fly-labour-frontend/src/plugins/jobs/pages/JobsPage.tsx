@@ -85,148 +85,150 @@ export default function JobsPage() {
           <p className="text-brand-muted text-sm mb-6">{j.subtitle}</p>
 
           {/* Search + Filter bar */}
-          <div className="flex flex-col gap-3">
-            {/* Row 1: Search input */}
-            <div className="relative max-w-2xl">
-              <Search
-                size={16}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-muted"
-              />
-              <input
-                value={search}
-                onChange={(e) => setParam("search", e.target.value)}
-                placeholder={j.search}
-                className="input-dark pl-11 h-12 text-sm w-full"
-              />
-              {search && (
-                <button
-                  onClick={() => setParam("search", "")}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-brand-muted hover:text-slate-900 dark:hover:text-white transition-colors"
-                >
-                  <X size={14} />
-                </button>
-              )}
-            </div>
-
-            {/* Row 2: Filter dropdowns */}
-            <div className="flex flex-wrap items-center gap-2">
-              {/* Country */}
-              <div className="relative">
-                <select
-                  value={country}
-                  onChange={(e) => setParam("country", e.target.value)}
-                  className={`appearance-none h-10 pl-3 pr-8 rounded-xl text-sm border transition-colors cursor-pointer outline-none focus:ring-2 focus:ring-brand-gold/50
-        ${
-          country
-            ? "bg-brand-gold text-brand-dark border-brand-gold font-medium"
-            : "bg-white border-gray-200 text-slate-900 hover:bg-gray-50 dark:bg-[#1e1e1e] dark:border-white/10 dark:text-slate-900 dark:hover:bg-white/10"
-        }`}
-                >
-                  <option
-                    value=""
-                    className="bg-white text-slate-900 dark:bg-[#1e1e1e] dark:text-slate-900"
-                  >
-                    Tất cả quốc gia
-                  </option>
-                  {COUNTRIES.map((c) => (
-                    <option
-                      key={c.value}
-                      value={c.value}
-                      className="bg-white text-slate-900 dark:bg-[#1e1e1e] dark:text-slate-900"
-                    >
-                      {c.label}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown
-                  size={12}
-                  className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-current opacity-60"
+          <div className="rounded-3xl border border-brand-border bg-brand-card/60 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.14)]">
+            <div className="flex flex-col gap-4 md:gap-5">
+              {/* Row 1: Search input */}
+              <div className="relative max-w-2xl">
+                <Search
+                  size={16}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-muted"
                 />
+                <input
+                  value={search}
+                  onChange={(e) => setParam("search", e.target.value)}
+                  placeholder={j.search}
+                  className="input-dark pl-11 h-12 text-sm w-full"
+                />
+                {search && (
+                  <button
+                    onClick={() => setParam("search", "")}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-brand-muted hover:text-slate-900 dark:hover:text-white transition-colors"
+                  >
+                    <X size={14} />
+                  </button>
+                )}
               </div>
 
-              {/* Job Type */}
-              <div className="relative">
-                <select
-                  value={jobType}
-                  onChange={(e) => setParam("jobType", e.target.value)}
-                  className={`appearance-none h-10 pl-3 pr-8 rounded-xl text-sm border transition-colors cursor-pointer outline-none focus:ring-2 focus:ring-brand-gold/50
-        ${
-          jobType
-            ? "bg-brand-gold text-brand-dark border-brand-gold font-medium"
-            : "bg-white border-gray-200 text-slate-900 hover:bg-gray-50 dark:bg-[#1e1e1e] dark:border-white/10 dark:text-slate-900 dark:hover:bg-white/10"
-        }`}
-                >
-                  <option
-                    value=""
-                    className="bg-white text-slate-900 dark:bg-[#1e1e1e] dark:text-slate-900"
+              {/* Row 2: Filter dropdowns */}
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Country */}
+                <div className="relative">
+                  <select
+                    value={country}
+                    onChange={(e) => setParam("country", e.target.value)}
+                    className={`appearance-none h-10 pl-3 pr-8 rounded-xl text-sm border transition-colors cursor-pointer outline-none focus:ring-2 focus:ring-brand-gold/50
+          ${
+            country
+              ? "bg-brand-gold text-brand-dark border-brand-gold font-medium"
+              : "bg-white border-gray-200 text-slate-900 hover:bg-gray-50 dark:bg-[#1e1e1e] dark:border-white/10 dark:text-white dark:hover:bg-white/10"
+          }`}
                   >
-                    Tất cả loại hình
-                  </option>
-                  {JOB_TYPES.map((tp) => (
                     <option
-                      key={tp.value}
-                      value={tp.value}
-                      className="bg-white text-slate-900 dark:bg-[#1e1e1e] dark:text-slate-900"
+                      value=""
+                      className="bg-white text-slate-900 dark:bg-[#1e1e1e] dark:text-white"
                     >
-                      {tp.label}
+                      Tất cả quốc gia
                     </option>
-                  ))}
-                </select>
-                <ChevronDown
-                  size={12}
-                  className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-current opacity-60"
-                />
-              </div>
+                    {COUNTRIES.map((c) => (
+                      <option
+                        key={c.value}
+                        value={c.value}
+                        className="bg-white text-slate-900 dark:bg-[#1e1e1e] dark:text-white"
+                      >
+                        {c.label}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown
+                    size={12}
+                    className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-current opacity-60"
+                  />
+                </div>
 
-              {/* Category */}
-              <div className="relative">
-                <select
-                  value={categoryId}
-                  onChange={(e) => setParam("categoryId", e.target.value)}
-                  className={`appearance-none h-10 pl-3 pr-8 rounded-xl text-sm border transition-colors cursor-pointer outline-none focus:ring-2 focus:ring-brand-gold/50
-        ${
-          categoryId
-            ? "bg-brand-gold text-brand-dark border-brand-gold font-medium"
-            : "bg-white border-gray-200 text-slate-900 hover:bg-gray-50 dark:bg-[#1e1e1e] dark:border-white/10 dark:text-slate-900 dark:hover:bg-white/10"
-        }`}
-                >
-                  <option
-                    value=""
-                    className="bg-white text-slate-900 dark:bg-[#1e1e1e] dark:text-slate-900"
+                {/* Job Type */}
+                <div className="relative">
+                  <select
+                    value={jobType}
+                    onChange={(e) => setParam("jobType", e.target.value)}
+                    className={`appearance-none h-10 pl-3 pr-8 rounded-xl text-sm border transition-colors cursor-pointer outline-none focus:ring-2 focus:ring-brand-gold/50
+          ${
+            jobType
+              ? "bg-brand-gold text-brand-dark border-brand-gold font-medium"
+              : "bg-white border-gray-200 text-slate-900 hover:bg-gray-50 dark:bg-[#1e1e1e] dark:border-white/10 dark:text-white dark:hover:bg-white/10"
+          }`}
                   >
-                    {j.allCategories}
-                  </option>
-                  {cats.map((c) => (
                     <option
-                      key={c.id}
-                      value={c.id}
-                      className="bg-white text-slate-900 dark:bg-[#1e1e1e] dark:text-slate-900"
+                      value=""
+                      className="bg-white text-slate-900 dark:bg-[#1e1e1e] dark:text-white"
                     >
-                      {c.icon} {c.name}
+                      Tất cả loại hình
                     </option>
-                  ))}
-                </select>
-                <ChevronDown
-                  size={12}
-                  className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-current opacity-60"
-                />
-              </div>
+                    {JOB_TYPES.map((tp) => (
+                      <option
+                        key={tp.value}
+                        value={tp.value}
+                        className="bg-white text-slate-900 dark:bg-[#1e1e1e] dark:text-white"
+                      >
+                        {tp.label}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown
+                    size={12}
+                    className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-current opacity-60"
+                  />
+                </div>
 
-              {/* Clear all */}
-              {hasFilters && (
-                <button
-                  onClick={clearAll}
-                  className="h-10 px-3 rounded-xl border border-red-500/30 text-red-500 bg-red-50/50 hover:bg-red-50 dark:text-red-400 dark:bg-transparent dark:hover:bg-red-500/10 text-sm transition-colors flex items-center gap-1.5"
-                >
-                  <X size={13} />
-                  {j.clearAll}
-                  {activeCount > 1 && (
-                    <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-400 text-xs flex items-center justify-center font-semibold">
-                      {activeCount}
-                    </span>
-                  )}
-                </button>
-              )}
+                {/* Category */}
+                <div className="relative">
+                  <select
+                    value={categoryId}
+                    onChange={(e) => setParam("categoryId", e.target.value)}
+                    className={`appearance-none h-10 pl-3 pr-8 rounded-xl text-sm border transition-colors cursor-pointer outline-none focus:ring-2 focus:ring-brand-gold/50
+          ${
+            categoryId
+              ? "bg-brand-gold text-brand-dark border-brand-gold font-medium"
+              : "bg-white border-gray-200 text-slate-900 hover:bg-gray-50 dark:bg-[#1e1e1e] dark:border-white/10 dark:text-white dark:hover:bg-white/10"
+          }`}
+                  >
+                    <option
+                      value=""
+                      className="bg-white text-slate-900 dark:bg-[#1e1e1e] dark:text-white"
+                    >
+                      {j.allCategories}
+                    </option>
+                    {cats.map((c) => (
+                      <option
+                        key={c.id}
+                        value={c.id}
+                        className="bg-white text-slate-900 dark:bg-[#1e1e1e] dark:text-white"
+                      >
+                        {c.icon} {c.name}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown
+                    size={12}
+                    className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-current opacity-60"
+                  />
+                </div>
+
+                {/* Clear all */}
+                {hasFilters && (
+                  <button
+                    onClick={clearAll}
+                    className="h-10 px-3 rounded-xl border border-red-500/30 text-red-500 bg-red-50/70 hover:bg-red-50 dark:text-red-300 dark:bg-red-500/10 dark:hover:bg-red-500/20 text-sm transition-colors flex items-center gap-1.5"
+                  >
+                    <X size={13} />
+                    {j.clearAll}
+                    {activeCount > 1 && (
+                      <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-400 text-xs flex items-center justify-center font-semibold">
+                        {activeCount}
+                      </span>
+                    )}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>

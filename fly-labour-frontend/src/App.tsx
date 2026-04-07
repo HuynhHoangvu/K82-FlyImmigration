@@ -181,7 +181,7 @@ function NotFound() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <p className="font-display text-9xl gradient-text">404</p>
-          <p className="text-white font-semibold text-xl mt-2">{nf.title}</p>
+          <p className="text-theme-text-base font-semibold text-xl mt-2">{nf.title}</p>
           <a href="/" className="btn-primary inline-block mt-6 px-6 py-3">
             {nf.back}
           </a>
