@@ -11,6 +11,13 @@ interface Policy {
   order: number;
 }
 
+const defaultTitles: Record<string, string> = {
+  "terms-of-service": "Điều khoản Sử dụng",
+  "privacy-policy": "Chính sách Bảo mật",
+  "return-policy": "Chính sách Hoàn tiền",
+  "contact-policy": "Chính sách Liên hệ",
+};
+
 const defaultContent: Record<string, string> = {
   "terms-of-service": `# Điều khoản Sử dụng Dịch Vụ Fly Labour
 
@@ -146,7 +153,7 @@ export default function PolicyPage() {
     return <div className="text-center py-20">Đang tải...</div>;
   }
 
-  const title = policy?.title || "Không tìm thấy trang";
+  const title = policy?.title || defaultTitles[slug!] || "Chính sách";
   const markdown =
     policy?.content || defaultContent[slug!] || "Nội dung không có sẵn";
 
@@ -171,56 +178,52 @@ export default function PolicyPage() {
 
       {/* Content */}
       <section className="py-12 px-6 max-w-4xl mx-auto">
-        <div className="prose prose-invert max-w-none">
-          <div className="text-brand-muted leading-relaxed whitespace-pre-wrap">
-            {markdown.split("\n").map((line, i) => {
-              if (line.startsWith("# ")) {
-                return (
-                  <h1
-                    key={i}
-                    className="text-3xl font-bold text-white mt-8 mb-4"
-                  >
-                    {line.slice(2)}
-                  </h1>
-                );
-              }
-              if (line.startsWith("## ")) {
-                return (
-                  <h2
-                    key={i}
-                    className="text-2xl font-bold text-white mt-6 mb-3"
-                  >
-                    {line.slice(3)}
-                  </h2>
-                );
-              }
-              if (line.startsWith("### ")) {
-                return (
-                  <h3
-                    key={i}
-                    className="text-xl font-bold text-white mt-4 mb-2"
-                  >
-                    {line.slice(4)}
-                  </h3>
-                );
-              }
-              if (line.startsWith("- ")) {
-                return (
-                  <li key={i} className="ml-6 mb-2">
-                    {line.slice(2)}
-                  </li>
-                );
-              }
-              if (line.trim() === "") {
-                return <div key={i} className="mb-4" />;
-              }
+        <div className="space-y-1 leading-relaxed">
+          {markdown.split("\n").map((line, i) => {
+            if (line.startsWith("# ")) {
               return (
-                <p key={i} className="mb-3">
-                  {line}
-                </p>
+                <h1 key={i} className="text-3xl font-bold text-theme-text-base mt-8 mb-4">
+                  {line.slice(2)}
+                </h1>
               );
-            })}
-          </div>
+            }
+            if (line.startsWith("## ")) {
+              return (
+                <h2 key={i} className="text-xl font-bold text-theme-text-base mt-6 mb-3">
+                  {line.slice(3)}
+                </h2>
+              );
+            }
+            if (line.startsWith("### ")) {
+              return (
+                <h3 key={i} className="text-lg font-semibold text-theme-text-base mt-4 mb-2">
+                  {line.slice(4)}
+                </h3>
+              );
+            }
+            if (line.startsWith("- ")) {
+              return (
+                <li key={i} className="ml-6 mb-1.5 text-theme-text-secondary">
+                  {line.slice(2)}
+                </li>
+              );
+            }
+            if (/^\d+\./.test(line)) {
+              return (
+                <li key={i} className="ml-6 mb-1.5 list-decimal text-theme-text-secondary">
+                  {line.replace(/^\d+\.\s*/, "")}
+                </li>
+              );
+            }
+            if (line.trim() === "") {
+              return <div key={i} className="mb-3" />;
+            }
+            return (
+              <p key={i} className="mb-2 text-theme-text-secondary">
+                {line}
+              </p>
+            );
+          })}
         </div>
       </section>
 
