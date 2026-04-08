@@ -1,5 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import { Plus, Edit2, Trash2, X, Image as ImageIcon } from "lucide-react";
+import {
+  Plus,
+  Edit2,
+  Trash2,
+  X,
+  Image as ImageIcon,
+  Briefcase,
+} from "lucide-react";
 import { employerApi, categoriesApi, getImageUrl } from "@/core/services/api";
 import {
   getCountryLabels,
@@ -31,11 +38,16 @@ const BLANK = {
   categoryId: "",
 };
 
+// Huy hiệu trạng thái với màu sắc tương phản tốt trên cả 2 nền
 const STATUS_BADGE: Record<string, string> = {
-  active: "text-green-400 bg-green-400/10 border-green-400/20",
-  draft: "text-yellow-400 bg-yellow-400/10 border-yellow-400/20",
-  paused: "text-slate-900 bg-gray-400/10 border-gray-400/20",
-  closed: "text-red-400 bg-red-400/10 border-red-400/20",
+  active:
+    "text-green-600 bg-green-50 border-green-200 dark:text-green-400 dark:bg-green-400/10 dark:border-green-400/20",
+  draft:
+    "text-amber-600 bg-amber-50 border-amber-200 dark:text-yellow-400 dark:bg-yellow-400/10 dark:border-yellow-400/20",
+  paused:
+    "text-slate-500 bg-slate-100 border-slate-200 dark:text-slate-300 dark:bg-gray-400/10 dark:border-gray-400/20",
+  closed:
+    "text-red-600 bg-red-50 border-red-200 dark:text-red-400 dark:bg-red-400/10 dark:border-red-400/20",
 };
 
 export default function EmployerJobsPage() {
@@ -55,7 +67,7 @@ export default function EmployerJobsPage() {
     employerApi
       .getMyJobs()
       .then((r) => setJobs(r.data.data || []))
-      .catch(() => toast.error("Failed to load jobs"))
+      .catch(() => toast.error("Không thể tải danh sách tin"))
       .finally(() => setLoading(false));
   };
 
@@ -103,7 +115,7 @@ export default function EmployerJobsPage() {
 
   const handleSave = async () => {
     if (!form.title || !form.description || !form.country) {
-      toast.error("Please fill in Title, Description and Country");
+      toast.error("Vui lòng điền Tiêu đề, Mô tả và Quốc gia");
       return;
     }
     setSaving(true);
@@ -136,15 +148,15 @@ export default function EmployerJobsPage() {
 
       if (editing) {
         await employerApi.updateJob(editing.id, fd);
-        toast.success("Job updated!");
+        toast.success("Đã cập nhật!");
       } else {
         await employerApi.createJob(fd);
-        toast.success("Job posted!");
+        toast.success("Đã đăng tin!");
       }
       setModal(false);
       load();
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Save failed");
+      toast.error(err?.response?.data?.message || "Lỗi lưu dữ liệu");
     } finally {
       setSaving(false);
     }
@@ -154,11 +166,11 @@ export default function EmployerJobsPage() {
     if (!deleteId) return;
     try {
       await employerApi.deleteJob(deleteId);
-      toast.success("Job deleted");
+      toast.success("Đã xóa tin");
       setDeleteId(null);
       load();
     } catch {
-      toast.error("Delete failed");
+      toast.error("Xóa thất bại");
     }
   };
 
@@ -177,20 +189,28 @@ export default function EmployerJobsPage() {
     setForm((prev) => ({ ...prev, salaryCurrency: currency }));
   };
 
+  // Class dùng chung để đồng bộ giao diện
+  const cardClasses =
+    "bg-white dark:bg-brand-card border border-slate-200 dark:border-brand-border rounded-2xl shadow-sm dark:shadow-none transition-colors";
+  const inputClasses =
+    "w-full text-sm rounded-xl px-4 bg-slate-50 dark:bg-[#1a1a1a] border border-slate-200 dark:border-white/5 text-slate-900 dark:text-white placeholder:text-slate-400 focus:bg-white dark:focus:bg-black focus:border-amber-400 dark:focus:border-brand-gold focus:ring-1 focus:ring-amber-400 dark:focus:ring-brand-gold outline-none transition-all";
+
   return (
-    <div className="space-y-5">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 transition-colors duration-300">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-white">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
             Tin tuyển dụng của tôi
           </h1>
-          <p className="text-brand-muted text-sm">{jobs.length} tin đăng</p>
+          <p className="text-slate-500 dark:text-brand-muted text-sm">
+            {jobs.length} tin đăng đang được quản lý
+          </p>
         </div>
         <button
           onClick={openCreate}
-          className="btn-primary flex items-center gap-2 text-sm px-4 py-2"
+          className="btn-primary flex items-center gap-2 text-sm px-5 py-2.5 shadow-lg shadow-amber-500/20"
         >
-          <Plus size={16} /> Đăng tin mới
+          <Plus size={18} /> Đăng tin mới
         </button>
       </div>
 
@@ -199,22 +219,28 @@ export default function EmployerJobsPage() {
           {[...Array(4)].map((_, i) => (
             <div
               key={i}
-              className="h-20 bg-brand-card rounded-2xl animate-pulse border border-brand-border"
+              className="h-24 bg-white dark:bg-brand-card rounded-2xl animate-pulse border border-slate-200 dark:border-brand-border"
             />
           ))}
         </div>
       ) : jobs.length === 0 ? (
-        <div className="card-dark p-12 text-center">
-          <p className="text-4xl mb-3">💼</p>
-          <p className="text-white font-semibold mb-1">
+        <div className={`${cardClasses} p-16 text-center`}>
+          <div className="w-20 h-20 bg-slate-50 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Briefcase
+              size={32}
+              className="text-slate-300 dark:text-brand-muted"
+            />
+          </div>
+          <p className="text-slate-900 dark:text-white font-bold text-lg mb-1">
             Chưa có tin tuyển dụng nào
           </p>
-          <p className="text-brand-muted text-sm mb-4">
-            Đăng tin đầu tiên để bắt đầu nhận hồ sơ ứng viên
+          <p className="text-slate-500 dark:text-brand-muted text-sm mb-6 max-w-xs mx-auto">
+            Bắt đầu tìm kiếm ứng viên tiềm năng bằng cách tạo tin tuyển dụng đầu
+            tiên của bạn.
           </p>
           <button
             onClick={openCreate}
-            className="btn-primary text-sm px-5 py-2"
+            className="btn-primary text-sm px-6 py-2.5 font-medium"
           >
             Đăng tin ngay
           </button>
@@ -222,45 +248,62 @@ export default function EmployerJobsPage() {
       ) : (
         <div className="space-y-3">
           {jobs.map((job) => (
-            <div key={job.id} className="card-dark p-4 flex items-center gap-4">
-              {job.image && (
-                <img
-                  src={getImageUrl(job.image)}
-                  alt=""
-                  className="w-16 h-16 rounded-xl object-cover shrink-0 hidden sm:block"
-                />
-              )}
+            <div
+              key={job.id}
+              className={`${cardClasses} p-4 flex items-center gap-4 group hover:border-amber-400/50 transition-all`}
+            >
+              <div className="w-16 h-16 rounded-xl bg-slate-100 dark:bg-white/5 shrink-0 overflow-hidden border border-slate-100 dark:border-white/5">
+                {job.image ? (
+                  <img
+                    src={getImageUrl(job.image)}
+                    alt=""
+                    className="w-full h-full object-cover transition-transform group-hover:scale-110"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-slate-400 dark:text-brand-muted">
+                    <ImageIcon size={20} />
+                  </div>
+                )}
+              </div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="text-white font-semibold truncate">
+                <div className="flex items-center gap-2 flex-wrap mb-1">
+                  <h3 className="text-slate-900 dark:text-white font-bold truncate text-sm sm:text-base">
                     {job.title}
                   </h3>
                   <span
-                    className={`text-xs px-2 py-0.5 rounded-full border font-medium capitalize ${STATUS_BADGE[job.status] || ""}`}
+                    className={`text-[10px] px-2 py-0.5 rounded-full border font-bold uppercase tracking-wider ${STATUS_BADGE[job.status] || ""}`}
                   >
-                    {job.status}
+                    {job.status === "active" ? "Đang tuyển" : job.status}
                   </span>
                 </div>
-                <p className="text-brand-muted text-sm mt-0.5">
-                  {getCountryLabels()[job.country]} · {job.slots || 0} slots ·{" "}
-                  {getJobTypeLabel(job.jobType)}
-                </p>
-                <p className="text-brand-muted text-xs mt-1">
-                  {job.viewCount || 0} views
+                <div className="flex items-center gap-2 text-slate-500 dark:text-brand-muted text-xs font-medium">
+                  <span>{getCountryLabels()[job.country]}</span>
+                  <span>•</span>
+                  <span>{job.slots || 0} chỉ tiêu</span>
+                  <span>•</span>
+                  <span>{getJobTypeLabel(job.jobType)}</span>
+                </div>
+                <p className="text-slate-400 dark:text-brand-muted text-[10px] mt-1">
+                  Lượt xem:{" "}
+                  <span className="text-slate-600 dark:text-white font-bold">
+                    {job.viewCount || 0}
+                  </span>
                 </p>
               </div>
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-1 sm:gap-2 shrink-0">
                 <button
                   onClick={() => openEdit(job)}
-                  className="p-2 text-brand-muted hover:text-brand-gold hover:bg-brand-gold/10 rounded-lg transition-colors"
+                  className="p-2.5 text-slate-400 hover:text-amber-600 dark:hover:text-brand-gold hover:bg-amber-50 dark:hover:bg-brand-gold/10 rounded-xl transition-all"
+                  title="Chỉnh sửa"
                 >
-                  <Edit2 size={15} />
+                  <Edit2 size={16} />
                 </button>
                 <button
                   onClick={() => setDeleteId(job.id)}
-                  className="p-2 text-brand-muted hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors"
+                  className="p-2.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                  title="Xóa"
                 >
-                  <Trash2 size={15} />
+                  <Trash2 size={16} />
                 </button>
               </div>
             </div>
@@ -268,94 +311,97 @@ export default function EmployerJobsPage() {
         </div>
       )}
 
-      {/* Modal */}
+      {/* Form Modal */}
       {modal && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-black/60 overflow-y-auto">
-          <div className="bg-brand-card border border-brand-border rounded-2xl w-full max-w-2xl my-4">
-            <div className="flex items-center justify-between p-5 border-b border-brand-border">
-              <h2 className="font-bold text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-white dark:bg-brand-card border border-slate-200 dark:border-brand-border rounded-3xl w-full max-w-2xl my-auto shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-white/5">
+              <h2 className="font-bold text-slate-900 dark:text-white text-lg">
                 {editing
                   ? "Chỉnh sửa tin tuyển dụng"
                   : "Đăng tin tuyển dụng mới"}
               </h2>
               <button
                 onClick={() => setModal(false)}
-                className="text-brand-muted hover:text-white"
+                className="p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-colors"
               >
                 <X size={20} />
               </button>
             </div>
-            <div className="p-5 space-y-4 max-h-[70vh] overflow-y-auto">
-              {/* Title */}
-              <div>
-                <label className="text-xs text-brand-muted mb-1.5 block">
-                  Tên vị trí tuyển dụng *
-                </label>
-                <input
-                  value={form.title}
-                  onChange={f("title")}
-                  className="input-dark"
-                  placeholder="VD: Công nhân Farm - Hái trái cây"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
+
+            <div className="p-6 space-y-5 max-h-[70vh] overflow-y-auto custom-scrollbar">
+              {/* Vị trí & Công ty */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <label className="text-xs font-bold text-slate-500 dark:text-brand-muted mb-2 block uppercase tracking-wider">
+                    Tiêu đề tuyển dụng *
+                  </label>
+                  <input
+                    value={form.title}
+                    onChange={f("title")}
+                    className={`${inputClasses} h-12`}
+                    placeholder="VD: Công nhân hái trái cây tại Úc"
+                  />
+                </div>
                 <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">
-                    Tên công ty
+                  <label className="text-xs font-bold text-slate-500 dark:text-brand-muted mb-2 block uppercase tracking-wider">
+                    Tên doanh nghiệp
                   </label>
                   <input
                     value={form.company}
                     onChange={f("company")}
-                    className="input-dark"
-                    placeholder="Tên công ty tuyển dụng"
+                    className={`${inputClasses} h-12`}
+                    placeholder="Tên công ty"
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">
-                    Địa điểm làm việc
+                  <label className="text-xs font-bold text-slate-500 dark:text-brand-muted mb-2 block uppercase tracking-wider">
+                    Địa điểm cụ thể
                   </label>
                   <input
                     value={form.location}
                     onChange={f("location")}
-                    className="input-dark"
+                    className={`${inputClasses} h-12`}
                     placeholder="Thành phố / Bang"
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+
+              {/* Quốc gia & Loại hình */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">
+                  <label className="text-xs font-bold text-slate-500 dark:text-brand-muted mb-2 block uppercase tracking-wider">
                     Quốc gia *
                   </label>
                   <select
                     value={form.country}
                     onChange={f("country")}
-                    className="input-dark"
+                    className={`${inputClasses} h-12 appearance-none`}
                   >
                     {PRESET_COUNTRIES.map((c) => (
                       <option key={c.value} value={c.value}>
                         {c.label}
                       </option>
                     ))}
-                    <option value="__other__">Other...</option>
+                    <option value="__other__">Khác...</option>
                   </select>
                   {form.country === "__other__" && (
                     <input
                       value={form.countryCustom}
                       onChange={f("countryCustom")}
-                      className="input-dark mt-2"
-                      placeholder="Enter country name"
+                      className={`${inputClasses} h-12 mt-2`}
+                      placeholder="Nhập tên quốc gia"
                     />
                   )}
                 </div>
                 <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">
-                    Loại hình công việc
+                  <label className="text-xs font-bold text-slate-500 dark:text-brand-muted mb-2 block uppercase tracking-wider">
+                    Loại hình
                   </label>
                   <select
                     value={form.jobType}
                     onChange={f("jobType")}
-                    className="input-dark"
+                    className={`${inputClasses} h-12 appearance-none`}
                   >
                     {Object.entries(JOBTYPE_LABELS).map(([v, l]) => (
                       <option key={v} value={v}>
@@ -365,245 +411,245 @@ export default function EmployerJobsPage() {
                   </select>
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-4">
+
+              {/* Lương & Tiền tệ */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">
+                  <label className="text-xs font-bold text-slate-500 dark:text-brand-muted mb-2 block uppercase tracking-wider">
                     Lương tối thiểu
                   </label>
                   <input
                     type="number"
                     value={form.salaryMin}
                     onChange={f("salaryMin")}
-                    className="input-dark"
-                    placeholder="2500"
+                    className={`${inputClasses} h-12`}
+                    placeholder="Min"
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">
+                  <label className="text-xs font-bold text-slate-500 dark:text-brand-muted mb-2 block uppercase tracking-wider">
                     Lương tối đa
                   </label>
                   <input
                     type="number"
                     value={form.salaryMax}
                     onChange={f("salaryMax")}
-                    className="input-dark"
-                    placeholder="3500"
+                    className={`${inputClasses} h-12`}
+                    placeholder="Max"
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">
-                    Đơn vị tiền tệ
+                  <label className="text-xs font-bold text-slate-500 dark:text-brand-muted mb-2 block uppercase tracking-wider">
+                    Tiền tệ
                   </label>
                   <select
                     value={form.salaryCurrency}
                     onChange={handleCurrencyChange}
-                    className="input-dark"
+                    className={`${inputClasses} h-12 appearance-none`}
                   >
                     <option value="AUD">🇦🇺 AUD (Úc)</option>
                     <option value="CAD">🇨🇦 CAD (Canada)</option>
                     <option value="NZD">🇳🇿 NZD (New Zealand)</option>
-                    <option value="USD">🇺🇸 USD (Mỹ)</option>
-                    <option value="GBP">🇬🇧 GBP (Anh)</option>
-                    <option value="EUR">🇪🇺 EUR (Châu Âu)</option>
-                    <option value="JPY">🇯🇵 JPY (Nhật Bản)</option>
-                    <option value="KRW">🇰🇷 KRW (Hàn Quốc)</option>
-                    <option value="SGD">🇸🇬 SGD (Singapore)</option>
-                    <option value="TWD">🇹🇼 TWD (Đài Loan)</option>
-                    <option value="NOK">🇳🇴 NOK (Na Uy)</option>
-                    <option value="CHF">🇨🇭 CHF (Thụy Sĩ)</option>
-                    <option value="CNY">🇨🇳 CNY (Trung Quốc)</option>
-                    <option value="THB">🇹🇭 THB (Thái Lan)</option>
-                    <option value="INR">🇮🇳 INR (Ấn Độ)</option>
-                    <option value="MYR">🇲🇾 MYR (Malaysia)</option>
-                    <option value="IDR">🇮🇩 IDR (Indonesia)</option>
-                    <option value="PHP">🇵🇭 PHP (Philippines)</option>
                     <option value="VND">🇻🇳 VND (Việt Nam)</option>
+                    <option value="USD">🇺🇸 USD (Mỹ)</option>
+                    <option value="JPY">🇯🇵 JPY (Nhật)</option>
+                    <option value="KRW">🇰🇷 KRW (Hàn)</option>
+                    <option value="EUR">🇪🇺 EUR (Châu Âu)</option>
                   </select>
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-4">
+
+              {/* Chỉ tiêu & Hạn nộp */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">
-                    Số chỉ tiêu
+                  <label className="text-xs font-bold text-slate-500 dark:text-brand-muted mb-2 block uppercase tracking-wider">
+                    Chỉ tiêu
                   </label>
                   <input
                     type="number"
                     value={form.slots}
                     onChange={f("slots")}
-                    className="input-dark"
-                    placeholder="10"
+                    className={`${inputClasses} h-12`}
+                    placeholder="Số lượng"
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">
-                    Hạn nộp hồ sơ
+                  <label className="text-xs font-bold text-slate-500 dark:text-brand-muted mb-2 block uppercase tracking-wider">
+                    Hạn nộp
                   </label>
                   <input
                     type="date"
                     value={form.deadline}
                     onChange={f("deadline")}
-                    className="input-dark"
+                    className={`${inputClasses} h-12`}
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">
+                  <label className="text-xs font-bold text-slate-500 dark:text-brand-muted mb-2 block uppercase tracking-wider">
                     Trạng thái
                   </label>
                   <select
                     value={form.status}
                     onChange={f("status")}
-                    className="input-dark"
+                    className={`${inputClasses} h-12 appearance-none font-bold`}
                   >
-                    <option
-                      value="active"
-                      style={{ backgroundColor: "#10b981", color: "#fff" }}
-                    >
+                    <option value="active" className="text-green-600 font-bold">
                       Đang tuyển
                     </option>
-                    <option
-                      value="draft"
-                      style={{ backgroundColor: "#6b7280", color: "#fff" }}
-                    >
-                      Nháp
+                    <option value="draft" className="text-slate-500 font-bold">
+                      Bản nháp
                     </option>
-                    <option
-                      value="paused"
-                      style={{ backgroundColor: "#f59e0b", color: "#000" }}
-                    >
+                    <option value="paused" className="text-amber-600 font-bold">
                       Tạm dừng
                     </option>
-                    <option
-                      value="closed"
-                      style={{ backgroundColor: "#ef4444", color: "#fff" }}
-                    >
+                    <option value="closed" className="text-red-600 font-bold">
                       Đã đóng
                     </option>
                   </select>
                 </div>
               </div>
-              <div>
-                <label className="text-xs text-brand-muted mb-1.5 block">
-                  Ngành nghề
-                </label>
-                <select
-                  value={form.categoryId}
-                  onChange={f("categoryId")}
-                  className="input-dark"
-                >
-                  <option value="">— Select category —</option>
-                  {categories.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.icon} {c.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              {/* Image */}
-              <div>
-                <label className="text-xs text-brand-muted mb-1.5 block">
-                  Ảnh bìa tin tuyển dụng
-                </label>
-                <div className="flex gap-3">
-                  <label className="flex items-center gap-2 px-3 py-2 bg-brand-dark border border-brand-border rounded-lg text-sm text-brand-muted hover:text-white hover:border-brand-gold/40 cursor-pointer transition-colors">
-                    <ImageIcon size={14} /> Upload
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (!file) return;
-                        fileRef.current = file;
-                        const reader = new FileReader();
-                        reader.onload = (ev) =>
-                          setPreview(ev.target?.result as string);
-                        reader.readAsDataURL(file);
-                      }}
-                    />
+
+              {/* Ngành nghề & Ảnh */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-bold text-slate-500 dark:text-brand-muted mb-2 block uppercase tracking-wider">
+                    Ngành nghề
                   </label>
-                  {(preview || form.image) && (
-                    <img
-                      src={preview || getImageUrl(form.image)}
-                      alt=""
-                      className="h-10 w-16 rounded-lg object-cover"
-                    />
-                  )}
+                  <select
+                    value={form.categoryId}
+                    onChange={f("categoryId")}
+                    className={`${inputClasses} h-12 appearance-none`}
+                  >
+                    <option value="">— Chọn ngành —</option>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.icon} {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-500 dark:text-brand-muted mb-2 block uppercase tracking-wider">
+                    Ảnh bìa
+                  </label>
+                  <div className="flex gap-3">
+                    <label className="flex-1 flex items-center justify-center gap-2 h-12 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5 rounded-xl text-sm font-medium text-slate-600 dark:text-brand-muted hover:text-amber-600 hover:border-amber-400 cursor-pointer transition-all">
+                      <ImageIcon size={16} /> {preview ? "Thay đổi" : "Tải lên"}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          fileRef.current = file;
+                          const reader = new FileReader();
+                          reader.onload = (ev) =>
+                            setPreview(ev.target?.result as string);
+                          reader.readAsDataURL(file);
+                        }}
+                      />
+                    </label>
+                    {(preview || form.image) && (
+                      <div className="w-12 h-12 rounded-xl border border-slate-200 dark:border-white/10 overflow-hidden shrink-0 shadow-sm">
+                        <img
+                          src={preview || getImageUrl(form.image)}
+                          alt=""
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-              <div>
-                <label className="text-xs text-brand-muted mb-1.5 block">
-                  Mô tả công việc *
-                </label>
-                <textarea
-                  value={form.description}
-                  onChange={f("description")}
-                  className="input-dark h-24 resize-none"
-                  placeholder="Mô tả nhiệm vụ, công việc hàng ngày..."
-                />
-              </div>
-              <div>
-                <label className="text-xs text-brand-muted mb-1.5 block">
-                  Yêu cầu ứng viên
-                </label>
-                <textarea
-                  value={form.requirements}
-                  onChange={f("requirements")}
-                  className="input-dark h-20 resize-none"
-                  placeholder="Kỹ năng, kinh nghiệm, bằng cấp yêu cầu..."
-                />
-              </div>
-              <div>
-                <label className="text-xs text-brand-muted mb-1.5 block">
-                  Quyền lợi được hưởng
-                </label>
-                <textarea
-                  value={form.benefits}
-                  onChange={f("benefits")}
-                  className="input-dark h-20 resize-none"
-                  placeholder="Bao visa, bao ăn ở, vé máy bay, lương thưởng..."
-                />
+
+              {/* Văn bản dài */}
+              <div className="space-y-4 pt-2">
+                <div>
+                  <label className="text-xs font-bold text-slate-500 dark:text-brand-muted mb-2 block uppercase tracking-wider">
+                    Mô tả công việc *
+                  </label>
+                  <textarea
+                    value={form.description}
+                    onChange={f("description")}
+                    className={`${inputClasses} h-32 py-3 resize-none`}
+                    placeholder="Mô tả nhiệm vụ chính..."
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-500 dark:text-brand-muted mb-2 block uppercase tracking-wider">
+                    Yêu cầu ứng viên
+                  </label>
+                  <textarea
+                    value={form.requirements}
+                    onChange={f("requirements")}
+                    className={`${inputClasses} h-24 py-3 resize-none`}
+                    placeholder="Kỹ năng, kinh nghiệm..."
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-500 dark:text-brand-muted mb-2 block uppercase tracking-wider">
+                    Quyền lợi
+                  </label>
+                  <textarea
+                    value={form.benefits}
+                    onChange={f("benefits")}
+                    className={`${inputClasses} h-24 py-3 resize-none`}
+                    placeholder="Lương thưởng, bảo hiểm, hỗ trợ..."
+                  />
+                </div>
               </div>
             </div>
-            <div className="flex gap-3 p-5 border-t border-brand-border">
+
+            <div className="flex gap-3 p-6 border-t border-slate-100 dark:border-white/5">
               <button
                 onClick={() => setModal(false)}
-                className="flex-1 btn-outline py-2.5"
+                className="flex-1 px-6 py-3 rounded-xl font-bold border border-slate-200 dark:border-brand-border text-slate-600 dark:text-white hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
               >
                 Hủy
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex-1 btn-primary py-2.5"
+                className="flex-1 btn-primary py-3 font-bold shadow-lg shadow-amber-500/20"
               >
-                {saving ? "Đang lưu..." : editing ? "Lưu thay đổi" : "Đăng tin"}
+                {saving
+                  ? "Đang xử lý..."
+                  : editing
+                    ? "Lưu thay đổi"
+                    : "Đăng tin ngay"}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Delete confirm */}
+      {/* Delete Confirmation Modal */}
       {deleteId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60">
-          <div className="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-sm w-full text-center">
-            <p className="text-2xl mb-3">🗑️</p>
-            <h3 className="font-bold text-white mb-2">Xóa tin tuyển dụng?</h3>
-            <p className="text-brand-muted text-sm mb-5">
-              Tin tuyển dụng và tất cả hồ sơ liên quan sẽ bị xóa vĩnh viễn.
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md">
+          <div className="bg-white dark:bg-brand-card border border-slate-200 dark:border-brand-border rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl animate-in fade-in zoom-in duration-150">
+            <div className="w-16 h-16 bg-red-50 dark:bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500">
+              <Trash2 size={32} />
+            </div>
+            <h3 className="font-bold text-slate-900 dark:text-white text-xl mb-2">
+              Xóa tin tuyển dụng?
+            </h3>
+            <p className="text-slate-500 dark:text-brand-muted text-sm mb-6 leading-relaxed">
+              Dữ liệu tin tuyển dụng và hồ sơ ứng viên liên quan sẽ bị xóa vĩnh
+              viễn khỏi hệ thống.
             </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setDeleteId(null)}
-                className="flex-1 btn-outline py-2.5"
+                className="flex-1 px-6 py-3 rounded-xl font-bold border border-slate-200 dark:border-brand-border text-slate-600 dark:text-white hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
               >
                 Hủy
               </button>
               <button
                 onClick={handleDelete}
-                className="flex-1 bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl py-2.5 text-sm font-medium hover:bg-red-500/30 transition-colors"
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white rounded-xl py-3 text-sm font-bold shadow-lg shadow-red-500/20 transition-all"
               >
-                Xóa
+                Xác nhận xóa
               </button>
             </div>
           </div>

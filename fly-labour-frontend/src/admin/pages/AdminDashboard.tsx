@@ -10,10 +10,12 @@ import {
   PieChart,
   Pie,
   Cell,
+  CartesianGrid,
 } from "recharts";
 import { Users, Briefcase, ClipboardList, Eye, TrendingUp } from "lucide-react";
 import { jobsApi, applicationsApi, usersApi } from "@/core/services/api";
 import { APP_STATUS_LABELS, formatDate } from "@/core/utils/helpers";
+import { useThemeStore } from "@/core/store/themeStore";
 import type { Application } from "@/core/types";
 
 const PIE_COLORS = ["#fdd52f", "#3B82F6", "#10B981", "#EF4444", "#8B5CF6"];
@@ -32,6 +34,7 @@ export default function AdminDashboard() {
   const [userStats, setUserStats] = useState<any>(null);
   const [recentApps, setRecentApps] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
+  const { theme } = useThemeStore();
 
   useEffect(() => {
     Promise.all([
@@ -59,28 +62,28 @@ export default function AdminDashboard() {
       value: userStats?.total ?? "—",
       sub: `+${userStats?.thisMonth ?? 0} tháng này`,
       icon: Users,
-      color: "#e4a808",
+      color: "#d97706", // Amber 600
     },
     {
       label: "Tổng bài đăng",
       value: jobStats?.totalJobs ?? "—",
       sub: `${jobStats?.activeJobs ?? 0} đang hoạt động`,
       icon: Briefcase,
-      color: "#e4a808",
+      color: "#2563eb", // Blue 600
     },
     {
       label: "Đơn ứng tuyển",
       value: totalApps || "—",
       sub: `${pendingCount} chờ xét duyệt`,
       icon: ClipboardList,
-      color: "#06B6D4",
+      color: "#0891b2", // Cyan 600
     },
     {
       label: "Lượt xem tổng",
       value: jobStats?.totalViews ?? "—",
       sub: "Tất cả bài đăng",
       icon: Eye,
-      color: "#8B5CF6",
+      color: "#7c3aed", // Violet 600
     },
   ];
 
@@ -105,20 +108,20 @@ export default function AdminDashboard() {
     },
   ];
 
+  const cardClasses =
+    "bg-white dark:bg-brand-card border border-slate-200 dark:border-brand-border rounded-2xl shadow-sm dark:shadow-none transition-all duration-300";
+  const textMuted = "text-slate-400 dark:text-brand-muted";
+  const chartTickColor = theme === "dark" ? "#94a3b8" : "#64748b";
+
   if (loading)
     return (
-      <div className="space-y-7">
-        <div>
-          <h1 className="text-2xl font-bold text-theme-text-base">Dashboard</h1>
-          <p className="text-theme-text-tertiary text-sm mt-0.5">
-            Đang tải dữ liệu...
-          </p>
-        </div>
+      <div className="space-y-7 animate-pulse">
+        <div className="h-8 w-48 bg-slate-200 dark:bg-white/10 rounded-lg" />
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
             <div
               key={i}
-              className="h-28 bg-theme-surface rounded-2xl animate-pulse border border-theme-border-default"
+              className="h-32 bg-white dark:bg-brand-card rounded-2xl border border-slate-200 dark:border-brand-border"
             />
           ))}
         </div>
@@ -126,142 +129,158 @@ export default function AdminDashboard() {
     );
 
   return (
-    <div className="space-y-7">
+    <div className="space-y-8 transition-colors duration-300">
       <div>
-        <h1 className="text-2xl font-bold text-theme-text-base">Dashboard</h1>
-        <p className="text-theme-text-tertiary text-sm mt-0.5">
-          Tổng quan hoạt động hệ thống
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+          Dashboard
+        </h1>
+        <p className="text-slate-500 dark:text-brand-muted text-sm mt-1">
+          Hệ thống ghi nhận{" "}
+          <span className="font-bold text-amber-600 dark:text-brand-gold">
+            {totalApps}
+          </span>{" "}
+          đơn ứng tuyển mới
         </p>
       </div>
 
+      {/* Top Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {STAT_CARDS.map((card) => (
-          <div key={card.label} className="card-dark p-5">
+          <div
+            key={card.label}
+            className={`${cardClasses} p-5 group hover:border-amber-400/50`}
+          >
             <div className="flex items-start justify-between mb-4">
               <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{
-                  background: `${card.color}15`,
-                  border: `1px solid ${card.color}30`,
-                }}
+                className="w-11 h-11 rounded-xl flex items-center justify-center shadow-sm"
+                style={{ background: `${card.color}15` }}
               >
-                <card.icon size={18} style={{ color: card.color }} />
+                <card.icon size={20} style={{ color: card.color }} />
               </div>
-              <TrendingUp size={13} className="text-green-500 mt-1" />
+              <div className="p-1.5 bg-green-50 dark:bg-green-500/10 rounded-lg">
+                <TrendingUp
+                  size={14}
+                  className="text-green-600 dark:text-green-400"
+                />
+              </div>
             </div>
-            <p className="text-2xl font-bold text-theme-text-base">
+            <p className="text-3xl font-bold text-slate-900 dark:text-white leading-none mb-1">
               {card.value}
             </p>
-            <p className="text-xs text-theme-text-secondary font-medium mt-0.5">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-brand-muted">
               {card.label}
             </p>
-            <p className="text-xs text-theme-text-tertiary mt-0.5">
+            <p className="text-xs font-semibold text-amber-600 dark:text-brand-gold mt-2">
               {card.sub}
             </p>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <div className="card-dark p-5 lg:col-span-2">
-          <div className="flex items-center justify-between mb-5">
-            <h3 className="font-semibold text-theme-text-base text-sm">
-              Đơn ứng tuyển &amp; Người dùng mới theo tháng
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Bar Chart */}
+        <div className={`${cardClasses} p-6 lg:col-span-2`}>
+          <div className="flex items-center justify-between mb-8">
+            <h3 className="font-bold text-slate-900 dark:text-white text-base">
+              Tăng trưởng ứng tuyển & Người dùng
             </h3>
-            <span className="text-xs text-theme-text-tertiary px-2 py-0.5 rounded-full border border-theme-border-default">
-              Dữ liệu minh họa
+            <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-full text-slate-400">
+              6 tháng gần nhất
             </span>
           </div>
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={MONTHLY_DATA} barGap={4}>
-              <XAxis
-                dataKey="month"
-                tick={{ fill: "var(--text-tertiary)", fontSize: 11 }}
-                axisLine={false}
-                tickLine={false}
-              />
-              <YAxis
-                tick={{ fill: "var(--text-tertiary)", fontSize: 11 }}
-                axisLine={false}
-                tickLine={false}
-              />
-              <Tooltip
-                contentStyle={{
-                  background: "var(--surface)",
-                  border: "1px solid var(--border-default)",
-                  borderRadius: "12px",
-                  fontSize: 12,
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                }}
-                labelStyle={{
-                  color: "var(--text-base)",
-                  fontWeight: 600,
-                  marginBottom: "4px",
-                }}
-                itemStyle={{ color: "var(--text-secondary)" }}
-              />
-              <Bar
-                dataKey="apps"
-                name="Đơn ứng tuyển"
-                fill="#fdd52f"
-                radius={[6, 6, 0, 0]}
-              />
-              <Bar
-                dataKey="users"
-                name="Người dùng mới"
-                fill="#e4a808"
-                radius={[6, 6, 0, 0]}
-                opacity={0.8}
-              />
-            </BarChart>
-          </ResponsiveContainer>
+          <div className="h-[250px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={MONTHLY_DATA}
+                margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
+              >
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  vertical={false}
+                  stroke={theme === "dark" ? "#334155" : "#e2e8f0"}
+                />
+                <XAxis
+                  dataKey="month"
+                  tick={{ fill: chartTickColor, fontSize: 11, fontWeight: 500 }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <YAxis
+                  tick={{ fill: chartTickColor, fontSize: 11, fontWeight: 500 }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <Tooltip
+                  cursor={{ fill: theme === "dark" ? "#1e293b" : "#f8fafc" }}
+                  contentStyle={{
+                    background: theme === "dark" ? "#0f172a" : "#ffffff",
+                    border: `1px solid ${theme === "dark" ? "#334155" : "#e2e8f0"}`,
+                    borderRadius: "12px",
+                    boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+                  }}
+                />
+                <Bar
+                  dataKey="apps"
+                  name="Đơn ứng tuyển"
+                  fill="#f59e0b"
+                  radius={[4, 4, 0, 0]}
+                  barSize={20}
+                />
+                <Bar
+                  dataKey="users"
+                  name="Người dùng"
+                  fill="#3b82f6"
+                  radius={[4, 4, 0, 0]}
+                  barSize={20}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
-        <div className="card-dark p-5">
-          <h3 className="font-semibold text-theme-text-base text-sm mb-5">
-            Việc làm theo quốc gia
+        {/* Pie Chart */}
+        <div className={`${cardClasses} p-6 flex flex-col`}>
+          <h3 className="font-bold text-slate-900 dark:text-white text-base mb-2">
+            Thị trường chính
           </h3>
-          <ResponsiveContainer width="100%" height={160}>
-            <PieChart>
-              <Pie
-                data={byCountry}
-                cx="50%"
-                cy="50%"
-                innerRadius={50}
-                outerRadius={75}
-                paddingAngle={4}
-                dataKey="value"
-              >
-                {byCountry.map((_, i) => (
-                  <Cell key={i} fill={PIE_COLORS[i]} />
-                ))}
-              </Pie>
-              <Tooltip
-                contentStyle={{
-                  background: "var(--surface)",
-                  border: "1px solid var(--border-default)",
-                  borderRadius: "12px",
-                  fontSize: 12,
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                }}
-                itemStyle={{ color: "var(--text-base)" }}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-          <div className="space-y-2 mt-3">
+          <p className={`${textMuted} text-xs mb-6`}>
+            Phân bổ việc làm theo quốc gia
+          </p>
+          <div className="flex-1 flex items-center justify-center">
+            <ResponsiveContainer width="100%" height={180}>
+              <PieChart>
+                <Pie
+                  data={byCountry}
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={8}
+                  dataKey="value"
+                >
+                  {byCountry.map((_, i) => (
+                    <Cell key={i} fill={PIE_COLORS[i]} stroke="none" />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="grid grid-cols-1 gap-2 mt-6">
             {byCountry.map((c, i) => (
               <div
                 key={c.name}
-                className="flex items-center justify-between text-xs"
+                className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-black/20"
               >
                 <div className="flex items-center gap-2">
-                  <span
-                    className="w-2.5 h-2.5 rounded-full"
+                  <div
+                    className="w-2 h-2 rounded-full"
                     style={{ background: PIE_COLORS[i] }}
                   />
-                  <span className="text-theme-text-secondary">{c.name}</span>
+                  <span className="text-xs font-bold text-slate-600 dark:text-gray-300">
+                    {c.name}
+                  </span>
                 </div>
-                <span className="text-theme-text-base font-semibold">
+                <span className="text-xs font-black text-slate-900 dark:text-white">
                   {c.value}
                 </span>
               </div>
@@ -270,17 +289,19 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <div className="card-dark p-5">
-          <h3 className="font-semibold text-theme-text-base text-sm mb-4">
-            Trạng thái đơn ứng tuyển
+      {/* Bottom Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Application Status */}
+        <div className={`${cardClasses} p-6`}>
+          <h3 className="font-bold text-slate-900 dark:text-white text-base mb-6">
+            Quy trình tuyển dụng
           </h3>
-          <div className="space-y-4">
+          <div className="space-y-5">
             {appStats.map((item) => (
-              <div key={item.status}>
-                <div className="flex justify-between items-center text-xs mb-1.5">
+              <div key={item.status} className="group">
+                <div className="flex justify-between items-center mb-2">
                   <span
-                    className={`px-2.5 py-1 rounded-full border text-xs font-medium ${APP_STATUS_LABELS[item.status as keyof typeof APP_STATUS_LABELS]?.color} bg-theme-surface`}
+                    className={`text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md border ${APP_STATUS_LABELS[item.status as keyof typeof APP_STATUS_LABELS]?.color} bg-white dark:bg-black/20`}
                   >
                     {
                       APP_STATUS_LABELS[
@@ -288,13 +309,13 @@ export default function AdminDashboard() {
                       ]?.label
                     }
                   </span>
-                  <span className="text-theme-text-base font-semibold">
+                  <span className="text-xs font-black text-slate-900 dark:text-white">
                     {item.count}
                   </span>
                 </div>
-                <div className="h-1.5 bg-theme-surfaceSecondary rounded-full overflow-hidden">
+                <div className="h-1.5 bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-brand-gold-primary to-brand-orange-primary"
+                    className="h-full rounded-full bg-amber-500 transition-all duration-1000 ease-out"
                     style={{
                       width: `${totalApps ? (parseInt(item.count) / totalApps) * 100 : 0}%`,
                     }}
@@ -305,26 +326,27 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="card-dark p-5 lg:col-span-2">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-theme-text-base text-sm">
-              Đơn ứng tuyển gần đây
+        {/* Recent Applications */}
+        <div className={`${cardClasses} p-6 lg:col-span-2`}>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-bold text-slate-900 dark:text-white text-base">
+              Đơn ứng tuyển mới nhất
             </h3>
             <Link
               to="/admin/applications"
-              className="text-xs text-brand-gold-primary hover:text-brand-orange-primary font-medium transition-colors"
+              className="text-xs font-bold text-amber-600 dark:text-brand-gold hover:underline transition-colors"
             >
-              Xem tất cả →
+              Quản lý tất cả →
             </Link>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {recentApps.map((app) => (
               <div
                 key={app.id}
-                className="flex items-center gap-3 p-3 bg-theme-background border border-theme-border-default rounded-xl hover:bg-theme-surfaceSecondary transition-colors"
+                className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-black/20 border border-slate-100 dark:border-white/5 rounded-2xl hover:border-amber-400/50 transition-all group"
               >
                 <div
-                  className="w-9 h-9 rounded-xl flex items-center justify-center text-slate-900 text-xs font-bold shrink-0 shadow-sm"
+                  className="w-10 h-10 rounded-xl flex items-center justify-center text-amber-900 font-bold text-sm shadow-sm"
                   style={{
                     background: "linear-gradient(135deg,#fdd52f,#e4a808)",
                   }}
@@ -332,29 +354,34 @@ export default function AdminDashboard() {
                   {app.fullName.charAt(0)}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-theme-text-base text-sm font-medium truncate">
+                  <p className="text-slate-900 dark:text-white font-bold text-sm truncate group-hover:text-amber-600 dark:group-hover:text-brand-gold transition-colors">
                     {app.fullName}
                   </p>
-                  <p className="text-theme-text-tertiary text-xs truncate mt-0.5">
-                    {app.job?.title}
+                  <p className="text-slate-500 dark:text-brand-muted text-[11px] truncate mt-0.5">
+                    Ứng tuyển:{" "}
+                    <span className="font-semibold text-slate-700 dark:text-gray-300">
+                      {app.job?.title}
+                    </span>
                   </p>
                 </div>
                 <div className="text-right shrink-0">
                   <span
-                    className={`text-xs px-2.5 py-1 rounded-full border font-medium bg-theme-surface ${APP_STATUS_LABELS[app.status]?.color}`}
+                    className={`text-[9px] font-bold uppercase tracking-tighter px-2 py-1 rounded-md border ${APP_STATUS_LABELS[app.status]?.color} bg-white dark:bg-brand-card`}
                   >
                     {APP_STATUS_LABELS[app.status]?.label}
                   </span>
-                  <p className="text-theme-text-tertiary text-xs mt-1.5">
+                  <p className="text-slate-400 dark:text-brand-muted text-[10px] mt-1.5 font-medium">
                     {formatDate(app.createdAt)}
                   </p>
                 </div>
               </div>
             ))}
             {recentApps.length === 0 && (
-              <p className="text-center text-theme-text-tertiary text-sm py-8">
-                Chưa có đơn ứng tuyển nào
-              </p>
+              <div className="text-center py-10">
+                <p className="text-slate-400 dark:text-brand-muted text-sm italic">
+                  Chưa có đơn ứng tuyển nào được ghi nhận
+                </p>
+              </div>
             )}
           </div>
         </div>

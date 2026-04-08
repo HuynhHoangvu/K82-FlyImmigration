@@ -29,7 +29,10 @@ export default function Footer() {
   const hoursText = usePageContent("footer.hoursText", f.hoursText);
   const copyright = usePageContent("footer.copyright", f.copyright);
 
-  const bct = usePageContent("footer.bct", "Đã đăng ký với Bộ Công Thương — ĐKKD số 0316444315");
+  const bct = usePageContent(
+    "footer.bct",
+    "Đã đăng ký với Bộ Công Thương — ĐKKD số 0316444315",
+  );
 
   const [policies, setPolicies] = useState<Policy[]>([]);
   const [loadingPolicies, setLoadingPolicies] = useState(true);
@@ -56,32 +59,35 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-gray-100 dark:bg-[#1a1a19] border-t border-gray-200 dark:border-[#3a3a38] mt-20 transition-colors duration-300">
+    <footer className="bg-white dark:bg-[#0a0d14] border-t border-slate-200 dark:border-white/5 mt-20 transition-colors duration-300">
       {/* Top */}
       <div className="max-w-7xl mx-auto px-6 py-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
         {/* Brand */}
         <div>
           <div className="flex items-center gap-2 mb-4">
             <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center"
+              className="w-9 h-9 rounded-lg flex items-center justify-center shadow-sm"
               style={{ background: "linear-gradient(135deg,#e4a808,#fdd52f)" }}
             >
               <span className="text-amber-900 font-display text-base font-black">
                 FL
               </span>
             </div>
-            <span className="font-display text-xl font-black tracking-wider text-gray-900 dark:text-white">
-              FLY <span style={{ color: "#e4a808" }}>LABOUR</span>
+            <span className="font-display text-xl font-black tracking-wider text-slate-900 dark:text-white transition-colors">
+              FLY{" "}
+              <span className="text-amber-500 dark:text-brand-gold">
+                LABOUR
+              </span>
             </span>
           </div>
-          <p className="text-gray-500 dark:text-[#7a7a78] text-sm leading-relaxed">
+          <p className="text-slate-500 dark:text-brand-muted text-sm leading-relaxed transition-colors">
             {f.tagline}
           </p>
           <div className="flex gap-3 mt-5">
             <EditableLink
               settingKey="social.facebook"
               defaultValue="https://www.facebook.com/flyimmigration.vn"
-              className="w-9 h-9 rounded-lg flex items-center justify-center text-white transition-colors hover:opacity-90"
+              className="w-9 h-9 rounded-lg flex items-center justify-center text-white transition-colors hover:opacity-90 shadow-sm"
               style={{ backgroundColor: "#1877F2" }}
               target="_blank"
               rel="noreferrer"
@@ -100,7 +106,7 @@ export default function Footer() {
             <EditableLink
               settingKey="social.youtube"
               defaultValue="#"
-              className="w-9 h-9 rounded-lg flex items-center justify-center text-white transition-colors hover:opacity-90"
+              className="w-9 h-9 rounded-lg flex items-center justify-center text-white transition-colors hover:opacity-90 shadow-sm"
               style={{ backgroundColor: "#FF0000" }}
               target="_blank"
               rel="noreferrer"
@@ -119,7 +125,7 @@ export default function Footer() {
             <EditableLink
               settingKey="social.tiktok"
               defaultValue="https://www.tiktok.com/@flyvisa.immigration?_r=1&_t=ZS-952PBR111k5"
-              className="w-9 h-9 rounded-lg flex items-center justify-center text-white transition-colors hover:opacity-90"
+              className="w-9 h-9 rounded-lg flex items-center justify-center text-white transition-colors hover:opacity-90 shadow-sm"
               style={{ backgroundColor: "#000000" }}
               target="_blank"
               rel="noreferrer"
@@ -139,7 +145,7 @@ export default function Footer() {
 
         {/* Jobs Links */}
         <div>
-          <h4 className="font-bold text-sm uppercase tracking-widest mb-4 text-amber-600 dark:text-[#fdd52f]">
+          <h4 className="font-bold text-sm uppercase tracking-widest mb-4 text-amber-600 dark:text-brand-gold transition-colors">
             {f.jobs}
           </h4>
           <ul className="space-y-2">
@@ -147,7 +153,7 @@ export default function Footer() {
               <li key={item}>
                 <Link
                   to="/jobs"
-                  className="text-gray-500 dark:text-[#7a7a78] hover:text-amber-600 dark:hover:text-white text-sm transition-colors"
+                  className="text-slate-500 dark:text-brand-muted hover:text-amber-600 dark:hover:text-brand-gold text-sm transition-colors"
                 >
                   {item}
                 </Link>
@@ -158,7 +164,7 @@ export default function Footer() {
 
         {/* Support Links */}
         <div>
-          <h4 className="font-bold text-sm uppercase tracking-widest mb-4 text-amber-600 dark:text-[#fdd52f]">
+          <h4 className="font-bold text-sm uppercase tracking-widest mb-4 text-amber-600 dark:text-brand-gold transition-colors">
             {f.support}
           </h4>
           <ul className="space-y-2">
@@ -172,59 +178,63 @@ export default function Footer() {
               <li key={to}>
                 <Link
                   to={to}
-                  className="text-gray-500 dark:text-[#7a7a78] hover:text-amber-600 dark:hover:text-white text-sm transition-colors"
+                  className="text-slate-500 dark:text-brand-muted hover:text-amber-600 dark:hover:text-brand-gold text-sm transition-colors"
                 >
                   {label}
                 </Link>
               </li>
             ))}
             {/* Dynamic Policy Links — quản lý qua Admin > Chính sách */}
-            {!loadingPolicies && policies.map((p) => (
-              <li key={p.slug}>
-                <Link
-                  to={`/policy/${p.slug}`}
-                  className="text-gray-500 dark:text-[#7a7a78] hover:text-amber-600 dark:hover:text-white text-sm transition-colors"
-                >
-                  {p.title}
-                </Link>
-              </li>
-            ))}
+            {!loadingPolicies &&
+              policies.map((p) => (
+                <li key={p.slug}>
+                  <Link
+                    to={`/policy/${p.slug}`}
+                    className="text-slate-500 dark:text-brand-muted hover:text-amber-600 dark:hover:text-brand-gold text-sm transition-colors"
+                  >
+                    {p.title}
+                  </Link>
+                </li>
+              ))}
           </ul>
         </div>
 
         {/* Contact */}
         <div>
-          <h4 className="font-bold text-sm uppercase tracking-widest mb-4 text-amber-600 dark:text-[#fdd52f]">
+          <h4 className="font-bold text-sm uppercase tracking-widest mb-4 text-amber-600 dark:text-brand-gold transition-colors">
             {f.contact}
           </h4>
           <ul className="space-y-3">
-            <li className="flex items-start gap-2 text-sm text-gray-500 dark:text-[#7a7a78]">
+            <li className="flex items-start gap-2 text-sm text-slate-500 dark:text-brand-muted transition-colors">
               <MapPin
                 size={15}
-                className="mt-0.5 shrink-0 text-amber-500 dark:text-[#fdd52f]"
+                className="mt-0.5 shrink-0 text-amber-500 dark:text-brand-gold"
               />
               <EditableText
                 settingKey="footer.address"
                 defaultValue={address}
               />
             </li>
-            <li className="flex items-center gap-2 text-sm text-gray-500 dark:text-[#7a7a78]">
-              <Phone size={15} className="text-amber-500 dark:text-[#fdd52f]" />
+            <li className="flex items-center gap-2 text-sm text-slate-500 dark:text-brand-muted transition-colors">
+              <Phone
+                size={15}
+                className="text-amber-500 dark:text-brand-gold"
+              />
               <EditableText settingKey="footer.phone" defaultValue={phone} />
             </li>
-            <li className="flex items-center gap-2 text-sm text-gray-500 dark:text-[#7a7a78]">
-              <Mail size={15} className="text-amber-500 dark:text-[#fdd52f]" />
+            <li className="flex items-center gap-2 text-sm text-slate-500 dark:text-brand-muted transition-colors">
+              <Mail size={15} className="text-amber-500 dark:text-brand-gold" />
               <EditableText settingKey="footer.email" defaultValue={email} />
             </li>
           </ul>
-          <div className="mt-5 p-3 bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-700/30 rounded-xl">
-            <p className="text-xs text-amber-700 dark:text-amber-400 font-semibold">
+          <div className="mt-5 p-4 bg-amber-50 dark:bg-brand-gold/5 border border-amber-200 dark:border-brand-gold/10 rounded-xl transition-colors">
+            <p className="text-xs text-amber-700 dark:text-brand-gold font-semibold transition-colors">
               <EditableText
                 settingKey="footer.officeHours"
                 defaultValue={officeHours}
               />
             </p>
-            <p className="text-xs text-gray-500 dark:text-[#7a7a78] mt-1 whitespace-pre-line">
+            <p className="text-xs text-slate-600 dark:text-brand-muted mt-1.5 whitespace-pre-line transition-colors">
               <EditableText
                 settingKey="footer.hoursText"
                 defaultValue={hoursText}
@@ -236,22 +246,19 @@ export default function Footer() {
       </div>
 
       {/* Bottom */}
-      <div className="border-t border-gray-200 dark:border-[#3a3a38] py-5 px-6">
-        <div className="max-w-7xl mx-auto space-y-3">
+      <div className="border-t border-slate-200 dark:border-white/5 py-6 px-6 transition-colors">
+        <div className="max-w-7xl mx-auto space-y-4">
           {/* BCT registration */}
-          <div className="flex items-center justify-center gap-2 text-xs text-gray-400 dark:text-[#7a7a78]">
+          <div className="flex items-center justify-center gap-2 text-xs text-slate-500 dark:text-brand-muted transition-colors">
             <img
               src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/20px-Flag_of_Vietnam.svg.png"
               alt="VN"
               className="w-4 h-3 object-cover rounded-sm"
             />
-            <EditableText
-              settingKey="footer.bct"
-              defaultValue={bct}
-            />
+            <EditableText settingKey="footer.bct" defaultValue={bct} />
           </div>
           {/* Copyright + Policy links */}
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-gray-400 dark:text-[#7a7a78]">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-500 dark:text-brand-muted transition-colors">
             <p>
               <EditableText
                 settingKey="footer.copyright"
@@ -265,7 +272,7 @@ export default function Footer() {
                   <Link
                     key={p.slug}
                     to={`/policy/${p.slug}`}
-                    className="hover:text-amber-600 dark:hover:text-white transition-colors"
+                    className="hover:text-amber-600 dark:hover:text-brand-gold transition-colors font-medium"
                   >
                     {p.title}
                   </Link>

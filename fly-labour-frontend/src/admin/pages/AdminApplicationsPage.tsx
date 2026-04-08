@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { Search, Eye, X, ChevronDown } from "lucide-react";
+import {
+  Search,
+  Eye,
+  X,
+  ChevronDown,
+  User,
+  Briefcase,
+  FileText,
+} from "lucide-react";
 import type { Application, AppStatus } from "@/core/types";
 import { APP_STATUS_LABELS, formatDate } from "@/core/utils/helpers";
 import toast from "react-hot-toast";
@@ -84,34 +92,46 @@ export default function AdminApplicationsPage() {
 
   const totalAll = Object.values(statusCounts).reduce((s, v) => s + v, 0);
 
+  // Helper classes
+  const cardClasses =
+    "bg-white dark:bg-brand-card border border-slate-200 dark:border-brand-border rounded-2xl shadow-sm dark:shadow-none transition-colors";
+  const inputClasses =
+    "w-full h-10 pl-10 pr-4 text-sm rounded-xl bg-slate-50 dark:bg-[#1a1a1a] border border-slate-200 dark:border-white/5 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-black focus:border-amber-400 dark:focus:border-brand-gold outline-none transition-all";
+
   return (
-    <div className="space-y-5">
-      <div>
-        <h1 className="text-xl font-bold text-theme-text-base">
-          Đơn ứng tuyển
-        </h1>
-        <p className="text-theme-text-tertiary text-sm">
-          {total} đơn · {statusCounts["pending"] || 0} chờ xét duyệt
-        </p>
+    <div className="space-y-6 transition-colors duration-300">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+            Đơn ứng tuyển
+          </h1>
+          <p className="text-slate-500 dark:text-brand-muted text-sm mt-1">
+            Tổng {total} đơn hồ sơ ·{" "}
+            <span className="text-amber-600 dark:text-brand-gold font-bold">
+              {statusCounts["pending"] || 0} đang chờ duyệt
+            </span>
+          </p>
+        </div>
       </div>
 
-      <div className="card-dark p-4 flex flex-wrap gap-3">
-        <div className="relative flex-1 min-w-48 max-w-sm">
+      {/* Filter bar */}
+      <div className={`${cardClasses} p-4 flex flex-wrap items-center gap-4`}>
+        <div className="relative flex-1 min-w-[280px] max-w-sm">
           <Search
-            size={15}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-theme-text-tertiary"
+            size={16}
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-brand-muted"
           />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="input-dark pl-9 py-2 text-sm h-10"
-            placeholder="Tìm tên, email..."
+            className={inputClasses}
+            placeholder="Tìm theo tên ứng viên, email..."
           />
         </div>
-        <div className="flex gap-1.5 flex-wrap">
+        <div className="flex gap-2 flex-wrap items-center">
           <button
             onClick={() => setFilterStatus("")}
-            className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${!filterStatus ? "bg-brand-gold-primary/10 border-brand-gold-primary/30 text-brand-gold-primary" : "border-theme-border-default text-theme-text-tertiary hover:text-theme-text-base bg-theme-surface"}`}
+            className={`text-[11px] font-bold uppercase tracking-wider px-3 py-2 rounded-xl border transition-all ${!filterStatus ? "bg-amber-600 border-amber-600 text-white shadow-md shadow-amber-600/20" : "bg-white dark:bg-brand-card border-slate-200 dark:border-white/10 text-slate-500 dark:text-brand-muted hover:border-amber-400"}`}
           >
             Tất cả ({totalAll})
           </button>
@@ -119,7 +139,7 @@ export default function AdminApplicationsPage() {
             <button
               key={s}
               onClick={() => setFilterStatus(s)}
-              className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${filterStatus === s ? APP_STATUS_LABELS[s].color : "border-theme-border-default text-theme-text-tertiary hover:text-theme-text-base bg-theme-surface"}`}
+              className={`text-[11px] font-bold uppercase tracking-wider px-3 py-2 rounded-xl border transition-all ${filterStatus === s ? `${APP_STATUS_LABELS[s].color} border-current ring-1 ring-current/30` : "bg-white dark:bg-brand-card border-slate-200 dark:border-white/10 text-slate-500 dark:text-brand-muted hover:border-amber-400"}`}
             >
               {APP_STATUS_LABELS[s].label} ({statusCounts[s] || 0})
             </button>
@@ -127,59 +147,47 @@ export default function AdminApplicationsPage() {
         </div>
       </div>
 
-      <div className="card-dark overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
+      {/* Table Section */}
+      <div className={`${cardClasses} overflow-hidden`}>
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full border-collapse">
             <thead>
-              <tr className="border-b border-theme-border-default bg-theme-surfaceSecondary/50">
-                <th className="text-left px-4 py-3 text-xs text-theme-text-tertiary uppercase tracking-wide font-semibold">
+              <tr className="border-b border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-black/20">
+                <th className="text-left px-5 py-4 text-[10px] font-bold text-slate-400 dark:text-brand-muted uppercase tracking-widest">
                   Ứng viên
                 </th>
-                <th className="text-left px-4 py-3 text-xs text-theme-text-tertiary uppercase tracking-wide font-semibold hidden sm:table-cell">
+                <th className="text-left px-5 py-4 text-[10px] font-bold text-slate-400 dark:text-brand-muted uppercase tracking-widest hidden sm:table-cell">
                   Vị trí ứng tuyển
                 </th>
-                <th className="text-left px-4 py-3 text-xs text-theme-text-tertiary uppercase tracking-wide font-semibold hidden md:table-cell">
+                <th className="text-left px-5 py-4 text-[10px] font-bold text-slate-400 dark:text-brand-muted uppercase tracking-widest hidden md:table-cell">
                   Ngày nộp
                 </th>
-                <th className="text-left px-4 py-3 text-xs text-theme-text-tertiary uppercase tracking-wide font-semibold">
+                <th className="text-left px-5 py-4 text-[10px] font-bold text-slate-400 dark:text-brand-muted uppercase tracking-widest">
                   Trạng thái
                 </th>
-                <th className="text-right px-4 py-3 text-xs text-theme-text-tertiary uppercase tracking-wide font-semibold">
+                <th className="text-right px-5 py-4 text-[10px] font-bold text-slate-400 dark:text-brand-muted uppercase tracking-widest">
                   Thao tác
                 </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-100 dark:divide-white/5">
               {loading
-                ? [...Array(5)].map((_, i) => (
-                    <tr
-                      key={i}
-                      className="border-b border-theme-border-default/40"
-                    >
-                      <td className="px-4 py-3">
-                        <div className="h-8 bg-theme-surfaceSecondary rounded-lg animate-pulse w-40" />
+                ? [...Array(6)].map((_, i) => (
+                    <tr key={i}>
+                      <td colSpan={5} className="px-5 py-4">
+                        <div className="h-10 bg-slate-100 dark:bg-white/5 rounded-xl animate-pulse" />
                       </td>
-                      <td className="px-4 py-3 hidden sm:table-cell">
-                        <div className="h-4 bg-theme-surfaceSecondary rounded animate-pulse w-32" />
-                      </td>
-                      <td className="px-4 py-3 hidden md:table-cell">
-                        <div className="h-4 bg-theme-surfaceSecondary rounded animate-pulse w-20" />
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="h-6 bg-theme-surfaceSecondary rounded-lg animate-pulse w-20" />
-                      </td>
-                      <td className="px-4 py-3" />
                     </tr>
                   ))
                 : filtered.map((app) => (
                     <tr
                       key={app.id}
-                      className="border-b border-theme-border-default/40 hover:bg-theme-surfaceSecondary transition-colors"
+                      className="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors group"
                     >
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2.5">
+                      <td className="px-5 py-4">
+                        <div className="flex items-center gap-3">
                           <div
-                            className="w-8 h-8 rounded-xl flex items-center justify-center text-slate-900 text-xs font-bold shrink-0 shadow-sm"
+                            className="w-10 h-10 rounded-xl flex items-center justify-center text-amber-900 font-bold text-sm shadow-sm shrink-0"
                             style={{
                               background:
                                 "linear-gradient(135deg,#e4a808,#fdd52f)",
@@ -187,36 +195,38 @@ export default function AdminApplicationsPage() {
                           >
                             {app.fullName.charAt(0)}
                           </div>
-                          <div>
-                            <p className="text-theme-text-base text-sm font-medium">
+                          <div className="min-w-0">
+                            <p className="text-slate-900 dark:text-white font-bold text-sm truncate">
                               {app.fullName}
                             </p>
-                            <p className="text-theme-text-tertiary text-xs">
+                            <p className="text-slate-500 dark:text-brand-muted text-xs truncate">
                               {app.phone}
                             </p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-4 py-3 hidden sm:table-cell">
-                        <p className="text-theme-text-base text-sm line-clamp-1">
+                      <td className="px-5 py-4 hidden sm:table-cell">
+                        <p className="text-slate-900 dark:text-white font-semibold text-sm line-clamp-1">
                           {app.job?.title}
                         </p>
-                        <p className="text-theme-text-tertiary text-xs">
+                        <p className="text-slate-400 dark:text-brand-muted text-[11px] truncate">
                           {app.job?.company}
                         </p>
                       </td>
-                      <td className="px-4 py-3 hidden md:table-cell text-theme-text-tertiary text-xs">
-                        {formatDate(app.createdAt)}
+                      <td className="px-5 py-4 hidden md:table-cell">
+                        <p className="text-slate-500 dark:text-brand-muted text-xs font-medium">
+                          {formatDate(app.createdAt)}
+                        </p>
                       </td>
-                      <td className="px-4 py-3">
-                        <div className="relative">
+                      <td className="px-5 py-4">
+                        <div className="relative inline-block">
                           <select
                             value={app.status}
                             onChange={(e) =>
                               updateStatus(app.id, e.target.value as AppStatus)
                             }
                             disabled={updatingId === app.id}
-                            className={`text-xs px-2 py-1 rounded-lg border font-medium bg-theme-background cursor-pointer appearance-none pr-6 ${APP_STATUS_LABELS[app.status].color}`}
+                            className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg border appearance-none pr-8 cursor-pointer transition-all bg-white dark:bg-black/20 ${APP_STATUS_LABELS[app.status].color}`}
                           >
                             {STATUS_OPTIONS.map((s) => (
                               <option key={s} value={s}>
@@ -225,18 +235,21 @@ export default function AdminApplicationsPage() {
                             ))}
                           </select>
                           <ChevronDown
-                            size={10}
-                            className="absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none text-current opacity-60"
+                            size={12}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none opacity-60"
                           />
                         </div>
                       </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center justify-end">
+                      <td className="px-5 py-4">
+                        <div className="flex justify-end">
                           <button
-                            onClick={() => { setSelected(app); setAdminNote(""); }}
-                            className="w-7 h-7 rounded-lg flex items-center justify-center text-theme-text-tertiary hover:text-theme-text-base hover:bg-theme-surfaceSecondary transition-colors"
+                            onClick={() => {
+                              setSelected(app);
+                              setAdminNote("");
+                            }}
+                            className="p-2 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-brand-muted hover:text-amber-600 dark:hover:text-brand-gold hover:bg-amber-50 dark:hover:bg-brand-gold/10 transition-all"
                           >
-                            <Eye size={13} />
+                            <Eye size={16} />
                           </button>
                         </div>
                       </td>
@@ -245,67 +258,82 @@ export default function AdminApplicationsPage() {
             </tbody>
           </table>
           {!loading && filtered.length === 0 && (
-            <div className="py-12 text-center text-theme-text-tertiary text-sm">
-              Không có đơn nào
+            <div className="py-20 text-center flex flex-col items-center">
+              <span className="text-4xl mb-3 opacity-30">🔍</span>
+              <p className="text-slate-500 dark:text-brand-muted text-sm font-medium">
+                Không tìm thấy đơn ứng tuyển nào phù hợp
+              </p>
             </div>
           )}
         </div>
       </div>
 
+      {/* Side Detail Panel (Drawer) */}
       {selected && (
-        <div className="fixed inset-0 z-50 flex justify-end">
+        <div className="fixed inset-0 z-[100] flex justify-end">
           <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
             onClick={() => setSelected(null)}
           />
-          <div className="relative w-full max-w-md bg-theme-surface border-l border-theme-border-default overflow-y-auto">
-            <div className="flex items-center justify-between p-5 border-b border-theme-border-default sticky top-0 bg-theme-surface">
-              <h2 className="font-semibold text-theme-text-base">
-                Chi tiết đơn ứng tuyển
-              </h2>
-              <button onClick={() => setSelected(null)}>
-                <X
-                  size={18}
-                  className="text-theme-text-tertiary hover:text-theme-text-base"
+          <div className="relative w-full max-w-lg bg-white dark:bg-brand-card border-l border-slate-200 dark:border-brand-border h-full flex flex-col shadow-2xl animate-in slide-in-from-right duration-300">
+            {/* Drawer Header */}
+            <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-white/5 shrink-0 bg-white dark:bg-brand-card">
+              <h2 className="font-bold text-slate-900 dark:text-white text-lg flex items-center gap-2">
+                <FileText
+                  size={20}
+                  className="text-amber-600 dark:text-brand-gold"
                 />
+                Chi tiết đơn tuyển
+              </h2>
+              <button
+                onClick={() => setSelected(null)}
+                className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 text-slate-400 transition-colors"
+              >
+                <X size={20} />
               </button>
             </div>
-            <div className="p-5 space-y-5">
-              <div className="flex items-center gap-3 p-4 bg-brand-gold-primary/5 border border-brand-gold-primary/20 rounded-xl">
+
+            {/* Drawer Body */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+              {/* Profile Card */}
+              <div className="flex items-center gap-4 p-5 bg-slate-50 dark:bg-brand-gold/5 border border-slate-100 dark:border-brand-gold/10 rounded-2xl">
                 <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center text-slate-900 font-bold shadow-sm"
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center text-amber-900 font-black text-2xl shadow-md shrink-0"
                   style={{
                     background: "linear-gradient(135deg,#e4a808,#fdd52f)",
                   }}
                 >
                   {selected.fullName.charAt(0)}
                 </div>
-                <div>
-                  <p className="text-theme-text-base font-semibold">
+                <div className="min-w-0">
+                  <p className="text-slate-900 dark:text-white font-bold text-lg">
                     {selected.fullName}
                   </p>
-                  <p className="text-theme-text-tertiary text-sm">
-                    {selected.email}
+                  <p className="text-slate-500 dark:text-brand-muted text-sm flex items-center gap-1.5">
+                    <User size={12} /> {selected.email}
                   </p>
-                  <p className="text-theme-text-tertiary text-sm">
+                  <p className="text-slate-500 dark:text-brand-muted text-sm flex items-center gap-1.5 font-medium">
                     {selected.phone}
                   </p>
                 </div>
               </div>
 
-              <div className="p-4 bg-theme-background border border-theme-border-default rounded-xl">
-                <p className="text-xs text-theme-text-tertiary mb-1">
-                  Vị trí ứng tuyển
+              {/* Job Info */}
+              <div className="p-5 bg-white dark:bg-black/20 border border-slate-200 dark:border-white/5 rounded-2xl shadow-sm">
+                <p className="text-[10px] font-bold text-slate-400 dark:text-brand-muted uppercase tracking-widest mb-2">
+                  Vị trí quan tâm
                 </p>
-                <p className="text-theme-text-base font-medium">
+                <p className="text-slate-900 dark:text-white font-bold flex items-center gap-2">
+                  <Briefcase size={16} className="text-amber-600" />{" "}
                   {selected.job?.title}
                 </p>
-                <p className="text-theme-text-tertiary text-sm">
+                <p className="text-slate-500 dark:text-brand-muted text-sm mt-1">
                   {selected.job?.company}
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              {/* Personal Info Grid */}
+              <div className="grid grid-cols-2 gap-4">
                 {[
                   {
                     label: "Ngày sinh",
@@ -319,12 +347,12 @@ export default function AdminApplicationsPage() {
                 ].map((item) => (
                   <div
                     key={item.label}
-                    className="p-3 bg-theme-background border border-theme-border-default rounded-xl"
+                    className="p-4 bg-white dark:bg-black/20 border border-slate-200 dark:border-white/5 rounded-2xl"
                   >
-                    <p className="text-xs text-theme-text-tertiary">
+                    <p className="text-[10px] font-bold text-slate-400 dark:text-brand-muted uppercase tracking-widest mb-1">
                       {item.label}
                     </p>
-                    <p className="text-theme-text-base text-sm mt-0.5">
+                    <p className="text-slate-900 dark:text-white text-sm font-semibold">
                       {item.value}
                     </p>
                   </div>
@@ -332,60 +360,72 @@ export default function AdminApplicationsPage() {
               </div>
 
               {selected.experience && (
-                <div className="p-4 bg-theme-background border border-theme-border-default rounded-xl">
-                  <p className="text-xs text-theme-text-tertiary mb-1">
+                <div className="p-5 bg-white dark:bg-black/20 border border-slate-200 dark:border-white/5 rounded-2xl">
+                  <p className="text-[10px] font-bold text-slate-400 dark:text-brand-muted uppercase tracking-widest mb-2">
                     Kinh nghiệm
                   </p>
-                  <p className="text-theme-text-base text-sm">
+                  <p className="text-slate-700 dark:text-gray-300 text-sm leading-relaxed">
                     {selected.experience}
                   </p>
                 </div>
               )}
 
               {selected.coverLetter && (
-                <div className="p-4 bg-theme-background border border-theme-border-default rounded-xl">
-                  <p className="text-xs text-theme-text-tertiary mb-1">
-                    Thư xin việc
+                <div className="p-5 bg-white dark:bg-black/20 border border-slate-200 dark:border-white/5 rounded-2xl">
+                  <p className="text-[10px] font-bold text-slate-400 dark:text-brand-muted uppercase tracking-widest mb-2">
+                    Thư giới thiệu
                   </p>
-                  <p className="text-theme-text-secondary text-sm leading-relaxed whitespace-pre-wrap">
+                  <p className="text-slate-700 dark:text-gray-300 text-sm leading-relaxed whitespace-pre-wrap">
                     {selected.coverLetter}
                   </p>
                 </div>
               )}
 
-              <div className="p-4 bg-theme-background border border-theme-border-default rounded-xl space-y-3">
-                <p className="text-xs text-theme-text-tertiary">
-                  Ghi chú nội bộ (admin note)
-                </p>
-                <textarea
-                  value={adminNote}
-                  onChange={(e) => setAdminNote(e.target.value)}
-                  rows={3}
-                  className="input-dark w-full text-sm resize-none"
-                  placeholder="Ghi chú lý do thay đổi trạng thái..."
-                />
-                <p className="text-xs text-theme-text-tertiary">
-                  Cập nhật trạng thái
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {STATUS_OPTIONS.map((s) => (
-                    <button
-                      key={s}
-                      onClick={() => updateStatus(selected.id, s, adminNote || undefined)}
-                      disabled={updatingId === selected.id}
-                      className={`text-xs px-3 py-1.5 rounded-lg border transition-colors font-medium ${
-                        selected.status === s
-                          ? APP_STATUS_LABELS[s].color
-                          : "border-theme-border-default text-theme-text-tertiary hover:text-theme-text-base bg-theme-surface"
-                      }`}
-                    >
-                      {APP_STATUS_LABELS[s].label}
-                    </button>
-                  ))}
+              {/* Admin Interaction Section */}
+              <div className="p-5 bg-amber-50 dark:bg-brand-gold/5 border border-amber-200 dark:border-brand-gold/10 rounded-2xl space-y-4 shadow-inner">
+                <div>
+                  <p className="text-[10px] font-bold text-amber-700 dark:text-brand-gold uppercase tracking-widest mb-2">
+                    Ghi chú nội bộ
+                  </p>
+                  <textarea
+                    value={adminNote}
+                    onChange={(e) => setAdminNote(e.target.value)}
+                    rows={3}
+                    className="w-full text-sm rounded-xl px-4 py-3 bg-white dark:bg-black/40 border border-amber-200 dark:border-white/5 text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:ring-1 focus:ring-amber-400 transition-all resize-none"
+                    placeholder="Ghi chú đánh giá ứng viên..."
+                  />
+                </div>
+
+                <div>
+                  <p className="text-[10px] font-bold text-amber-700 dark:text-brand-gold uppercase tracking-widest mb-3">
+                    Cập nhật trạng thái
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {STATUS_OPTIONS.map((s) => (
+                      <button
+                        key={s}
+                        onClick={() =>
+                          updateStatus(selected.id, s, adminNote || undefined)
+                        }
+                        disabled={updatingId === selected.id}
+                        className={`text-[10px] px-3 py-2 rounded-xl border transition-all font-bold uppercase tracking-wider shadow-sm ${
+                          selected.status === s
+                            ? `${APP_STATUS_LABELS[s].color} border-current ring-1 ring-current/30`
+                            : "bg-white dark:bg-brand-card border-slate-200 dark:border-white/10 text-slate-500 dark:text-brand-muted hover:border-amber-400"
+                        }`}
+                      >
+                        {APP_STATUS_LABELS[s].label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
-              <p className="text-xs text-theme-text-tertiary text-center">
-                Ngày nộp: {formatDate(selected.createdAt)}
+            </div>
+
+            {/* Drawer Footer */}
+            <div className="p-6 border-t border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-black/20 text-center">
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                Nộp lúc: {formatDate(selected.createdAt)}
               </p>
             </div>
           </div>

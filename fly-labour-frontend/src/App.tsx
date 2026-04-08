@@ -52,10 +52,7 @@ import EmployerProfilePage from "@/plugins/employer/pages/EmployerProfilePage";
 
 function UserLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div
-      className="min-h-screen"
-      style={{ backgroundColor: "var(--background)" }}
-    >
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0d1117] transition-colors duration-300">
       <Header />
       {children}
       <Footer />
@@ -82,24 +79,29 @@ function ContactPage() {
     setSending(true);
     try {
       await contactApi.send(form);
-      toast.success("�� g?i li�n h? th�nh c�ng! Ch�ng t�i s? ph?n h?i s?m.");
+      toast.success("Đã gửi liên hệ thành công! Chúng tôi sẽ phản hồi sớm.");
       setForm({ name: "", email: "", phone: "", message: "" });
     } catch {
-      toast.error("G?i th?t b?i, vui l�ng th? l?i");
+      toast.error("Gửi thất bại, vui lòng thử lại");
     } finally {
       setSending(false);
     }
   };
 
+  const inputClasses =
+    "w-full text-sm rounded-xl px-4 bg-slate-100 dark:bg-[#1e1e1e] border border-transparent dark:border-white/5 text-slate-900 dark:text-white placeholder:text-slate-400 focus:bg-white dark:focus:bg-black focus:border-amber-400 dark:focus:border-brand-gold focus:ring-1 focus:ring-amber-400 dark:focus:ring-brand-gold outline-none transition-all";
+
   return (
     <UserLayout>
       <div className="min-h-screen pt-28 px-6">
         <div className="max-w-3xl mx-auto">
-          <h1 className="section-title mb-4">
+          <h1 className="section-title text-slate-900 dark:text-white transition-colors mb-4">
             {c.title} <span className="gradient-text">{c.titleGradient}</span>
           </h1>
-          <p className="text-brand-muted mb-8">{c.subtitle}</p>
-          <div className="card-dark p-8">
+          <p className="text-slate-600 dark:text-brand-muted transition-colors mb-8">
+            {c.subtitle}
+          </p>
+          <div className="bg-white dark:bg-brand-card border border-slate-200 dark:border-brand-border rounded-2xl shadow-sm dark:shadow-none p-8 transition-colors">
             <form onSubmit={handleSubmit} className="space-y-4">
               {[
                 {
@@ -122,7 +124,7 @@ function ContactPage() {
                 },
               ].map((f) => (
                 <div key={f.key}>
-                  <label className="text-xs text-brand-muted mb-1.5 block">
+                  <label className="text-xs font-medium text-slate-500 dark:text-brand-muted mb-1.5 block transition-colors">
                     {f.label}
                   </label>
                   <input
@@ -131,14 +133,14 @@ function ContactPage() {
                     onChange={(e) =>
                       setForm((fm) => ({ ...fm, [f.key]: e.target.value }))
                     }
-                    className="input-dark"
+                    className={`${inputClasses} h-12`}
                     placeholder={f.placeholder}
                     required={f.key !== "phone"}
                   />
                 </div>
               ))}
               <div>
-                <label className="text-xs text-brand-muted mb-1.5 block">
+                <label className="text-xs font-medium text-slate-500 dark:text-brand-muted mb-1.5 block transition-colors">
                   {c.message}
                 </label>
                 <textarea
@@ -146,7 +148,7 @@ function ContactPage() {
                   onChange={(e) =>
                     setForm((fm) => ({ ...fm, message: e.target.value }))
                   }
-                  className="input-dark h-28 resize-none"
+                  className={`${inputClasses} h-28 py-3 resize-none`}
                   placeholder={c.messagePlaceholder}
                   required
                 />
@@ -154,12 +156,12 @@ function ContactPage() {
               <button
                 type="submit"
                 disabled={sending}
-                className="btn-primary w-full py-3 flex items-center justify-center gap-2"
+                className="btn-primary w-full py-3 flex items-center justify-center gap-2 font-medium mt-2"
               >
                 {sending ? (
                   <>
                     <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />{" "}
-                    �ang g?i...
+                    Đang gửi...
                   </>
                 ) : (
                   c.send
@@ -180,9 +182,16 @@ function NotFound() {
     <UserLayout>
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="font-display text-9xl gradient-text">404</p>
-          <p className="text-theme-text-base font-semibold text-xl mt-2">{nf.title}</p>
-          <a href="/" className="btn-primary inline-block mt-6 px-6 py-3">
+          <p className="font-display text-9xl gradient-text drop-shadow-md">
+            404
+          </p>
+          <p className="text-slate-900 dark:text-white font-semibold text-xl mt-2 transition-colors">
+            {nf.title}
+          </p>
+          <a
+            href="/"
+            className="btn-primary inline-block mt-6 px-6 py-3 font-medium"
+          >
             {nf.back}
           </a>
         </div>
@@ -208,6 +217,9 @@ function ThemeInitializer() {
 }
 
 export default function App() {
+  // Lấy theme hiện tại để đồng bộ hóa cho Toaster (Thông báo)
+  const theme = useThemeStore((s) => s.theme);
+
   return (
     <BrowserRouter>
       <ThemeInitializer />
@@ -218,13 +230,23 @@ export default function App() {
         position="top-right"
         toastOptions={{
           style: {
-            background: "#141414",
-            color: "#fff",
-            border: "1px solid #2A2A2A",
+            background: theme === "dark" ? "#141414" : "#ffffff",
+            color: theme === "dark" ? "#fff" : "#0f172a",
+            border:
+              theme === "dark" ? "1px solid #2A2A2A" : "1px solid #e2e8f0",
             borderRadius: "12px",
             fontSize: "14px",
+            boxShadow:
+              theme === "dark"
+                ? "0 4px 6px -1px rgba(0, 0, 0, 0.5)"
+                : "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
           },
-          success: { iconTheme: { primary: "#fdd52f", secondary: "#000" } },
+          success: {
+            iconTheme: {
+              primary: theme === "dark" ? "#fdd52f" : "#d97706",
+              secondary: theme === "dark" ? "#000" : "#fff",
+            },
+          },
           error: { iconTheme: { primary: "#EF4444", secondary: "#fff" } },
         }}
       />

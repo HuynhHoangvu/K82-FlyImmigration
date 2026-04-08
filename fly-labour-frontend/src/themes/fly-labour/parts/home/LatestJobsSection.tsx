@@ -21,20 +21,20 @@ export default function LatestJobsSection() {
   }, []);
 
   return (
-    <section className="py-16">
+    <section className="py-16 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-end justify-between mb-10">
           <div>
-            <p className="text-brand-gold text-sm font-semibold uppercase tracking-widest mb-2">
+            <p className="text-amber-600 dark:text-brand-gold text-sm font-bold uppercase tracking-widest mb-2 transition-colors">
               {h.latestBadge}
             </p>
-            <h2 className="section-title">
+            <h2 className="section-title text-3xl md:text-4xl font-bold text-slate-900 dark:text-white transition-colors">
               <span className="gradient-text">{h.latestTitle}</span>
             </h2>
           </div>
           <Link
             to="/jobs"
-            className="btn-outline text-sm px-4 py-2 flex items-center gap-1.5"
+            className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-xl border border-slate-300 dark:border-brand-border text-slate-700 dark:text-brand-muted hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors whitespace-nowrap"
           >
             {h.viewAll} <ArrowRight size={14} />
           </Link>
@@ -45,7 +45,7 @@ export default function LatestJobsSection() {
             {[...Array(6)].map((_, i) => (
               <div
                 key={i}
-                className="h-72 bg-brand-card rounded-2xl animate-pulse border border-brand-border"
+                className="h-72 bg-slate-100 dark:bg-[#1e1e1e] rounded-2xl animate-pulse border border-slate-200 dark:border-brand-border transition-colors"
               />
             ))}
           </div>

@@ -88,11 +88,11 @@ export default function JobCard({ job, compact }: Props) {
   return (
     <Link
       to={`/jobs/${job.id}`}
-      className="card-dark flex flex-col h-full group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-brand-gold/10"
+      className="bg-white dark:bg-brand-card border border-slate-200 dark:border-brand-border rounded-2xl flex flex-col h-full group overflow-hidden transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-xl hover:shadow-amber-500/10 hover:border-amber-400 dark:hover:shadow-brand-gold/10 dark:hover:border-brand-gold/50"
     >
       {/* Thumbnail image */}
       {!compact && (
-        <div className="relative h-40 overflow-hidden bg-brand-dark">
+        <div className="relative h-40 overflow-hidden bg-slate-200 dark:bg-brand-dark transition-colors">
           <img
             src={thumbUrl}
             alt={job.title}
@@ -104,11 +104,12 @@ export default function JobCard({ job, compact }: Props) {
               if (img.src !== fallback) img.src = fallback;
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-card/90 via-brand-card/20 to-transparent" />
+          {/* Gradient phủ lên ảnh linh hoạt theo Mode */}
+          <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/20 dark:from-brand-card/90 dark:via-brand-card/20 to-transparent transition-colors" />
 
           <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap">
             {expired && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-slate-700/80 text-slate-200 backdrop-blur-sm border border-slate-500/40 shadow-sm">
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-slate-200 dark:bg-slate-700/80 text-slate-600 dark:text-slate-200 backdrop-blur-sm border border-slate-300 dark:border-slate-500/40 shadow-sm transition-colors">
                 <TimerOff size={9} /> Hết hạn
               </span>
             )}
@@ -119,21 +120,24 @@ export default function JobCard({ job, compact }: Props) {
               </span>
             )}
             {!expired && job.isFeatured && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 text-amber-900 shadow-[0_2px_8px_rgba(251,191,36,0.4)] border border-yellow-300/50">
-                <Star size={9} className="fill-amber-800 text-amber-800" />{" "}
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 dark:from-amber-400 dark:to-yellow-300 text-white dark:text-amber-900 shadow-[0_2px_8px_rgba(245,158,11,0.4)] dark:shadow-[0_2px_8px_rgba(251,191,36,0.4)] border border-amber-300 dark:border-yellow-300/50">
+                <Star
+                  size={9}
+                  className="fill-white dark:fill-amber-800 text-white dark:text-amber-800"
+                />{" "}
                 {jc.featured}
               </span>
             )}
           </div>
 
           <div className="absolute top-3 right-3">
-            <span className="badge-country text-[10px]">
+            <span className="badge-country border-transparent dark:border-white/10 text-[10px]">
               {flag} {countryName}
             </span>
           </div>
 
           {job.deadline && (
-            <div className="absolute bottom-2 right-3 text-[10px] text-white/70">
+            <div className="absolute bottom-2 right-3 text-[10px] font-medium text-slate-700 dark:text-white/70 transition-colors">
               {jc.deadline}{" "}
               {new Date(job.deadline).toLocaleDateString("en-AU", {
                 day: "2-digit",
@@ -145,11 +149,11 @@ export default function JobCard({ job, compact }: Props) {
       )}
 
       {/* Card body */}
-      <div className="p-4 flex flex-col flex-1">
+      <div className="p-4 flex flex-col flex-1 bg-white dark:bg-transparent transition-colors">
         {compact && (
           <div className="flex gap-1.5 flex-wrap mb-2">
             {expired && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-slate-200 dark:bg-slate-700/80 text-slate-600 dark:text-slate-200 border border-slate-300 dark:border-slate-500/40">
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-slate-200 dark:bg-slate-700/80 text-slate-600 dark:text-slate-200 border border-slate-300 dark:border-slate-500/40 transition-colors">
                 <TimerOff size={9} /> Hết hạn
               </span>
             )}
@@ -159,29 +163,34 @@ export default function JobCard({ job, compact }: Props) {
                 HOT
               </span>
             )}
-            <span className="badge-country text-[10px]">
+            <span className="badge-country border-slate-200 dark:border-transparent text-[10px] transition-colors">
               {flag} {countryName}
             </span>
           </div>
         )}
 
-        <h3 className="font-semibold text-brand-yellow group-hover:text-brand-gold transition-colors leading-snug mb-1 line-clamp-2 text-sm">
+        <h3 className="font-semibold text-slate-900 dark:text-brand-yellow group-hover:text-amber-600 dark:group-hover:text-brand-gold transition-colors leading-snug mb-1 line-clamp-2 text-sm">
           {job.title}
         </h3>
         {job.company && (
-          <p className="text-brand-muted text-xs mb-3">{job.company}</p>
+          <p className="text-slate-500 dark:text-brand-muted text-xs mb-3 font-medium transition-colors">
+            {job.company}
+          </p>
         )}
 
-        <div className="bg-brand-gold/5 border border-brand-gold/20 rounded-xl px-3 py-2 mb-3">
+        <div className="bg-amber-50 dark:bg-brand-gold/5 border border-amber-200 dark:border-brand-gold/20 rounded-xl px-3 py-2 mb-3 transition-colors">
           <div className="flex items-center gap-1.5">
-            <TrendingUp size={12} className="text-brand-gold" />
-            <span className="text-brand-gold font-semibold text-xs">
+            <TrendingUp
+              size={12}
+              className="text-amber-600 dark:text-brand-gold transition-colors"
+            />
+            <span className="text-amber-700 dark:text-brand-gold font-semibold text-xs transition-colors">
               {formatSalary(job.salaryMin, job.salaryMax, job.salaryCurrency)}
             </span>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 text-[11px] text-brand-muted flex-1">
+        <div className="flex flex-wrap items-center gap-3 text-[11px] font-medium text-slate-500 dark:text-brand-muted flex-1 transition-colors">
           {job.location && (
             <span className="flex items-center gap-1">
               <MapPin size={10} /> {job.location}
@@ -202,9 +211,9 @@ export default function JobCard({ job, compact }: Props) {
           )}
         </div>
 
-        <div className="flex items-center justify-between mt-auto pt-3 border-t border-brand-gray-200 dark:border-brand-gray-700">
+        <div className="flex items-center justify-between mt-auto pt-3 border-t border-slate-100 dark:border-brand-gray-700 transition-colors">
           {job.category ? (
-            <span className="text-[11px] px-2 py-0.5 bg-brand-gray-100 dark:bg-brand-gray-800 rounded-lg text-brand-gray-700 dark:text-brand-gray-300">
+            <span className="text-[11px] px-2 py-0.5 bg-slate-100 dark:bg-brand-gray-800 rounded-lg text-slate-600 dark:text-brand-gray-300 font-medium transition-colors">
               {job.category.icon}{" "}
               {lang === "en"
                 ? job.category.nameEn || job.category.name
@@ -213,7 +222,7 @@ export default function JobCard({ job, compact }: Props) {
           ) : (
             <span />
           )}
-          <span className="text-[11px] text-brand-muted">
+          <span className="text-[11px] font-medium text-slate-400 dark:text-brand-muted transition-colors">
             {timeAgo(job.createdAt)}
           </span>
         </div>

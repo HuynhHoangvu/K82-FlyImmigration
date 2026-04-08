@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronDown, ArrowRight } from 'lucide-react'
+import { EditableSection } from '@/admin/components/EditableSection'
+import { EditableText } from '@/admin/components/EditableText'
 
 const FAQS = [
   {
@@ -100,24 +102,28 @@ export default function FaqPage() {
   return (
     <div className="min-h-screen">
       {/* Hero */}
-      <section className="relative pt-32 pb-20 px-6 overflow-hidden">
+      <EditableSection sectionKey="page.faq.hero" className="relative pt-32 pb-20 px-6 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f00] via-brand-dark to-brand-dark" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full blur-3xl opacity-10"
           style={{ background: 'linear-gradient(135deg,#e4a808,#fdd52f)' }} />
         <div className="relative max-w-3xl mx-auto text-center">
-          <p className="text-brand-gold text-xs font-semibold tracking-widest uppercase mb-4">FAQ</p>
+          <p className="text-brand-gold text-xs font-semibold tracking-widest uppercase mb-4">
+            <EditableText settingKey="faq.hero.label" defaultValue="FAQ" colorEditable={false} sizeEditable={false} />
+          </p>
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-5">
-            Câu hỏi<br />
+            <EditableText settingKey="faq.hero.title1" defaultValue="Câu hỏi" /><br />
             <span style={{ background: 'linear-gradient(135deg,#e4a808,#fdd52f)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              thường gặp
+              <EditableText settingKey="faq.hero.title2" defaultValue="thường gặp" colorEditable={false} />
             </span>
           </h1>
-          <p className="text-brand-muted text-lg">Giải đáp mọi thắc mắc về quy trình đi lao động nước ngoài cùng Fly Labour.</p>
+          <p className="text-brand-muted text-lg">
+            <EditableText settingKey="faq.hero.desc" defaultValue="Giải đáp mọi thắc mắc về quy trình đi lao động nước ngoài cùng Fly Labour." colorEditable={false} sizeEditable={false} />
+          </p>
         </div>
-      </section>
+      </EditableSection>
 
       {/* FAQ list */}
-      <section className="py-16 px-6">
+      <EditableSection sectionKey="page.faq.list" className="py-16 px-6">
         <div className="max-w-3xl mx-auto space-y-10">
           {FAQS.map(group => (
             <div key={group.category}>
@@ -130,10 +136,10 @@ export default function FaqPage() {
             </div>
           ))}
         </div>
-      </section>
+      </EditableSection>
 
       {/* CTA */}
-      <section className="py-16 px-6 border-t border-brand-border bg-brand-card/20">
+      <EditableSection sectionKey="page.faq.cta" className="py-16 px-6 border-t border-brand-border bg-brand-card/20">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-2xl font-bold text-white mb-3">Chưa tìm được câu trả lời?</h2>
           <p className="text-brand-muted mb-8">Liên hệ trực tiếp với đội ngũ tư vấn — chúng tôi luôn sẵn sàng hỗ trợ bạn.</p>
@@ -141,7 +147,7 @@ export default function FaqPage() {
             Liên hệ ngay <ArrowRight size={16} />
           </Link>
         </div>
-      </section>
+      </EditableSection>
     </div>
   )
 }

@@ -27,7 +27,7 @@ function Countdown() {
   return (
     <div className="flex items-center gap-2">
       <Clock size={16} className="text-red-500 animate-pulse" />
-      <span className="text-gray-600 dark:text-gray-300 text-sm font-medium">
+      <span className="text-slate-600 dark:text-brand-muted text-sm font-medium transition-colors">
         {h.endsIn}
       </span>
       <div className="flex items-center gap-1">
@@ -70,7 +70,7 @@ export default function FlashSaleJobs() {
   };
 
   return (
-    <section className="py-16">
+    <section className="py-16 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
           <div className="flex items-center gap-4 flex-wrap">
@@ -97,13 +97,13 @@ export default function FlashSaleJobs() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => scroll("left")}
-              className="w-9 h-9 rounded-xl border border-theme-border-default bg-theme-surface flex items-center justify-center text-theme-text-secondary hover:text-theme-accent-primary hover:border-orange-400 transition-colors"
+              className="w-9 h-9 rounded-xl border border-slate-200 dark:border-brand-border bg-white dark:bg-brand-card shadow-sm dark:shadow-none flex items-center justify-center text-slate-500 dark:text-brand-muted hover:text-amber-600 dark:hover:text-brand-gold hover:border-amber-400 dark:hover:border-brand-gold/50 transition-colors"
             >
               <ChevronLeft size={16} />
             </button>
             <button
               onClick={() => scroll("right")}
-              className="w-9 h-9 rounded-xl border border-theme-border-default bg-theme-surface flex items-center justify-center text-theme-text-secondary hover:text-theme-accent-primary hover:border-orange-400 transition-colors"
+              className="w-9 h-9 rounded-xl border border-slate-200 dark:border-brand-border bg-white dark:bg-brand-card shadow-sm dark:shadow-none flex items-center justify-center text-slate-500 dark:text-brand-muted hover:text-amber-600 dark:hover:text-brand-gold hover:border-amber-400 dark:hover:border-brand-gold/50 transition-colors"
             >
               <ChevronRight size={16} />
             </button>
@@ -115,7 +115,7 @@ export default function FlashSaleJobs() {
             {[...Array(4)].map((_, i) => (
               <div
                 key={i}
-                className="flex-none w-72 h-52 bg-theme-surfaceSecondary rounded-2xl animate-pulse border border-theme-border-default"
+                className="flex-none w-72 h-52 bg-slate-100 dark:bg-[#1e1e1e] rounded-2xl animate-pulse border border-slate-200 dark:border-brand-border"
               />
             ))}
           </div>

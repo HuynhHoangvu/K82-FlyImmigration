@@ -10,6 +10,8 @@ import {
   EyeOff,
   Upload,
   Image as ImageIcon,
+  Newspaper,
+  Loader2,
 } from "lucide-react";
 import type { News } from "@/core/types";
 import { formatDate } from "@/core/utils/helpers";
@@ -34,6 +36,7 @@ type FormData = {
   isPublished: boolean;
   imagePreview: string;
 };
+
 const EMPTY: FormData = {
   title: "",
   slug: "",
@@ -76,6 +79,7 @@ export default function AdminNewsPage() {
     fileObj.current = null;
     setModal("add");
   };
+
   const openEdit = (n: News) => {
     setForm({
       title: n.title,
@@ -143,7 +147,7 @@ export default function AdminNewsPage() {
       if (fileObj.current) {
         fd.append("image", fileObj.current);
       } else if (imgTab === "url" && urlInput.trim()) {
-        fd.append("image", urlInput.trim());
+        fd.set("image", urlInput.trim());
       }
       if (modal === "edit" && editing) {
         await newsApi.update(editing.id, fd);
@@ -183,142 +187,143 @@ export default function AdminNewsPage() {
     }
   };
 
+  const cardClasses =
+    "bg-white dark:bg-brand-card border border-slate-200 dark:border-brand-border rounded-2xl shadow-sm transition-colors duration-300";
+  const inputClasses =
+    "w-full text-sm rounded-xl px-4 bg-slate-50 dark:bg-[#1a1a1a] border border-slate-200 dark:border-white/5 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-black focus:border-amber-400 dark:focus:border-brand-gold outline-none transition-all";
+
   return (
-    <div className="space-y-5">
-      <div className="flex items-center justify-between flex-wrap gap-3">
+    <div className="space-y-6 transition-colors duration-300">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-xl font-bold text-theme-text-base">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+            <Newspaper className="text-amber-600 dark:text-brand-gold" />
             Quản lý Tin tức
           </h1>
-          <p className="text-theme-text-tertiary text-sm">
-            {news.length} bài viết · {news.filter((n) => n.isPublished).length}{" "}
-            đã đăng
+          <p className="text-slate-500 dark:text-brand-muted text-sm mt-1 font-medium">
+            {news.length} bài viết ·{" "}
+            <span className="text-green-600 dark:text-green-400 font-bold">
+              {news.filter((n) => n.isPublished).length} bài công khai
+            </span>
           </p>
         </div>
         <button
           onClick={openAdd}
-          className="btn-primary flex items-center gap-2 text-sm px-4 py-2.5"
+          className="btn-primary flex items-center gap-2 text-sm px-5 py-2.5 shadow-lg shadow-amber-500/20"
         >
-          <Plus size={15} /> Thêm bài viết
+          <Plus size={18} /> Thêm bài viết mới
         </button>
       </div>
 
-      <div className="bg-theme-surface border border-theme-border-default rounded-2xl overflow-hidden shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="w-full">
+      <div className={`${cardClasses} overflow-hidden`}>
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full border-collapse">
             <thead>
-              <tr className="border-b border-theme-border-default bg-theme-surfaceSecondary/50">
-                <th className="text-left px-4 py-3 text-xs text-theme-text-tertiary uppercase tracking-wide font-semibold w-12">
-                  Ảnh
+              <tr className="border-b border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-black/20 text-[10px] font-bold text-slate-400 dark:text-brand-muted uppercase tracking-widest">
+                <th className="text-left px-5 py-4 w-16 text-center">Ảnh</th>
+                <th className="text-left px-5 py-4">Nội dung bài viết</th>
+                <th className="text-left px-5 py-4 hidden md:table-cell">
+                  Slug (URL)
                 </th>
-                <th className="text-left px-4 py-3 text-xs text-theme-text-tertiary uppercase tracking-wide font-semibold">
-                  Tiêu đề
-                </th>
-                <th className="text-left px-4 py-3 text-xs text-theme-text-tertiary uppercase tracking-wide font-semibold hidden md:table-cell">
-                  Slug
-                </th>
-                <th className="text-left px-4 py-3 text-xs text-theme-text-tertiary uppercase tracking-wide font-semibold hidden sm:table-cell">
+                <th className="text-left px-5 py-4 hidden sm:table-cell">
                   Ngày tạo
                 </th>
-                <th className="text-left px-4 py-3 text-xs text-theme-text-tertiary uppercase tracking-wide font-semibold">
-                  Trạng thái
-                </th>
-                <th className="text-right px-4 py-3 text-xs text-theme-text-tertiary uppercase tracking-wide font-semibold">
-                  Thao tác
-                </th>
+                <th className="text-left px-5 py-4">Trạng thái</th>
+                <th className="text-right px-5 py-4">Thao tác</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-100 dark:divide-white/5">
               {loading ? (
-                <tr>
-                  <td
-                    colSpan={6}
-                    className="py-12 text-center text-theme-text-tertiary text-sm"
-                  >
-                    Đang tải...
-                  </td>
-                </tr>
+                [...Array(5)].map((_, i) => (
+                  <tr key={i}>
+                    <td colSpan={6} className="px-5 py-8 text-center">
+                      <Loader2 className="animate-spin inline-block text-amber-500" />
+                    </td>
+                  </tr>
+                ))
               ) : news.length === 0 ? (
                 <tr>
                   <td
                     colSpan={6}
-                    className="py-12 text-center text-theme-text-tertiary text-sm"
+                    className="py-20 text-center text-slate-400 font-medium italic"
                   >
-                    Chưa có bài viết nào
+                    Hệ thống chưa có bài viết nào
                   </td>
                 </tr>
               ) : (
                 news.map((n) => (
                   <tr
                     key={n.id}
-                    className="border-b border-theme-border-default/40 hover:bg-theme-surfaceSecondary transition-colors"
+                    className="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors group"
                   >
-                    <td className="px-4 py-3">
-                      <div className="w-10 h-10 rounded-xl overflow-hidden bg-theme-background border border-theme-border-default flex-shrink-0 shadow-sm">
+                    <td className="px-5 py-4">
+                      <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-100 dark:bg-brand-dark border border-slate-200 dark:border-white/5 flex-shrink-0 shadow-sm">
                         {n.image ? (
                           <img
                             src={getImageUrl(n.image)}
-                            alt={n.title}
-                            className="w-full h-full object-cover"
+                            alt=""
+                            className="w-full h-full object-cover transition-transform group-hover:scale-110"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-theme-text-tertiary">
-                            <ImageIcon size={14} />
+                          <div className="w-full h-full flex items-center justify-center text-slate-300 dark:text-brand-muted">
+                            <ImageIcon size={18} />
                           </div>
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3">
-                      <p className="text-theme-text-base text-sm font-medium line-clamp-1">
+                    <td className="px-5 py-4">
+                      <p className="text-slate-900 dark:text-white font-bold text-sm line-clamp-1 group-hover:text-amber-600 dark:group-hover:text-brand-gold transition-colors">
                         {n.title}
                       </p>
                       {n.excerpt && (
-                        <p className="text-theme-text-tertiary text-xs line-clamp-1 mt-0.5">
-                          {n.excerpt}
+                        <p className="text-slate-400 dark:text-brand-muted text-[11px] font-medium line-clamp-1 mt-0.5 italic">
+                          "{n.excerpt}"
                         </p>
                       )}
                     </td>
-                    <td className="px-4 py-3 hidden md:table-cell">
-                      <code className="text-xs text-brand-gold-primary bg-brand-gold-primary/5 border border-brand-gold-primary/20 px-2 py-0.5 rounded">
-                        {n.slug}
+                    <td className="px-5 py-4 hidden md:table-cell">
+                      <code className="text-[10px] font-bold text-amber-700 dark:text-brand-gold bg-amber-50 dark:bg-brand-gold/10 border border-amber-200 dark:border-brand-gold/30 px-2 py-1 rounded-md uppercase tracking-tighter">
+                        /{n.slug}
                       </code>
                     </td>
-                    <td className="px-4 py-3 hidden sm:table-cell text-theme-text-tertiary text-xs">
-                      {formatDate(n.createdAt)}
+                    <td className="px-5 py-4 hidden sm:table-cell">
+                      <p className="text-slate-500 dark:text-brand-muted text-xs font-medium">
+                        {formatDate(n.createdAt)}
+                      </p>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-4">
                       <button
                         onClick={() => handleTogglePublish(n)}
-                        className={`flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border font-medium transition-colors ${
+                        className={`flex items-center gap-1.5 text-[10px] px-3 py-1.5 rounded-full border font-black uppercase tracking-widest transition-all ${
                           n.isPublished
-                            ? "text-green-500 bg-green-500/10 border-green-500/20 hover:bg-green-500/20"
-                            : "text-theme-text-secondary bg-theme-background border-theme-border-default hover:bg-theme-surfaceSecondary"
+                            ? "text-green-600 bg-green-50 border-green-200 hover:bg-green-100"
+                            : "text-slate-400 bg-slate-50 border-slate-200 hover:bg-slate-100"
                         }`}
                       >
                         {n.isPublished ? (
                           <>
-                            <Eye size={11} /> Đã đăng
+                            <Eye size={12} /> Công khai
                           </>
                         ) : (
                           <>
-                            <EyeOff size={11} /> Ẩn
+                            <EyeOff size={12} /> Đang ẩn
                           </>
                         )}
                       </button>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-4">
                       <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => openEdit(n)}
-                          className="w-7 h-7 rounded-lg flex items-center justify-center text-theme-text-tertiary hover:text-brand-gold-primary hover:bg-theme-surfaceSecondary transition-colors"
+                          className="p-2 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-brand-muted hover:text-amber-600 dark:hover:text-brand-gold transition-all"
                         >
-                          <Pencil size={13} />
+                          <Pencil size={16} />
                         </button>
                         <button
                           onClick={() => setDeleting(n.id)}
-                          className="w-7 h-7 rounded-lg flex items-center justify-center text-theme-text-tertiary hover:text-red-500 hover:bg-red-500/10 transition-colors"
+                          className="p-2 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-500 hover:text-red-500 transition-all"
                         >
-                          <Trash2 size={13} />
+                          <Trash2 size={16} />
                         </button>
                       </div>
                     </td>
@@ -332,80 +337,75 @@ export default function AdminNewsPage() {
 
       {/* ── Modal Thêm / Sửa ── */}
       {modal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={() => setModal(null)}
-          />
-          <div className="relative bg-theme-surface border border-theme-border-default rounded-2xl w-full max-w-2xl max-h-[92vh] overflow-y-auto shadow-2xl">
-            <div className="flex items-center justify-between p-5 border-b border-theme-border-default sticky top-0 bg-theme-surface z-10">
-              <h2 className="font-semibold text-theme-text-base">
-                {modal === "add" ? "📰 Thêm bài viết" : "✏️ Chỉnh sửa bài viết"}
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-brand-card border border-slate-200 dark:border-brand-border rounded-3xl w-full max-w-2xl max-h-[92vh] overflow-hidden flex flex-col shadow-2xl">
+            <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-white/5 shrink-0 bg-white dark:bg-brand-card">
+              <h2 className="font-bold text-slate-900 dark:text-white text-lg flex items-center gap-2">
+                <Newspaper className="text-amber-600" />
+                {modal === "add" ? "Thêm bài viết mới" : "Chỉnh sửa bài viết"}
               </h2>
-              <button onClick={() => setModal(null)}>
-                <X
-                  size={18}
-                  className="text-theme-text-tertiary hover:text-theme-text-base"
-                />
+              <button
+                onClick={() => setModal(null)}
+                className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 transition-colors"
+              >
+                <X size={20} />
               </button>
             </div>
 
-            <div className="p-5 space-y-4">
-              {/* ── ẢNH ── */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+              {/* Image Section */}
               <div className="space-y-3">
-                <label className="text-xs text-theme-text-secondary font-semibold uppercase tracking-wider block">
-                  Ảnh bài viết
-                </label>
-
-                <div className="relative w-full h-44 rounded-xl overflow-hidden border border-theme-border-default bg-theme-background">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                  Hình ảnh bài viết
+                </p>
+                <div className="relative w-full h-48 rounded-2xl overflow-hidden border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-black/40 group">
                   {form.imagePreview ? (
-                    <>
-                      <img
-                        src={form.imagePreview}
-                        alt="preview"
-                        className="w-full h-full object-cover"
-                        onError={() =>
-                          setForm((f) => ({ ...f, imagePreview: "" }))
-                        }
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
-                        <button
-                          onClick={() => {
-                            setForm((f) => ({ ...f, imagePreview: "" }));
-                            setUrlInput("");
-                            fileObj.current = null;
-                          }}
-                          className="text-xs bg-red-500/90 hover:bg-red-500 text-white px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 shadow-sm"
-                        >
-                          <X size={12} /> Xóa ảnh
-                        </button>
-                      </div>
-                    </>
+                    <img
+                      src={form.imagePreview}
+                      alt="preview"
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center text-theme-text-tertiary gap-2">
-                      <ImageIcon size={32} className="opacity-40" />
-                      <p className="text-xs">Chưa có ảnh</p>
+                    <div className="w-full h-full flex flex-col items-center justify-center text-slate-300 dark:text-brand-muted gap-2">
+                      <ImageIcon size={40} className="opacity-20" />
+                      <p className="text-xs font-medium">Chưa chọn hình ảnh</p>
                     </div>
+                  )}
+                  {form.imagePreview && (
+                    <button
+                      onClick={() => {
+                        setForm((f) => ({ ...f, imagePreview: "" }));
+                        setUrlInput("");
+                        fileObj.current = null;
+                      }}
+                      className="absolute top-3 right-3 bg-red-600 text-white p-2 rounded-xl shadow-lg hover:scale-110 transition-transform"
+                    >
+                      <Trash2 size={16} />
+                    </button>
                   )}
                 </div>
 
-                <div className="flex gap-1.5 text-xs">
+                <div className="flex gap-2">
                   <button
                     onClick={() => setImgTab("upload")}
-                    className={`px-3 py-1.5 rounded-lg border transition-colors font-medium ${imgTab === "upload" ? "bg-brand-gold-primary/10 border-brand-gold-primary/30 text-brand-gold-primary" : "border-theme-border-default text-theme-text-secondary hover:text-theme-text-base hover:bg-theme-surfaceSecondary"}`}
+                    className={`flex-1 py-2 text-xs font-bold rounded-xl border transition-all ${imgTab === "upload" ? "bg-slate-900 text-white border-slate-900 dark:bg-brand-gold dark:text-amber-900 dark:border-brand-gold" : "bg-white dark:bg-black/20 text-slate-500 border-slate-200 dark:border-white/5"}`}
                   >
-                    📁 Upload từ máy
+                    TẢI TỪ MÁY
                   </button>
                   <button
                     onClick={() => setImgTab("url")}
-                    className={`px-3 py-1.5 rounded-lg border transition-colors font-medium ${imgTab === "url" ? "bg-brand-gold-primary/10 border-brand-gold-primary/30 text-brand-gold-primary" : "border-theme-border-default text-theme-text-secondary hover:text-theme-text-base hover:bg-theme-surfaceSecondary"}`}
+                    className={`flex-1 py-2 text-xs font-bold rounded-xl border transition-all ${imgTab === "url" ? "bg-slate-900 text-white border-slate-900 dark:bg-brand-gold dark:text-amber-900 dark:border-brand-gold" : "bg-white dark:bg-black/20 text-slate-500 border-slate-200 dark:border-white/5"}`}
                   >
-                    🔗 Nhập URL ảnh
+                    DÙNG LINK URL
                   </button>
                 </div>
 
-                {imgTab === "upload" && (
-                  <div>
+                {imgTab === "upload" ? (
+                  <label className="w-full border-2 border-dashed border-slate-200 dark:border-white/10 hover:border-amber-400 dark:hover:border-brand-gold/40 rounded-2xl py-6 flex flex-col items-center gap-2 text-slate-400 hover:text-amber-600 transition-all cursor-pointer">
+                    <Upload size={24} />{" "}
+                    <span className="text-sm font-bold">
+                      Chọn tệp hình ảnh (.jpg, .png, .webp)
+                    </span>
                     <input
                       ref={fileRef}
                       type="file"
@@ -413,122 +413,113 @@ export default function AdminNewsPage() {
                       className="hidden"
                       onChange={handleFileChange}
                     />
-                    <button
-                      onClick={() => fileRef.current?.click()}
-                      className="w-full border-2 border-dashed border-theme-border-strong hover:border-brand-gold-primary/50 rounded-xl py-5 flex flex-col items-center gap-2 text-theme-text-secondary hover:text-brand-gold-primary transition-all duration-200 group bg-theme-surfaceSecondary/30"
-                    >
-                      <Upload
-                        size={20}
-                        className="group-hover:-translate-y-1 transition-transform"
-                      />
-                      <span className="text-sm font-medium">
-                        Nhấn để chọn ảnh
-                      </span>
-                      <span className="text-xs opacity-60">
-                        JPG, PNG, WEBP — tối đa 5MB
-                      </span>
-                    </button>
-                  </div>
-                )}
-
-                {imgTab === "url" && (
+                  </label>
+                ) : (
                   <div className="flex gap-2">
                     <input
                       value={urlInput}
                       onChange={(e) => setUrlInput(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && applyUrl()}
-                      className="input-dark flex-1 text-sm"
-                      placeholder="https://example.com/image.jpg"
+                      className={`${inputClasses} h-11`}
+                      placeholder="Dán link ảnh từ Unsplash, Google..."
                     />
                     <button
                       onClick={applyUrl}
-                      className="btn-primary px-4 text-sm whitespace-nowrap"
+                      className="bg-slate-900 dark:bg-brand-gold text-white dark:text-amber-900 px-5 rounded-xl font-bold text-sm"
                     >
-                      Áp dụng
+                      Lấy ảnh
                     </button>
                   </div>
                 )}
               </div>
 
-              {/* ── NỘI DUNG ── */}
-              <div>
-                <label className="text-xs text-theme-text-tertiary mb-1.5 block">
-                  Tiêu đề *
-                </label>
-                <input
-                  value={form.title}
-                  onChange={setField("title")}
-                  className="input-dark"
-                  placeholder="Tiêu đề bài viết..."
-                />
-              </div>
-              <div>
-                <label className="text-xs text-theme-text-tertiary mb-1.5 block">
-                  Slug (URL)
-                </label>
-                <input
-                  value={form.slug}
-                  onChange={setField("slug")}
-                  className="input-dark font-mono text-sm"
-                  placeholder="ten-bai-viet"
-                />
-              </div>
-              <div>
-                <label className="text-xs text-theme-text-tertiary mb-1.5 block">
-                  Tóm tắt
-                </label>
-                <textarea
-                  value={form.excerpt}
-                  onChange={setField("excerpt")}
-                  className="input-dark h-20 resize-none"
-                  placeholder="Mô tả ngắn hiển thị ở danh sách..."
-                />
-              </div>
-              <div>
-                <label className="text-xs text-theme-text-tertiary mb-1.5 block">
-                  Nội dung bài viết
-                </label>
-                <textarea
-                  value={form.content}
-                  onChange={setField("content")}
-                  className="input-dark h-48 resize-none"
-                  placeholder="Nội dung chi tiết bài viết..."
-                />
-              </div>
-              <label className="flex items-center gap-2 cursor-pointer pt-2">
-                <input
-                  type="checkbox"
-                  checked={form.isPublished}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, isPublished: e.target.checked }))
-                  }
-                  className="w-4 h-4 accent-brand-gold-primary"
-                />
-                <span className="text-sm text-theme-text-base">
-                  Đăng ngay (hiển thị công khai)
-                </span>
-              </label>
+              {/* Form Content */}
+              <div className="space-y-4">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">
+                    Tiêu đề bài viết *
+                  </label>
+                  <input
+                    value={form.title}
+                    onChange={setField("title")}
+                    className={`${inputClasses} h-12`}
+                    placeholder="VD: Chính sách visa Úc mới năm 2026"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">
+                    Đường dẫn URL (Slug) *
+                  </label>
+                  <input
+                    value={form.slug}
+                    onChange={setField("slug")}
+                    className={`${inputClasses} h-12 font-mono`}
+                    placeholder="chinh-sach-visa-uc-2026"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">
+                    Tóm tắt ngắn
+                  </label>
+                  <textarea
+                    value={form.excerpt}
+                    onChange={setField("excerpt")}
+                    className={`${inputClasses} py-3 h-24 resize-none`}
+                    placeholder="Mô tả sơ lược về bài viết hiển thị tại trang danh sách..."
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">
+                    Nội dung chi tiết
+                  </label>
+                  <textarea
+                    value={form.content}
+                    onChange={setField("content")}
+                    className={`${inputClasses} py-3 h-48 resize-none`}
+                    placeholder="Viết nội dung bài viết tại đây..."
+                  />
+                </div>
 
-              <div className="flex gap-3 pt-2">
-                <button
-                  onClick={handleSave}
-                  disabled={saving}
-                  className="btn-primary flex-1 flex items-center justify-center gap-2 py-3 disabled:opacity-60"
-                >
-                  <CheckCircle size={15} />{" "}
-                  {saving
-                    ? "Đang lưu..."
-                    : modal === "add"
-                      ? "Đăng bài"
-                      : "Lưu thay đổi"}
-                </button>
-                <button
-                  onClick={() => setModal(null)}
-                  className="btn-outline px-6"
-                >
-                  Hủy
-                </button>
+                <label className="flex items-center gap-3 cursor-pointer group py-2">
+                  <div
+                    className={`w-10 h-5 rounded-full relative transition-colors ${form.isPublished ? "bg-green-500" : "bg-slate-200 dark:bg-white/10"}`}
+                  >
+                    <div
+                      className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${form.isPublished ? "left-6" : "left-1"}`}
+                    />
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={form.isPublished}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, isPublished: e.target.checked }))
+                    }
+                    className="hidden"
+                  />
+                  <span className="text-sm font-bold text-slate-700 dark:text-white uppercase tracking-tighter">
+                    Hiển thị công khai
+                  </span>
+                </label>
               </div>
+            </div>
+
+            <div className="p-6 border-t border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-black/20 flex gap-3">
+              <button
+                onClick={() => setModal(null)}
+                className="flex-1 h-12 rounded-2xl font-bold border border-slate-200 dark:border-brand-border text-slate-600 dark:text-white hover:bg-white dark:hover:bg-white/5 transition-all"
+              >
+                Hủy bỏ
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                className="flex-[2] h-12 btn-primary font-bold shadow-lg shadow-amber-500/20 disabled:opacity-50"
+              >
+                {saving
+                  ? "Đang xử lý..."
+                  : modal === "add"
+                    ? "Đăng bài ngay"
+                    : "Cập nhật bài viết"}
+              </button>
             </div>
           </div>
         </div>
@@ -536,7 +527,7 @@ export default function AdminNewsPage() {
 
       {deleting && (
         <ConfirmDeleteModal
-          message="Bài viết sẽ bị xóa vĩnh viễn."
+          message="Bài viết này sẽ bị xóa vĩnh viễn khỏi hệ thống."
           onConfirm={() => handleDelete(deleting)}
           onCancel={() => setDeleting(null)}
         />

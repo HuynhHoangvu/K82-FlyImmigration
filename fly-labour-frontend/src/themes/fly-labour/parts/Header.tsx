@@ -63,47 +63,48 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 border-b transition-all duration-300 header-theme ${
-        isScrolled ? "backdrop-blur-lg shadow-md shadow-black/6" : ""
+      className={`fixed top-0 left-0 right-0 z-50 border-b border-transparent transition-all duration-300 bg-white/90 dark:bg-[#0d1117]/90 ${
+        isScrolled
+          ? "backdrop-blur-md shadow-sm border-slate-200 dark:border-white/5"
+          : ""
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16 md:h-18">
+        <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group shrink-0">
+          <Link to="/" className="flex items-center gap-2.5 group shrink-0">
             <div
-              className="w-9 h-9 rounded-lg flex items-center justify-center rotate-3 group-hover:rotate-0 transition-transform duration-300"
+              className="w-10 h-10 rounded-xl flex items-center justify-center rotate-3 group-hover:rotate-0 transition-transform duration-300 shadow-sm"
               style={{
                 background: "linear-gradient(135deg, #e4a808, #fdd52f)",
               }}
             >
-              <span className="text-white font-display text-base font-black">
+              <span className="text-amber-900 font-display text-lg font-black tracking-tighter">
                 FI
               </span>
             </div>
-            <div>
-              <span className="font-display text-xl text-slate-900 dark:text-white tracking-wider">
+            <div className="flex flex-col leading-none justify-center mt-0.5">
+              <span className="font-display text-[1.3rem] font-bold text-slate-900 dark:text-white tracking-wide">
                 FLY
               </span>
               <span
-                className="font-display text-xl tracking-wider"
+                className="font-display text-[0.8rem] font-bold tracking-widest uppercase"
                 style={{ color: "#e4a808" }}
               >
-                {" "}
                 Immigration
               </span>
             </div>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-0.5">
+          <nav className="hidden lg:flex items-center gap-1">
             {/* Trang chủ */}
             <Link
               to="/"
-              className={`px-3 py-2 text-sm font-semibold rounded-lg transition-colors ${
+              className={`px-3.5 py-2 text-sm font-semibold rounded-xl transition-all ${
                 isActive("/")
-                  ? "text-slate-900 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20"
-                  : "text-slate-900 dark:text-gray-100 hover:text-slate-900 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                  ? "text-amber-700 bg-amber-50 dark:text-brand-gold dark:bg-brand-gold/10"
+                  : "text-slate-600 dark:text-gray-300 hover:text-amber-600 hover:bg-amber-50 dark:hover:text-brand-gold dark:hover:bg-brand-gold/10"
               }`}
             >
               {lang === "vi" ? "Trang chủ" : "Home"}
@@ -116,24 +117,24 @@ export default function Header() {
               onMouseLeave={() => setStudyOpen(false)}
             >
               <button
-                className={`flex items-center gap-1 px-3 py-2 text-sm font-semibold rounded-lg transition-colors ${
+                className={`flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl transition-all ${
                   location.pathname === "/study"
-                    ? "text-slate-900 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20"
-                    : "text-slate-900 dark:text-gray-100 hover:text-slate-900 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                    ? "text-amber-700 bg-amber-50 dark:text-brand-gold dark:bg-brand-gold/10"
+                    : "text-slate-600 dark:text-gray-300 hover:text-amber-600 hover:bg-amber-50 dark:hover:text-brand-gold dark:hover:bg-brand-gold/10"
                 }`}
               >
                 {lang === "vi" ? "Du học" : "Study Abroad"}
                 <ChevronDown
-                  size={13}
+                  size={14}
                   className={`transition-transform duration-200 ${studyOpen ? "rotate-180" : ""}`}
                 />
               </button>
 
               {studyOpen && (
-                <div className="absolute top-full left-0 w-52 pt-2">
-                  <div className="header-theme border rounded-xl shadow-xl overflow-hidden">
-                    <div className="px-3 pt-2.5 pb-1">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-900 dark:text-gray-100">
+                <div className="absolute top-full left-0 w-56 pt-2">
+                  <div className="bg-white dark:bg-brand-card border border-slate-100 dark:border-brand-border rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-2xl overflow-hidden py-1">
+                    <div className="px-4 py-2">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-brand-muted">
                         {lang === "vi" ? "Chọn quốc gia" : "Select country"}
                       </p>
                     </div>
@@ -141,16 +142,17 @@ export default function Header() {
                       <Link
                         key={c.value}
                         to={`/study?country=${c.value}`}
-                        className="flex items-center gap-2 px-3 py-2 text-sm text-slate-900 dark:text-gray-100 hover:text-amber-700 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors"
+                        className="flex items-center gap-2.5 px-4 py-2 text-sm font-medium text-slate-700 dark:text-gray-200 hover:text-amber-600 hover:bg-amber-50/50 dark:hover:text-brand-gold dark:hover:bg-brand-gold/5 transition-colors"
                         onClick={() => setStudyOpen(false)}
                       >
-                        {c.label}
+                        <span className="text-lg">{c.label.split(" ")[0]}</span>
+                        <span>{c.label.split(" ").slice(1).join(" ")}</span>
                       </Link>
                     ))}
-                    <div className="border-t border-gray-100 m-1">
+                    <div className="border-t border-slate-100 dark:border-white/5 mx-2 mt-2 pt-2">
                       <Link
                         to="/study"
-                        className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-slate-900 dark:text-gray-100 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors rounded-lg"
+                        className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-amber-600 dark:text-brand-gold hover:bg-amber-50 dark:hover:bg-brand-gold/5 transition-colors rounded-xl"
                         onClick={() => setStudyOpen(false)}
                       >
                         {lang === "vi"
@@ -170,24 +172,24 @@ export default function Header() {
               onMouseLeave={() => setTravelOpen(false)}
             >
               <button
-                className={`flex items-center gap-1 px-3 py-2 text-sm font-semibold rounded-lg transition-colors ${
+                className={`flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl transition-all ${
                   location.pathname === "/travel"
-                    ? "text-slate-900 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20"
-                    : "text-slate-900 dark:text-gray-100 hover:text-slate-900 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                    ? "text-amber-700 bg-amber-50 dark:text-brand-gold dark:bg-brand-gold/10"
+                    : "text-slate-600 dark:text-gray-300 hover:text-amber-600 hover:bg-amber-50 dark:hover:text-brand-gold dark:hover:bg-brand-gold/10"
                 }`}
               >
                 {lang === "vi" ? "Du lịch" : "Travel"}
                 <ChevronDown
-                  size={13}
+                  size={14}
                   className={`transition-transform duration-200 ${travelOpen ? "rotate-180" : ""}`}
                 />
               </button>
 
               {travelOpen && (
-                <div className="absolute top-full left-0 w-52 pt-2">
-                  <div className="header-theme border rounded-xl shadow-xl overflow-hidden">
-                    <div className="px-3 pt-2.5 pb-1">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-900 dark:text-gray-100">
+                <div className="absolute top-full left-0 w-56 pt-2">
+                  <div className="bg-white dark:bg-brand-card border border-slate-100 dark:border-brand-border rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-2xl overflow-hidden py-1">
+                    <div className="px-4 py-2">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-brand-muted">
                         {lang === "vi" ? "Chọn quốc gia" : "Select country"}
                       </p>
                     </div>
@@ -195,16 +197,17 @@ export default function Header() {
                       <Link
                         key={c.value}
                         to={`/travel?country=${c.value}`}
-                        className="flex items-center gap-2 px-3 py-2 text-sm text-slate-900 dark:text-gray-100 hover:text-amber-700 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors"
+                        className="flex items-center gap-2.5 px-4 py-2 text-sm font-medium text-slate-700 dark:text-gray-200 hover:text-amber-600 hover:bg-amber-50/50 dark:hover:text-brand-gold dark:hover:bg-brand-gold/5 transition-colors"
                         onClick={() => setTravelOpen(false)}
                       >
-                        {c.label}
+                        <span className="text-lg">{c.label.split(" ")[0]}</span>
+                        <span>{c.label.split(" ").slice(1).join(" ")}</span>
                       </Link>
                     ))}
-                    <div className="border-t border-gray-100 m-1">
+                    <div className="border-t border-slate-100 dark:border-white/5 mx-2 mt-2 pt-2">
                       <Link
                         to="/travel"
-                        className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-slate-900 dark:text-gray-100 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors rounded-lg"
+                        className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-amber-600 dark:text-brand-gold hover:bg-amber-50 dark:hover:bg-brand-gold/5 transition-colors rounded-xl"
                         onClick={() => setTravelOpen(false)}
                       >
                         {lang === "vi"
@@ -224,24 +227,24 @@ export default function Header() {
               onMouseLeave={() => setLabourOpen(false)}
             >
               <button
-                className={`flex items-center gap-1 px-3 py-2 text-sm font-semibold rounded-lg transition-colors ${
+                className={`flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl transition-all ${
                   location.pathname === "/jobs"
-                    ? "text-slate-900 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20"
-                    : "text-slate-900 dark:text-gray-100 hover:text-slate-900 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                    ? "text-amber-700 bg-amber-50 dark:text-brand-gold dark:bg-brand-gold/10"
+                    : "text-slate-600 dark:text-gray-300 hover:text-amber-600 hover:bg-amber-50 dark:hover:text-brand-gold dark:hover:bg-brand-gold/10"
                 }`}
               >
                 {lang === "vi" ? "Lao động" : "Labour"}
                 <ChevronDown
-                  size={13}
+                  size={14}
                   className={`transition-transform duration-200 ${labourOpen ? "rotate-180" : ""}`}
                 />
               </button>
 
               {labourOpen && (
-                <div className="absolute top-full left-0 w-52 pt-2">
-                  <div className="header-theme border rounded-xl shadow-xl overflow-hidden">
-                    <div className="px-3 pt-2.5 pb-1">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-900 dark:text-gray-100">
+                <div className="absolute top-full left-0 w-56 pt-2">
+                  <div className="bg-white dark:bg-brand-card border border-slate-100 dark:border-brand-border rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-2xl overflow-hidden py-1">
+                    <div className="px-4 py-2">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-brand-muted">
                         {lang === "vi" ? "Chọn quốc gia" : "Select country"}
                       </p>
                     </div>
@@ -249,16 +252,17 @@ export default function Header() {
                       <Link
                         key={c.value}
                         to={`/jobs?country=${c.value}`}
-                        className="flex items-center gap-2 px-3 py-2 text-sm text-slate-900 dark:text-gray-100 hover:text-amber-700 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors"
+                        className="flex items-center gap-2.5 px-4 py-2 text-sm font-medium text-slate-700 dark:text-gray-200 hover:text-amber-600 hover:bg-amber-50/50 dark:hover:text-brand-gold dark:hover:bg-brand-gold/5 transition-colors"
                         onClick={() => setLabourOpen(false)}
                       >
-                        {c.label}
+                        <span className="text-lg">{c.label.split(" ")[0]}</span>
+                        <span>{c.label.split(" ").slice(1).join(" ")}</span>
                       </Link>
                     ))}
-                    <div className="border-t border-gray-100 m-1">
+                    <div className="border-t border-slate-100 dark:border-white/5 mx-2 mt-2 pt-2">
                       <Link
                         to="/jobs"
-                        className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-slate-900 dark:text-gray-100 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors rounded-lg"
+                        className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-amber-600 dark:text-brand-gold hover:bg-amber-50 dark:hover:bg-brand-gold/5 transition-colors rounded-xl"
                         onClick={() => setLabourOpen(false)}
                       >
                         {lang === "vi"
@@ -274,10 +278,10 @@ export default function Header() {
             {/* Tin tức */}
             <Link
               to="/news"
-              className={`px-3 py-2 text-sm font-semibold rounded-lg transition-colors ${
+              className={`px-3.5 py-2 text-sm font-semibold rounded-xl transition-all ${
                 isActive("/news")
-                  ? "text-slate-900 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20"
-                  : "text-slate-900 dark:text-gray-100 hover:text-slate-900 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                  ? "text-amber-700 bg-amber-50 dark:text-brand-gold dark:bg-brand-gold/10"
+                  : "text-slate-600 dark:text-gray-300 hover:text-amber-600 hover:bg-amber-50 dark:hover:text-brand-gold dark:hover:bg-brand-gold/10"
               }`}
             >
               {lang === "vi" ? "Tin tức" : "News"}
@@ -286,27 +290,29 @@ export default function Header() {
             {/* Liên hệ */}
             <Link
               to="/contact"
-              className={`px-3 py-2 text-sm font-semibold rounded-lg transition-colors ${
+              className={`px-3.5 py-2 text-sm font-semibold rounded-xl transition-all ${
                 isActive("/contact")
-                  ? "text-slate-900 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20"
-                  : "text-slate-900 dark:text-gray-100 hover:text-slate-900 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                  ? "text-amber-700 bg-amber-50 dark:text-brand-gold dark:bg-brand-gold/10"
+                  : "text-slate-600 dark:text-gray-300 hover:text-amber-600 hover:bg-amber-50 dark:hover:text-brand-gold dark:hover:bg-brand-gold/10"
               }`}
             >
               {lang === "vi" ? "Liên hệ" : "Contact"}
             </Link>
 
             {/* Số điện thoại */}
-            <a
-              href="tel:+84901234567"
-              className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
-            >
-              <Phone size={14} />
-              0333 318 882
-            </a>
+            <div className="ml-2 pl-3 border-l border-slate-200 dark:border-white/10">
+              <a
+                href="tel:+84901234567"
+                className="flex items-center gap-1.5 px-3 py-2 text-sm font-bold text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-400/10 rounded-xl transition-colors"
+              >
+                <Phone size={14} className="fill-current" />
+                0333 318 882
+              </a>
+            </div>
           </nav>
 
-          {/* Right side */}
-          <div className="flex items-center gap-2">
+          {/* Right side (Icons & Auth) */}
+          <div className="flex items-center gap-2.5">
             {/* Theme toggle */}
             <button
               onClick={toggleTheme}
@@ -315,9 +321,9 @@ export default function Header() {
                   ? "Chuyển sang Light Mode"
                   : "Chuyển sang Dark Mode"
               }
-              className="hidden md:flex items-center justify-center w-9 h-9 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-amber-400 transition-colors shadow-sm text-slate-900 dark:text-gray-100 hover:text-slate-900 dark:hover:text-amber-400"
+              className="hidden md:flex items-center justify-center w-10 h-10 rounded-xl border border-slate-200 dark:border-white/10 text-slate-500 dark:text-gray-400 hover:border-amber-400 hover:text-amber-600 dark:hover:border-brand-gold dark:hover:text-brand-gold transition-colors bg-white dark:bg-brand-card shadow-sm"
             >
-              {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+              {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
             </button>
 
             {/* Language toggle - icon only */}
@@ -326,39 +332,39 @@ export default function Header() {
               title={
                 lang === "vi" ? "Chuyển sang English" : "Switch to Tiếng Việt"
               }
-              className="hidden md:flex items-center justify-center w-9 h-9 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-amber-400 transition-colors shadow-sm text-lg"
+              className="hidden md:flex items-center justify-center w-10 h-10 rounded-xl border border-slate-200 dark:border-white/10 hover:border-amber-400 dark:hover:border-brand-gold transition-colors bg-white dark:bg-brand-card shadow-sm text-lg"
             >
-              {lang === "vi" ? "🇻🇳" : "En"}
+              {lang === "vi" ? "🇻🇳" : "🇬🇧"}
             </button>
 
             {isAuthenticated && user ? (
               <div className="relative">
                 <button
                   onClick={() => setUserMenu(!userMenu)}
-                  className="flex items-center gap-2 header-theme border rounded-xl px-3 py-2 hover:border-amber-400 transition-colors shadow-sm"
+                  className="flex items-center gap-2 bg-white dark:bg-brand-card border border-slate-200 dark:border-white/10 rounded-xl p-1.5 pr-3 hover:border-amber-400 dark:hover:border-brand-gold transition-colors shadow-sm"
                 >
                   <div
-                    className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-900 font-bold text-xs"
+                    className="w-7 h-7 rounded-lg flex items-center justify-center text-amber-900 font-bold text-xs"
                     style={{
                       background: "linear-gradient(135deg,#e4a808,#fdd52f)",
                     }}
                   >
                     {user.fullName.charAt(0)}
                   </div>
-                  <span className="text-sm text-slate-900 dark:text-gray-100 hidden sm:block max-w-[100px] truncate">
+                  <span className="text-sm font-semibold text-slate-700 dark:text-gray-200 hidden sm:block max-w-[100px] truncate">
                     {user.fullName}
                   </span>
                   <ChevronDown
                     size={14}
-                    className="text-slate-900 dark:text-gray-100"
+                    className="text-slate-400 dark:text-gray-400"
                   />
                 </button>
                 {userMenu && (
-                  <div className="absolute right-0 top-full mt-2 w-56 header-theme border rounded-xl shadow-xl overflow-hidden">
+                  <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-brand-card border border-slate-100 dark:border-brand-border rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-2xl overflow-hidden py-1">
                     {user.role === "admin" && (
                       <Link
                         to="/admin"
-                        className="flex items-center gap-2 px-4 py-3 text-sm text-slate-900 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors"
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-slate-700 dark:text-gray-200 hover:text-amber-600 hover:bg-amber-50 dark:hover:text-brand-gold dark:hover:bg-brand-gold/10 transition-colors"
                         onClick={() => setUserMenu(false)}
                       >
                         <LayoutDashboard size={16} /> {t("nav.adminDashboard")}
@@ -367,7 +373,7 @@ export default function Header() {
                     {user.role === "employer" && (
                       <Link
                         to="/employer"
-                        className="flex items-center gap-2 px-4 py-3 text-sm text-slate-900 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors"
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-slate-700 dark:text-gray-200 hover:text-amber-600 hover:bg-amber-50 dark:hover:text-brand-gold dark:hover:bg-brand-gold/10 transition-colors"
                         onClick={() => setUserMenu(false)}
                       >
                         <Briefcase size={16} /> {t("nav.employerDashboard")}
@@ -375,14 +381,15 @@ export default function Header() {
                     )}
                     <Link
                       to="/profile"
-                      className="flex items-center gap-2 px-4 py-3 text-sm text-slate-900 dark:text-gray-100 hover:text-slate-900 dark:hover:text-amber-400 hover:bg-gray-50 dark:hover:bg-gray-900/20 transition-colors"
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-slate-700 dark:text-gray-200 hover:text-amber-600 hover:bg-amber-50 dark:hover:text-brand-gold dark:hover:bg-brand-gold/10 transition-colors"
                       onClick={() => setUserMenu(false)}
                     >
                       <User size={16} /> {t("nav.myProfile")}
                     </Link>
+                    <div className="border-t border-slate-100 dark:border-white/5 my-1" />
                     <button
                       onClick={handleLogout}
-                      className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                      className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
                     >
                       <LogOut size={16} /> {t("nav.signOut")}
                     </button>
@@ -392,7 +399,7 @@ export default function Header() {
             ) : (
               <Link
                 to="/login"
-                className="hidden md:block btn-primary text-sm px-4 py-2"
+                className="hidden md:flex items-center btn-primary text-sm font-medium px-5 py-2.5 h-10"
               >
                 {lang === "vi" ? "Đăng nhập" : "Sign In"}
               </Link>
@@ -400,7 +407,7 @@ export default function Header() {
 
             {/* Mobile hamburger */}
             <button
-              className="lg:hidden text-slate-900 dark:text-gray-100 p-2"
+              className="lg:hidden flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-gray-300"
               onClick={() => setMobileOpen(!mobileOpen)}
             >
               {mobileOpen ? <X size={22} /> : <Menu size={22} />}
@@ -409,72 +416,75 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile menu (Trượt xuống) */}
       {mobileOpen && (
-        <div className="lg:hidden header-theme border-t shadow-lg">
+        <div className="lg:hidden bg-white dark:bg-brand-card border-t border-slate-200 dark:border-brand-border shadow-2xl max-h-[80vh] overflow-y-auto">
           {/* Trang chủ */}
           <Link
             to="/"
-            className="block px-6 py-3 text-slate-900 dark:text-gray-100 hover:text-slate-900 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors border-b border-gray-100 dark:border-gray-800 text-sm font-semibold"
+            className="block px-6 py-4 text-slate-900 dark:text-white hover:text-amber-600 dark:hover:text-brand-gold hover:bg-amber-50 dark:hover:bg-brand-gold/10 transition-colors border-b border-slate-100 dark:border-white/5 text-sm font-bold"
             onClick={() => setMobileOpen(false)}
           >
             {lang === "vi" ? "Trang chủ" : "Home"}
           </Link>
 
           {/* Du học */}
-          <div className="border-b border-gray-100 dark:border-gray-800">
-            <div className="px-6 py-3 text-amber-700 dark:text-amber-400 text-sm font-bold bg-amber-50 dark:bg-amber-900/20">
+          <div className="border-b border-slate-100 dark:border-white/5">
+            <div className="px-6 py-3 text-amber-600 dark:text-brand-gold text-xs font-bold uppercase tracking-wider bg-amber-50 dark:bg-brand-gold/5">
               {lang === "vi" ? "Du học theo quốc gia" : "Study by Country"}
             </div>
             {LABOUR_COUNTRIES.map((c) => (
               <Link
                 key={c.value}
                 to={`/study?country=${c.value}`}
-                className="block px-8 py-2.5 text-slate-900 dark:text-gray-100 hover:text-amber-700 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors text-sm border-b border-gray-50 dark:border-gray-900"
+                className="flex items-center gap-2.5 px-6 py-3.5 text-slate-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-brand-gold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors text-sm font-medium border-b border-slate-50 dark:border-white/5 last:border-0"
                 onClick={() => setMobileOpen(false)}
               >
-                {c.label}
+                <span className="text-lg">{c.label.split(" ")[0]}</span>
+                <span>{c.label.split(" ").slice(1).join(" ")}</span>
               </Link>
             ))}
           </div>
 
           {/* Du lịch */}
-          <div className="border-b border-gray-100 dark:border-gray-800">
-            <div className="px-6 py-3 text-amber-700 dark:text-amber-400 text-sm font-bold bg-amber-50 dark:bg-amber-900/20">
+          <div className="border-b border-slate-100 dark:border-white/5">
+            <div className="px-6 py-3 text-amber-600 dark:text-brand-gold text-xs font-bold uppercase tracking-wider bg-amber-50 dark:bg-brand-gold/5">
               {lang === "vi" ? "Du lịch theo quốc gia" : "Travel by Country"}
             </div>
             {LABOUR_COUNTRIES.map((c) => (
               <Link
                 key={c.value}
                 to={`/travel?country=${c.value}`}
-                className="block px-8 py-2.5 text-slate-900 dark:text-gray-100 hover:text-amber-700 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors text-sm border-b border-gray-50 dark:border-gray-900"
+                className="flex items-center gap-2.5 px-6 py-3.5 text-slate-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-brand-gold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors text-sm font-medium border-b border-slate-50 dark:border-white/5 last:border-0"
                 onClick={() => setMobileOpen(false)}
               >
-                {c.label}
+                <span className="text-lg">{c.label.split(" ")[0]}</span>
+                <span>{c.label.split(" ").slice(1).join(" ")}</span>
               </Link>
             ))}
           </div>
 
           {/* Lao động */}
-          <div className="border-b border-gray-100 dark:border-gray-800">
-            <div className="px-6 py-3 text-amber-700 dark:text-amber-400 text-sm font-bold bg-amber-50 dark:bg-amber-900/20">
+          <div className="border-b border-slate-100 dark:border-white/5">
+            <div className="px-6 py-3 text-amber-600 dark:text-brand-gold text-xs font-bold uppercase tracking-wider bg-amber-50 dark:bg-brand-gold/5">
               {lang === "vi" ? "Lao động theo quốc gia" : "Labour by Country"}
             </div>
             {LABOUR_COUNTRIES.map((c) => (
               <Link
                 key={c.value}
                 to={`/jobs?country=${c.value}`}
-                className="block px-8 py-2.5 text-slate-900 dark:text-gray-100 hover:text-amber-700 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors text-sm border-b border-gray-50 dark:border-gray-900"
+                className="flex items-center gap-2.5 px-6 py-3.5 text-slate-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-brand-gold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors text-sm font-medium border-b border-slate-50 dark:border-white/5 last:border-0"
                 onClick={() => setMobileOpen(false)}
               >
-                {c.label}
+                <span className="text-lg">{c.label.split(" ")[0]}</span>
+                <span>{c.label.split(" ").slice(1).join(" ")}</span>
               </Link>
             ))}
           </div>
 
           <Link
             to="/news"
-            className="block px-6 py-3 text-slate-900 dark:text-gray-100 hover:text-slate-900 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors border-b border-gray-100 dark:border-gray-800 text-sm font-semibold"
+            className="block px-6 py-4 text-slate-900 dark:text-white hover:text-amber-600 dark:hover:text-brand-gold hover:bg-amber-50 dark:hover:bg-brand-gold/10 transition-colors border-b border-slate-100 dark:border-white/5 text-sm font-bold"
             onClick={() => setMobileOpen(false)}
           >
             {lang === "vi" ? "Tin tức" : "News"}
@@ -482,56 +492,52 @@ export default function Header() {
 
           <Link
             to="/contact"
-            className="block px-6 py-3 text-slate-900 dark:text-gray-100 hover:text-slate-900 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors border-b border-gray-100 dark:border-gray-800 text-sm font-semibold"
+            className="block px-6 py-4 text-slate-900 dark:text-white hover:text-amber-600 dark:hover:text-brand-gold hover:bg-amber-50 dark:hover:bg-brand-gold/10 transition-colors border-b border-slate-100 dark:border-white/5 text-sm font-bold"
             onClick={() => setMobileOpen(false)}
           >
             {lang === "vi" ? "Liên hệ" : "Contact"}
           </Link>
 
-          {/* Số điện thoại */}
+          {/* Số điện thoại Mobile */}
           <a
             href="tel:+84901234567"
-            className="flex items-center gap-2 px-6 py-3 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors border-b border-gray-100 dark:border-gray-800 text-sm font-semibold"
+            className="flex items-center gap-2 px-6 py-4 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-400/10 transition-colors border-b border-slate-100 dark:border-white/5 text-sm font-bold"
           >
-            <Phone size={15} /> 0901 234 567
+            <Phone size={16} className="fill-current" /> 0333 318 882
           </a>
 
-          {/* Theme toggle mobile */}
-          <div className="px-6 py-3 border-b border-gray-100 dark:border-gray-800">
+          {/* Toggle công cụ Mobile */}
+          <div className="flex items-center px-6 py-4 border-b border-slate-100 dark:border-white/5">
             <button
               onClick={toggleTheme}
-              className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-gray-100 hover:text-slate-900 dark:hover:text-amber-400"
+              className="flex-1 flex items-center gap-2.5 text-sm font-semibold text-slate-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-brand-gold border-r border-slate-200 dark:border-white/10"
             >
-              {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-              {theme === "dark"
-                ? lang === "vi"
-                  ? "Chế độ sáng"
-                  : "Light Mode"
-                : lang === "vi"
-                  ? "Chế độ tối"
-                  : "Dark Mode"}
+              {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+              {lang === "vi"
+                ? theme === "dark"
+                  ? "Sáng"
+                  : "Tối"
+                : theme === "dark"
+                  ? "Light"
+                  : "Dark"}
             </button>
-          </div>
-
-          {/* Language toggle mobile - icon only */}
-          <div className="px-6 py-3 border-b border-gray-100 dark:border-gray-800">
             <button
               onClick={toggle}
-              className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-gray-100 hover:text-slate-900 dark:hover:text-amber-400"
+              className="flex-1 flex justify-end items-center gap-2.5 text-sm font-semibold text-slate-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-brand-gold"
             >
-              <span className="text-lg">{lang === "vi" ? "🇻🇳" : "🇬🇧"}</span>
+              <span className="text-xl">{lang === "vi" ? "🇻🇳" : "🇬🇧"}</span>
               {lang === "vi" ? "English" : "Tiếng Việt"}
             </button>
           </div>
 
           {!isAuthenticated && (
-            <div className="p-4">
+            <div className="p-6 bg-slate-50 dark:bg-white/5">
               <Link
                 to="/login"
-                className="btn-primary w-full text-center text-sm py-2 font-semibold rounded-xl"
+                className="btn-primary flex justify-center text-sm py-3.5 font-semibold rounded-xl w-full"
                 onClick={() => setMobileOpen(false)}
               >
-                {lang === "vi" ? "Đăng nhập" : "Sign In"}
+                {lang === "vi" ? "Đăng nhập hệ thống" : "Sign In"}
               </Link>
             </div>
           )}

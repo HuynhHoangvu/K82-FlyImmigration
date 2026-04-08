@@ -1,7 +1,17 @@
 import { useState, useEffect } from "react";
 import ConfirmDeleteModal from "@/admin/components/ConfirmDeleteModal";
-import { Plus, Pencil, Trash2, X, Eye, EyeOff, Save } from "lucide-react";
-import type { ReactNode } from "react";
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  X,
+  Eye,
+  EyeOff,
+  Save,
+  FileText,
+  ListOrdered,
+  Loader2,
+} from "lucide-react";
 import toast from "react-hot-toast";
 import { settingsApi } from "@/core/services/api";
 
@@ -45,7 +55,7 @@ const DEFAULT_POLICIES: Policy[] = [
 ];
 
 export default function AdminPoliciesPage() {
-  const [policies, setPolicies] = useState<Policy[]>(DEFAULT_POLICIES);
+  const [policies, setPolicies] = useState<Policy[]>([]);
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState<"add" | "edit" | null>(null);
   const [editing, setEditing] = useState<Policy | null>(null);
@@ -58,6 +68,9 @@ export default function AdminPoliciesPage() {
   });
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [confirmDeleteSlug, setConfirmDeleteSlug] = useState<string | null>(
+    null,
+  );
 
   useEffect(() => {
     loadPolicies();
@@ -125,8 +138,6 @@ export default function AdminPoliciesPage() {
     }
   };
 
-  const [confirmDeleteSlug, setConfirmDeleteSlug] = useState<string | null>(null);
-
   const handleDelete = async (slug: string) => {
     setDeleting(slug);
     try {
@@ -155,89 +166,87 @@ export default function AdminPoliciesPage() {
     }
   };
 
+  const cardClasses =
+    "bg-white dark:bg-brand-card border border-slate-200 dark:border-brand-border rounded-2xl shadow-sm transition-colors duration-300";
+  const inputClasses =
+    "w-full h-12 text-sm rounded-xl px-4 bg-slate-50 dark:bg-[#1a1a1a] border border-slate-200 dark:border-white/5 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-black focus:border-amber-400 dark:focus:border-brand-gold outline-none transition-all";
+
   if (loading) {
-    return <div className="animate-pulse">Loading...</div>;
+    return (
+      <div className="flex flex-col items-center justify-center py-32 text-slate-400">
+        <Loader2 size={32} className="animate-spin mb-4 text-amber-500" />
+        <p className="font-medium animate-pulse">Đang tải dữ liệu...</p>
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-5 max-w-6xl">
+    <div className="space-y-6 transition-colors duration-300">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-xl font-bold text-theme-text-base">
-            📋 Quản lý Điều khoản & Chính sách
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <FileText className="text-amber-600 dark:text-brand-gold" />
+            Quản lý Điều khoản & Chính sách
           </h1>
-          <p className="text-theme-text-tertiary text-sm mt-1">
-            Thêm/sửa nội dung hiển thị ở footer và các trang riêng
+          <p className="text-slate-500 dark:text-brand-muted text-sm mt-1">
+            Chỉnh sửa nội dung pháp lý hiển thị tại Footer và các trang tĩnh
           </p>
         </div>
         <button
           onClick={openAddModal}
-          className="flex items-center gap-2 px-4 py-2 bg-brand-gold-primary text-slate-900 rounded-lg font-semibold hover:bg-brand-gold-primary/90 transition-colors"
+          className="btn-primary flex items-center gap-2 text-sm px-5 py-2.5 shadow-lg shadow-amber-500/20"
         >
-          <Plus size={16} /> Thêm mới
+          <Plus size={18} /> Thêm mới chính sách
         </button>
       </div>
 
       {/* Table */}
-      <div className="card-dark overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
+      <div className={`${cardClasses} overflow-hidden`}>
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full border-collapse">
             <thead>
-              <tr className="border-b border-theme-border-default bg-theme-surfaceSecondary/50">
-                <th className="text-left px-4 py-3 text-xs text-theme-text-tertiary uppercase tracking-wide font-semibold">
-                  Tiêu đề
-                </th>
-                <th className="text-left px-4 py-3 text-xs text-theme-text-tertiary uppercase tracking-wide font-semibold">
-                  Slug
-                </th>
-                <th className="text-center px-4 py-3 text-xs text-theme-text-tertiary uppercase tracking-wide font-semibold">
-                  Hiển thị Footer
-                </th>
-                <th className="text-center px-4 py-3 text-xs text-theme-text-tertiary uppercase tracking-wide font-semibold">
-                  Thứ tự
-                </th>
-                <th className="text-right px-4 py-3 text-xs text-theme-text-tertiary uppercase tracking-wide font-semibold">
-                  Thao tác
-                </th>
+              <tr className="border-b border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-black/20 text-[10px] font-bold text-slate-400 dark:text-brand-muted uppercase tracking-widest">
+                <th className="text-left px-6 py-4">Tiêu đề chính sách</th>
+                <th className="text-left px-6 py-4">Đường dẫn (Slug)</th>
+                <th className="text-center px-6 py-4">Hiển thị Footer</th>
+                <th className="text-center px-6 py-4 w-24">Thứ tự</th>
+                <th className="text-right px-6 py-4">Thao tác</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-100 dark:divide-white/5">
               {policies.length === 0 ? (
                 <tr>
                   <td
                     colSpan={5}
-                    className="px-4 py-8 text-center text-theme-text-tertiary"
+                    className="px-6 py-20 text-center text-slate-400 italic"
                   >
-                    Chưa có chính sách nào. Hãy thêm mới!
+                    Chưa có dữ liệu chính sách nào được ghi nhận.
                   </td>
                 </tr>
               ) : (
                 policies.map((p) => (
                   <tr
                     key={p.slug}
-                    className="border-b border-theme-border-default/40 hover:bg-theme-surfaceSecondary/30 transition-colors"
+                    className="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors group"
                   >
-                    <td className="px-4 py-3">
-                      <div className="font-medium text-theme-text-base">
+                    <td className="px-6 py-4">
+                      <div className="font-bold text-slate-900 dark:text-white text-sm group-hover:text-amber-600 dark:group-hover:text-brand-gold transition-colors">
                         {p.title}
                       </div>
-                      <code className="text-xs text-theme-text-tertiary">
-                        {p.slug}
+                    </td>
+                    <td className="px-6 py-4">
+                      <code className="text-[10px] font-bold text-amber-700 dark:text-brand-gold bg-amber-50 dark:bg-brand-gold/10 border border-amber-200 dark:border-brand-gold/30 px-2 py-1 rounded-md uppercase tracking-tighter">
+                        /policy/{p.slug}
                       </code>
                     </td>
-                    <td className="px-4 py-3 text-theme-text-tertiary text-sm">
-                      <code className="bg-theme-background px-2 py-1 rounded">
-                        {p.slug}
-                      </code>
-                    </td>
-                    <td className="px-4 py-3 text-center">
+                    <td className="px-6 py-4 text-center">
                       <button
                         onClick={() => handleToggleVisibility(p.slug)}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-colors ${
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${
                           p.displayInFooter
-                            ? "bg-green-500/20 text-green-600 border border-green-500/30"
-                            : "bg-gray-500/20 text-gray-600 border border-gray-500/30"
+                            ? "bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-500 border border-green-200 dark:border-green-500/20"
+                            : "bg-slate-50 dark:bg-white/5 text-slate-400 border border-slate-200 dark:border-white/10"
                         }`}
                       >
                         {p.displayInFooter ? (
@@ -245,50 +254,29 @@ export default function AdminPoliciesPage() {
                         ) : (
                           <EyeOff size={12} />
                         )}
-                        {p.displayInFooter ? "Có" : "Không"}
+                        {p.displayInFooter ? "Hiển thị" : "Ẩn"}
                       </button>
                     </td>
-                    <td className="px-4 py-3 text-center text-theme-text-tertiary">
-                      <input
-                        type="number"
-                        value={p.order}
-                        onChange={(e) => {
-                          const updated = policies.map((policy) =>
-                            policy.slug === p.slug
-                              ? {
-                                  ...policy,
-                                  order: parseInt(e.target.value) || 0,
-                                }
-                              : policy,
-                          );
-                          setPolicies(updated);
-                        }}
-                        onBlur={() => {
-                          const sorted = [...policies].sort(
-                            (a, b) => a.order - b.order,
-                          );
-                          settingsApi
-                            .save({ policies: JSON.stringify(sorted) })
-                            .then(() => setPolicies(sorted))
-                            .catch(() => {});
-                        }}
-                        className="input-dark w-12 text-center text-xs py-1"
-                      />
+                    <td className="px-6 py-4 text-center">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-50 dark:bg-black/20 rounded-lg border border-slate-200 dark:border-white/5 font-mono text-xs font-bold text-slate-600 dark:text-white">
+                        <ListOrdered size={12} className="opacity-40" />
+                        {p.order}
+                      </div>
                     </td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="flex items-center justify-end gap-2">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => openEditModal(p)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-amber-600 hover:bg-amber-600/10 transition-colors"
+                          className="p-2 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-brand-muted hover:text-amber-600 dark:hover:text-brand-gold transition-all"
                         >
-                          <Pencil size={12} /> Sửa
+                          <Pencil size={16} />
                         </button>
                         <button
                           onClick={() => setConfirmDeleteSlug(p.slug)}
                           disabled={deleting === p.slug}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-red-600 hover:bg-red-600/10 transition-colors disabled:opacity-50"
+                          className="p-2 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-500 hover:text-red-500 transition-all"
                         >
-                          <Trash2 size={12} /> Xóa
+                          <Trash2 size={16} />
                         </button>
                       </div>
                     </td>
@@ -300,143 +288,135 @@ export default function AdminPoliciesPage() {
         </div>
       </div>
 
-      {/* Modal */}
+      {/* ── Add/Edit Modal ── */}
       {modal && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-          <div className="bg-theme-surface border border-theme-border-default rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            {/* Header */}
-            <div className="flex items-center justify-between p-5 border-b border-theme-border-default sticky top-0 bg-theme-surface z-10">
-              <h2 className="font-semibold text-theme-text-base">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-brand-card border border-slate-200 dark:border-brand-border rounded-3xl w-full max-w-2xl max-h-[92vh] overflow-hidden flex flex-col shadow-2xl">
+            <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-white/5 shrink-0 bg-white dark:bg-brand-card">
+              <h2 className="font-bold text-slate-900 dark:text-white text-lg flex items-center gap-2">
+                <FileText className="text-amber-600" />
                 {modal === "add"
-                  ? "➕ Thêm Chính sách"
-                  : "✏️ Chỉnh sửa Chính sách"}
+                  ? "Thêm chính sách mới"
+                  : "Chỉnh sửa chính sách"}
               </h2>
-              <button onClick={() => setModal(null)}>
-                <X
-                  size={18}
-                  className="text-theme-text-tertiary hover:text-theme-text-base"
-                />
+              <button
+                onClick={() => setModal(null)}
+                className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 transition-colors"
+              >
+                <X size={20} />
               </button>
             </div>
 
-            {/* Content */}
-            <div className="p-5 space-y-4">
-              {/* Title */}
-              <div>
-                <label className="text-xs text-theme-text-secondary font-semibold uppercase tracking-wider block mb-1.5">
-                  Tiêu đề *
-                </label>
-                <input
-                  type="text"
-                  value={form.title}
-                  onChange={(e) => {
-                    const title = e.target.value;
-                    const slug = title
-                      .toLowerCase()
-                      .replace(/[^a-z0-9]+/g, "-")
-                      .replace(/^-|-$/g, "");
-                    setForm({ ...form, title, slug: slug || "policy" });
-                  }}
-                  className="input-dark"
-                  placeholder="Ví dụ: Điều khoản sử dụng"
-                />
-              </div>
-
-              {/* Slug */}
-              <div>
-                <label className="text-xs text-theme-text-secondary font-semibold uppercase tracking-wider block mb-1.5">
-                  Slug (URL) *
-                </label>
-                <input
-                  type="text"
-                  value={form.slug}
-                  onChange={(e) => setForm({ ...form, slug: e.target.value })}
-                  className="input-dark"
-                  placeholder="terms-of-service"
-                />
-                <p className="text-xs text-theme-text-tertiary mt-1">
-                  🔗 URL sẽ là: /policy/{form.slug}
-                </p>
-              </div>
-
-              {/* Order */}
-              <div>
-                <label className="text-xs text-theme-text-secondary font-semibold uppercase tracking-wider block mb-1.5">
-                  Thứ tự hiển thị
-                </label>
-                <input
-                  type="number"
-                  value={form.order}
-                  onChange={(e) =>
-                    setForm({ ...form, order: parseInt(e.target.value) || 1 })
-                  }
-                  className="input-dark"
-                  min={1}
-                />
-              </div>
-
-              {/* Display in Footer */}
-              <div className="flex items-center gap-3 p-3 bg-theme-background border border-theme-border-default rounded-xl">
-                <input
-                  type="checkbox"
-                  checked={form.displayInFooter}
-                  onChange={(e) =>
-                    setForm({ ...form, displayInFooter: e.target.checked })
-                  }
-                  className="w-5 h-5 rounded cursor-pointer"
-                />
-                <div>
-                  <p className="font-medium text-theme-text-base text-sm">
-                    Hiển thị ở Footer
-                  </p>
-                  <p className="text-xs text-theme-text-tertiary">
-                    Nếu bật, link này sẽ hiển thị ở footer website
-                  </p>
+            <div className="flex-1 overflow-y-auto p-6 space-y-5 custom-scrollbar">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">
+                    Tiêu đề chính sách *
+                  </label>
+                  <input
+                    type="text"
+                    value={form.title}
+                    onChange={(e) => {
+                      const title = e.target.value;
+                      const slug = title
+                        .toLowerCase()
+                        .replace(/[^a-z0-9]+/g, "-")
+                        .replace(/^-|-$/g, "");
+                      setForm({ ...form, title, slug: slug || "policy" });
+                    }}
+                    className={inputClasses}
+                    placeholder="VD: Điều khoản sử dụng"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">
+                    Slug (URL) *
+                  </label>
+                  <input
+                    type="text"
+                    value={form.slug}
+                    onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                    className={`${inputClasses} font-mono`}
+                    placeholder="terms-of-service"
+                  />
                 </div>
               </div>
 
-              {/* Content */}
-              <div>
-                <label className="text-xs text-theme-text-secondary font-semibold uppercase tracking-wider block mb-1.5">
-                  Nội dung *
+              <div className="grid grid-cols-2 gap-5">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">
+                    Thứ tự hiển thị
+                  </label>
+                  <input
+                    type="number"
+                    value={form.order}
+                    onChange={(e) =>
+                      setForm({ ...form, order: parseInt(e.target.value) || 1 })
+                    }
+                    className={inputClasses}
+                    min={1}
+                  />
+                </div>
+                <div className="flex items-end pb-1">
+                  <label className="flex items-center gap-3 cursor-pointer group p-3 bg-slate-50 dark:bg-black/20 rounded-xl border border-slate-100 dark:border-white/5 w-full">
+                    <div
+                      className={`w-10 h-5 rounded-full relative transition-colors ${form.displayInFooter ? "bg-amber-500" : "bg-slate-200 dark:bg-white/10"}`}
+                    >
+                      <div
+                        className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${form.displayInFooter ? "left-6" : "left-1"}`}
+                      />
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={form.displayInFooter}
+                      onChange={(e) =>
+                        setForm({ ...form, displayInFooter: e.target.checked })
+                      }
+                      className="hidden"
+                    />
+                    <span className="text-sm font-bold text-slate-700 dark:text-white uppercase tracking-tighter">
+                      Hiện ở Footer
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="space-y-1.5 pt-2">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">
+                  Nội dung chi tiết *
                 </label>
                 <textarea
                   value={form.content}
                   onChange={(e) =>
                     setForm({ ...form, content: e.target.value })
                   }
-                  className="input-dark min-h-48 resize-none"
-                  placeholder="Nhập nội dung chính sách..."
+                  className={`${inputClasses} py-3 h-64 resize-none leading-relaxed`}
+                  placeholder="Nhập nội dung quy định, chính sách..."
                 />
-                <p className="text-xs text-theme-text-tertiary mt-1">
-                  💡 Hỗ trợ markdown và text thuần
+                <p className="text-[10px] text-slate-400 italic">
+                  Hệ thống hỗ trợ định dạng văn bản Markdown.
                 </p>
               </div>
             </div>
 
-            {/* Footer */}
-            <div className="border-t border-theme-border-default p-4 bg-theme-background flex items-center justify-between">
+            <div className="p-6 border-t border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-black/20 flex gap-3">
               <button
                 onClick={() => setModal(null)}
-                className="px-4 py-2 rounded-lg border border-theme-border-default text-theme-text-base hover:bg-theme-surface transition-colors"
+                className="flex-1 h-12 rounded-2xl font-bold border border-slate-200 dark:border-brand-border text-slate-600 dark:text-white hover:bg-white dark:hover:bg-white/5 transition-all"
               >
-                Hủy
+                Hủy bỏ
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex items-center gap-2 px-6 py-2 bg-brand-gold-primary text-slate-900 rounded-lg font-semibold hover:bg-brand-gold-primary/90 transition-colors disabled:opacity-50"
+                className="flex-[2] h-12 btn-primary font-bold shadow-lg shadow-amber-500/20 disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {saving ? (
-                  <>
-                    <span className="w-4 h-4 border-2 border-slate-900/30 border-t-slate-900 rounded-full animate-spin" />{" "}
-                    Đang lưu...
-                  </>
+                  <Loader2 size={18} className="animate-spin" />
                 ) : (
-                  <>
-                    <Save size={16} /> Lưu
-                  </>
+                  <Save size={18} />
                 )}
+                {modal === "add" ? "Thêm chính sách" : "Lưu thay đổi"}
               </button>
             </div>
           </div>
@@ -445,7 +425,7 @@ export default function AdminPoliciesPage() {
 
       {confirmDeleteSlug && (
         <ConfirmDeleteModal
-          message="Chính sách sẽ bị xóa vĩnh viễn."
+          message="Hành động này sẽ xóa vĩnh viễn chính sách khỏi hệ thống. Các liên kết footer liên quan cũng sẽ bị gỡ bỏ."
           onConfirm={() => handleDelete(confirmDeleteSlug)}
           onCancel={() => setConfirmDeleteSlug(null)}
         />

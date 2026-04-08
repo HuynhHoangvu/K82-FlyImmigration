@@ -145,7 +145,7 @@ export default function HeroBanner() {
   const hiringText = usePageContent("hero.hiring", h.hiring);
 
   return (
-    <section className="hero-banner relative min-h-screen flex flex-col overflow-hidden">
+    <section className="hero-banner relative min-h-screen flex flex-col overflow-hidden bg-slate-900 dark:bg-brand-dark">
       {/* Background images with crossfade */}
       {SLIDE_CONFIG.map((s, i) => (
         <div
@@ -172,17 +172,17 @@ export default function HeroBanner() {
             }}
           />
           {!loaded[i] && (
-            <div className="w-full h-full bg-gradient-to-br from-brand-card to-brand-dark animate-pulse" />
+            <div className="w-full h-full bg-slate-800 dark:bg-brand-dark animate-pulse" />
           )}
         </div>
       ))}
 
-      {/* Overlay */}
+      {/* Overlay - Giữ nguyên màng đen nhẹ để nổi bật chữ Trắng */}
       <div
         className="absolute inset-0 z-10"
         style={{
           background:
-            "linear-gradient(105deg, rgba(10,10,10,0.25) 0%, rgba(10,10,10,0.15) 50%, rgba(10,10,10,0.05) 100%)",
+            "linear-gradient(105deg, rgba(10,10,10,0.4) 0%, rgba(10,10,10,0.2) 50%, rgba(10,10,10,0.05) 100%)",
         }}
       />
 
@@ -198,7 +198,7 @@ export default function HeroBanner() {
       {/* Accent glow */}
       <div
         className="absolute top-1/3 right-1/3 w-80 h-80 rounded-full blur-3xl z-10 pointer-events-none transition-all duration-1000"
-        style={{ background: config.accent, opacity: 0.07 }}
+        style={{ background: config.accent, opacity: 0.15 }}
       />
 
       {/* Main content */}
@@ -207,20 +207,20 @@ export default function HeroBanner() {
           <div className="max-w-6xl">
             {/* Badge */}
             <div
-              className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 border animate-fade-up"
+              className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 border animate-fade-up backdrop-blur-md"
               style={{
-                background: `${config.accent}18`,
-                borderColor: `${config.accent}40`,
+                background: `${config.accent}20`,
+                borderColor: `${config.accent}50`,
               }}
             >
-              <span className="text-sm text-white">
+              <span className="text-sm font-medium text-white">
                 <EditableText
                   settingKey={`hero.slide.${current}.badge`}
                   defaultValue={slideBadge}
                 />
               </span>
-              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-              <span className="text-xs text-green-400 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.8)]" />
+              <span className="text-xs text-green-300 font-bold tracking-wide">
                 <EditableText
                   settingKey="hero.hiring"
                   defaultValue={hiringText}
@@ -230,7 +230,7 @@ export default function HeroBanner() {
 
             {/* Headline */}
             <h1
-              className="font-display tracking-wide leading-tight mb-4 animate-slide-in"
+              className="font-display tracking-wide leading-tight mb-4 animate-slide-in drop-shadow-lg"
               style={{ fontSize: "clamp(2rem, 4.5vw, 3.75rem)" }}
             >
               <span style={{ color: "#ffffff", display: "block" }}>
@@ -239,7 +239,13 @@ export default function HeroBanner() {
                   defaultValue={slideTitle}
                 />
               </span>
-              <span style={{ color: config.accent, display: "block" }}>
+              <span
+                style={{
+                  color: config.accent,
+                  display: "block",
+                  textShadow: `0 0 30px ${config.accent}40`,
+                }}
+              >
                 <EditableText
                   settingKey={`hero.slide.${current}.titleAccent`}
                   defaultValue={slideTitleAccent}
@@ -249,10 +255,9 @@ export default function HeroBanner() {
 
             {/* Subtitle */}
             <p
-              className="text-white text-lg mb-8 max-w-xl leading-relaxed"
+              className="text-white/90 text-lg md:text-xl mb-8 max-w-2xl leading-relaxed drop-shadow-md"
               style={{
                 animationDelay: "0.1s",
-                color: "#ffffff",
                 animation:
                   "bounceInUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s forwards",
               }}
@@ -267,45 +272,45 @@ export default function HeroBanner() {
             {/* Search bar */}
             <form
               onSubmit={handleSearch}
-              className="flex gap-2 mb-8 animate-fade-up"
+              className="flex gap-3 mb-8 animate-fade-up"
               style={{ animationDelay: "0.2s" }}
             >
               <div className="flex-1 relative max-w-md">
                 <Search
-                  size={17}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-muted"
+                  size={18}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60"
                 />
                 <input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={h.heroSearch}
-                  className="pl-11 h-12 text-sm w-full rounded-xl outline-none transition-all duration-200"
+                  className="pl-12 pr-4 h-14 text-sm w-full rounded-xl outline-none transition-all duration-300 focus:bg-white/25"
                   style={{
-                    background: "rgba(255,255,255,0.18)",
-                    backdropFilter: "blur(8px)",
-                    border: "1.5px solid rgba(255,255,255,0.35)",
+                    background: "rgba(255,255,255,0.15)",
+                    backdropFilter: "blur(12px)",
+                    border: "1px solid rgba(255,255,255,0.3)",
                     color: "#fff",
-                    fontSize: "0.9rem",
+                    fontSize: "0.95rem",
                   }}
                 />
               </div>
               <button
                 type="submit"
-                className="btn-primary text-sm px-6 h-12 whitespace-nowrap"
+                className="btn-primary text-sm px-7 h-14 whitespace-nowrap font-semibold shadow-lg"
               >
                 {h.heroSearchBtn}
               </button>
               <Link
                 to="/jobs"
-                className="text-sm px-4 h-12 flex items-center gap-1.5 whitespace-nowrap rounded-xl font-semibold transition-all duration-200"
+                className="text-sm px-5 h-14 flex items-center gap-2 whitespace-nowrap rounded-xl font-semibold transition-all duration-300 hover:bg-white/25"
                 style={{
                   background: "rgba(255,255,255,0.15)",
-                  backdropFilter: "blur(8px)",
-                  border: "1.5px solid rgba(255,255,255,0.35)",
+                  backdropFilter: "blur(12px)",
+                  border: "1px solid rgba(255,255,255,0.3)",
                   color: "#fff",
                 }}
               >
-                <Briefcase size={14} /> {h.heroViewAll}
+                <Briefcase size={16} /> {h.heroViewAll}
               </Link>
             </form>
 
@@ -318,7 +323,7 @@ export default function HeroBanner() {
                 <Link
                   key={cat}
                   to={`/jobs?search=${cat.split(" ").slice(1).join(" ")}`}
-                  className="text-xs px-3 py-1.5 bg-white/15 hover:bg-white/25 border border-white/25 hover:border-white/50 rounded-full text-white hover:text-white transition-all duration-200"
+                  className="text-xs px-4 py-2 bg-white/10 hover:bg-white/25 border border-white/20 hover:border-white/50 rounded-full text-white/90 hover:text-white transition-all duration-300 backdrop-blur-sm"
                 >
                   {cat}
                 </Link>
@@ -327,13 +332,13 @@ export default function HeroBanner() {
 
             {/* Stats */}
             <div
-              className="flex flex-wrap gap-8 animate-fade-up"
+              className="flex flex-wrap gap-10 animate-fade-up"
               style={{ animationDelay: "0.3s" }}
             >
               {slide.statsValues.map((val: string, i: number) => (
                 <div key={i}>
                   <p
-                    className="font-display text-4xl"
+                    className="font-display text-4xl md:text-5xl font-bold drop-shadow-sm"
                     style={{ color: config.accent }}
                   >
                     <EditableText
@@ -341,7 +346,7 @@ export default function HeroBanner() {
                       defaultValue={val}
                     />
                   </p>
-                  <p className="text-white text-xs mt-0.5">
+                  <p className="text-white/80 text-sm mt-1 font-medium tracking-wide">
                     <EditableText
                       settingKey={`hero.slide.${current}.stat.${i}.label`}
                       defaultValue={slide.statsLabels[i]}
@@ -355,35 +360,35 @@ export default function HeroBanner() {
       </div>
 
       {/* Slide index top-right */}
-      <div className="absolute top-24 right-8 z-20 hidden lg:flex items-baseline gap-1">
+      <div className="absolute top-24 right-8 z-20 hidden lg:flex items-baseline gap-1 drop-shadow-lg">
         <span
-          className="font-display text-4xl"
+          className="font-display text-4xl font-bold"
           style={{ color: config.accent }}
         >
           {String(current + 1).padStart(2, "0")}
         </span>
-        <span className="text-white/20 text-lg mx-1">/</span>
-        <span className="font-display text-xl text-white/20">
+        <span className="text-white/30 text-lg mx-1">/</span>
+        <span className="font-display text-xl text-white/40 font-semibold">
           {String(SLIDE_CONFIG.length).padStart(2, "0")}
         </span>
       </div>
 
       {/* Country switcher (desktop right) */}
-      <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-2 z-20">
+      <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-2.5 z-20">
         {SLIDE_CONFIG.map((s, i) => (
           <button
             key={i}
             onClick={() => setCurrent(i)}
-            className={`px-3 py-2 rounded-xl text-sm transition-all duration-200 border backdrop-blur-sm ${
+            className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 border backdrop-blur-md ${
               i === current
-                ? "text-white"
-                : "text-slate-700 dark:text-gray-300 border-slate-300 dark:border-white/20 bg-slate-100 dark:bg-white/10 hover:text-slate-900 dark:hover:text-white"
+                ? "text-white shadow-[0_0_15px_rgba(255,255,255,0.1)] scale-105"
+                : "text-white/60 border-white/10 bg-white/5 hover:bg-white/20 hover:border-white/30 hover:text-white"
             }`}
             style={
               i === current
                 ? {
-                    borderColor: `${s.accent}60`,
-                    background: `${s.accent}20`,
+                    borderColor: `${s.accent}80`,
+                    background: `${s.accent}30`,
                     color: "#fff",
                   }
                 : {}
@@ -395,48 +400,54 @@ export default function HeroBanner() {
       </div>
 
       {/* Bottom controls */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-3 z-20">
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-4 z-20">
         <button
           onClick={prev}
-          className="w-9 h-9 rounded-xl border border-white/25 bg-white/15 backdrop-blur flex items-center justify-center text-white/70 hover:text-white transition-colors"
+          className="w-10 h-10 rounded-xl border border-white/20 bg-white/10 backdrop-blur-md flex items-center justify-center text-white/70 hover:text-white hover:bg-white/20 transition-all duration-300"
         >
-          <ChevronLeft size={16} />
+          <ChevronLeft size={18} />
         </button>
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-2.5 items-center px-2">
           {SLIDE_CONFIG.map((_, i) => (
             <button
               key={i}
               onClick={() => setCurrent(i)}
-              className="h-1.5 rounded-full transition-all duration-400"
+              className="h-1.5 rounded-full transition-all duration-500 ease-out"
               style={{
-                width: i === current ? "2rem" : "0.5rem",
+                width: i === current ? "2.5rem" : "0.5rem",
                 background:
-                  i === current ? config.accent : "rgba(255,255,255,0.35)",
+                  i === current ? config.accent : "rgba(255,255,255,0.3)",
+                boxShadow:
+                  i === current ? `0 0 10px ${config.accent}80` : "none",
               }}
             />
           ))}
         </div>
         <button
           onClick={() => setPlaying((p) => !p)}
-          className="w-9 h-9 rounded-xl border border-white/25 bg-white/15 backdrop-blur flex items-center justify-center text-white/70 hover:text-white transition-colors"
+          className="w-10 h-10 rounded-xl border border-white/20 bg-white/10 backdrop-blur-md flex items-center justify-center text-white/70 hover:text-white hover:bg-white/20 transition-all duration-300"
         >
-          {playing ? <Pause size={13} /> : <Play size={13} />}
+          {playing ? (
+            <Pause size={14} fill="currentColor" />
+          ) : (
+            <Play size={14} fill="currentColor" className="ml-0.5" />
+          )}
         </button>
         <button
           onClick={next}
-          className="w-9 h-9 rounded-xl border border-white/25 bg-white/15 backdrop-blur flex items-center justify-center text-white/70 hover:text-white transition-colors"
+          className="w-10 h-10 rounded-xl border border-white/20 bg-white/10 backdrop-blur-md flex items-center justify-center text-white/70 hover:text-white hover:bg-white/20 transition-all duration-300"
         >
-          <ChevronRight size={16} />
+          <ChevronRight size={18} />
         </button>
       </div>
 
       {/* Location ticker */}
-      <div className="relative z-20 bg-black/35 backdrop-blur border-t border-white/15 py-2.5">
+      <div className="relative z-20 bg-black/40 backdrop-blur-md border-t border-white/10 py-3">
         <div className="ticker-wrap">
-          <div className="ticker-content text-xs text-white/70">
+          <div className="ticker-content text-[13px] text-white/80 font-medium tracking-wide">
             {[...TICKER_ITEMS, ...TICKER_ITEMS].map((loc, i) => (
-              <span key={i} className="inline-flex items-center gap-1.5 mr-8">
-                <MapPin size={9} style={{ color: config.accent }} />
+              <span key={i} className="inline-flex items-center gap-2 mr-10">
+                <MapPin size={11} style={{ color: config.accent }} />
                 <span>{loc}</span>
               </span>
             ))}

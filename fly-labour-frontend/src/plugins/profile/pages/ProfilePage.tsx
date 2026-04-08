@@ -61,9 +61,9 @@ export default function ProfilePage() {
       const res = await usersApi.updateMe(form);
       setUser({ ...user, ...res.data });
       setEditing(false);
-      toast.success("�� c?p nh?t h? so");
+      toast.success("Đã cập nhật hồ sơ");
     } catch {
-      toast.error("C?p nh?t th?t b?i");
+      toast.error("Cập nhật thất bại");
     } finally {
       setSaving(false);
     }
@@ -71,12 +71,12 @@ export default function ProfilePage() {
 
   const handleLogout = () => {
     logout();
-    toast.success("�� dang xu?t");
+    toast.success("Đã đăng xuất");
     navigate("/");
   };
 
   const handleWithdraw = async (appId: string) => {
-    if (!confirm("B?n c� ch?c mu?n r�t don n�y kh�ng?")) return;
+    if (!confirm("Bạn có chắc muốn rút đơn này không?")) return;
     try {
       await applicationsApi.withdraw(appId);
       setMyApps((prev) =>
@@ -84,9 +84,9 @@ export default function ProfilePage() {
           a.id === appId ? { ...a, status: "withdrawn" as any } : a,
         ),
       );
-      toast.success("�� r�t don ?ng tuy?n");
+      toast.success("Đã rút đơn ứng tuyển");
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "R�t don th?t b?i");
+      toast.error(err?.response?.data?.message || "Rút đơn thất bại");
     }
   };
 
@@ -97,13 +97,13 @@ export default function ProfilePage() {
       !passForm.newPassword ||
       !passForm.confirmPassword
     ) {
-      toast.error("Vui l�ng di?n d?y d? th�ng tin");
+      toast.error("Vui lòng điền đầy đủ thông tin");
       return;
     }
     setChangingPass(true);
     try {
       await usersApi.changePassword(passForm);
-      toast.success("�?i m?t kh?u th�nh c�ng");
+      toast.success("Đổi mật khẩu thành công");
       setShowChangePass(false);
       setPassForm({
         currentPassword: "",
@@ -111,59 +111,76 @@ export default function ProfilePage() {
         confirmPassword: "",
       });
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "�?i m?t kh?u th?t b?i");
+      toast.error(err?.response?.data?.message || "Đổi mật khẩu thất bại");
     } finally {
       setChangingPass(false);
     }
   };
 
+  // Class dùng chung
+  const cardClasses =
+    "bg-white dark:bg-brand-card border border-slate-200 dark:border-brand-border rounded-2xl shadow-sm dark:shadow-none";
+  const inputClasses =
+    "w-full h-12 text-sm rounded-xl px-4 bg-slate-100 dark:bg-[#1e1e1e] border border-transparent dark:border-white/5 text-slate-900 dark:text-white placeholder:text-slate-400 focus:bg-white dark:focus:bg-black focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition-all";
+
   return (
-    <div className="min-h-screen pt-20 pb-16">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0d1117] transition-colors duration-300 pt-20 pb-16">
       <div className="max-w-4xl mx-auto px-6 py-10">
         <div className="grid md:grid-cols-3 gap-6">
           {/* Left: Avatar & info */}
           <div className="space-y-4">
-            <div className="card-dark p-6 text-center">
+            <div className={`${cardClasses} p-6 text-center`}>
               <div
-                className="w-20 h-20 rounded-2xl flex items-center justify-center text-slate-900 text-3xl font-bold mx-auto mb-4"
+                className="w-20 h-20 rounded-2xl flex items-center justify-center text-amber-900 text-3xl font-bold mx-auto mb-4 shadow-md"
                 style={{
                   background: "linear-gradient(135deg,#e4a808,#fdd52f)",
                 }}
               >
                 {user.fullName.charAt(0)}
               </div>
-              <h2 className="font-semibold text-slate-900 dark:text-white">
+              <h2 className="font-semibold text-slate-900 dark:text-white text-lg">
                 {user.fullName}
               </h2>
-              <p className="text-brand-muted text-sm">{user.email}</p>
+              <p className="text-slate-500 dark:text-brand-muted text-sm">
+                {user.email}
+              </p>
               <span
-                className={`inline-block mt-2 text-xs px-2.5 py-0.5 rounded-full font-medium ${
+                className={`inline-block mt-3 text-xs px-3 py-1 rounded-full font-medium ${
                   user.role === "admin"
-                    ? "bg-brand-gold/20 text-brand-gold border border-brand-gold/30"
-                    : "bg-brand-gray-100 dark:bg-brand-gray-800 text-brand-gray-700 dark:text-brand-gray-300 border border-brand-gray-300 dark:border-brand-gray-700"
+                    ? "bg-amber-100 text-amber-800 border border-amber-200 dark:bg-brand-gold/20 dark:text-brand-gold dark:border-brand-gold/30"
+                    : "bg-slate-100 text-slate-600 border border-slate-200 dark:bg-brand-gray-800 dark:text-brand-gray-300 dark:border-brand-gray-700"
                 }`}
               >
-                {user.role === "admin" ? "?? Admin" : "?? Th�nh vi�n"}
+                {user.role === "admin" ? "👑 Admin" : "👤 Thành viên"}
               </span>
-              <div className="mt-4 pt-4 border-t border-brand-border text-xs text-brand-muted">
-                Th�nh vi�n t? {formatDate(user.createdAt)}
+              <div className="mt-5 pt-4 border-t border-slate-200 dark:border-brand-border text-xs text-slate-500 dark:text-brand-muted">
+                Thành viên từ {formatDate(user.createdAt)}
               </div>
             </div>
 
-            <div className="card-dark p-4 space-y-2">
-              <div className="flex items-center gap-2.5 text-sm text-gray-700 dark:text-gray-300">
-                <Mail size={14} className="text-brand-gold shrink-0" />
+            <div className={`${cardClasses} p-4 space-y-3`}>
+              <div className="flex items-center gap-2.5 text-sm text-slate-700 dark:text-gray-300">
+                <Mail
+                  size={14}
+                  className="text-amber-500 dark:text-brand-gold shrink-0"
+                />
                 <span className="truncate">{user.email}</span>
               </div>
               {user.phone && (
-                <div className="flex items-center gap-2.5 text-sm text-gray-700 dark:text-gray-300">
-                  <Phone size={14} className="text-brand-gold shrink-0" />
+                <div className="flex items-center gap-2.5 text-sm text-slate-700 dark:text-gray-300">
+                  <Phone
+                    size={14}
+                    className="text-amber-500 dark:text-brand-gold shrink-0"
+                  />
                   {user.phone}
                 </div>
               )}
               {user.address && (
-                <div className="flex items-center gap-2.5 text-sm text-gray-700 dark:text-gray-300">
-                  <MapPin size={14} className="text-brand-gold shrink-0" />
+                <div className="flex items-center gap-2.5 text-sm text-slate-700 dark:text-gray-300">
+                  <MapPin
+                    size={14}
+                    className="text-amber-500 dark:text-brand-gold shrink-0"
+                  />
                   <span>{user.address}</span>
                 </div>
               )}
@@ -172,35 +189,38 @@ export default function ProfilePage() {
             {user.role === "admin" && (
               <Link
                 to="/admin"
-                className="w-full btn-primary flex items-center justify-center gap-2 py-2.5 text-sm"
+                className="w-full btn-primary flex items-center justify-center gap-2 py-3 text-sm rounded-xl font-medium"
               >
-                ?? V�o Admin Dashboard
+                🛠️ Vào Admin Dashboard
               </Link>
             )}
 
             <button
               onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-red-500/30 text-red-400 text-sm hover:bg-red-500/10 transition-colors"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 dark:border-red-500/30 dark:bg-transparent dark:text-red-400 dark:hover:bg-red-500/10 transition-colors font-medium text-sm"
             >
-              <LogOut size={15} /> �ang xu?t
+              <LogOut size={15} /> Đăng xuất
             </button>
           </div>
 
           {/* Right */}
           <div className="md:col-span-2 space-y-5">
             {/* Edit profile */}
-            <div className="card-dark p-6">
+            <div className={`${cardClasses} p-6`}>
               <div className="flex items-center justify-between mb-5">
                 <h3 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                  <User size={16} className="text-brand-gold" /> Th�ng tin c�
-                  nh�n
+                  <User
+                    size={16}
+                    className="text-amber-500 dark:text-brand-gold"
+                  />{" "}
+                  Thông tin cá nhân
                 </h3>
                 {!editing ? (
                   <button
                     onClick={() => setEditing(true)}
-                    className="flex items-center gap-1.5 text-xs text-brand-gold hover:text-brand-orange transition-colors"
+                    className="flex items-center gap-1.5 text-sm font-medium text-amber-600 dark:text-brand-gold hover:text-amber-700 dark:hover:text-brand-orange transition-colors"
                   >
-                    <Edit3 size={13} /> Ch?nh s?a
+                    <Edit3 size={14} /> Chỉnh sửa
                   </button>
                 ) : (
                   <button
@@ -212,9 +232,9 @@ export default function ProfilePage() {
                         address: user.address || "",
                       });
                     }}
-                    className="flex items-center gap-1.5 text-xs text-red-400 hover:text-red-300 transition-colors"
+                    className="flex items-center gap-1.5 text-sm font-medium text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 transition-colors"
                   >
-                    <X size={13} /> H?y
+                    <X size={14} /> Hủy
                   </button>
                 )}
               </div>
@@ -222,23 +242,23 @@ export default function ProfilePage() {
               <div className="space-y-4">
                 {[
                   {
-                    label: "H? v� t�n",
+                    label: "Họ và tên",
                     key: "fullName",
-                    placeholder: "Nguy?n Van A",
+                    placeholder: "Nguyễn Văn A",
                   },
                   {
-                    label: "S? di?n tho?i",
+                    label: "Số điện thoại",
                     key: "phone",
                     placeholder: "0901 234 567",
                   },
                   {
-                    label: "�?a ch?",
+                    label: "Địa chỉ",
                     key: "address",
-                    placeholder: "Qu?n/Huy?n, T?nh/TP",
+                    placeholder: "Quận/Huyện, Tỉnh/TP",
                   },
                 ].map((f) => (
                   <div key={f.key}>
-                    <label className="text-xs text-brand-muted mb-1.5 block">
+                    <label className="text-xs font-medium text-slate-500 dark:text-brand-muted mb-1.5 block">
                       {f.label}
                     </label>
                     {editing ? (
@@ -247,12 +267,12 @@ export default function ProfilePage() {
                         onChange={(e) =>
                           setForm((fm) => ({ ...fm, [f.key]: e.target.value }))
                         }
-                        className="input-dark"
+                        className={inputClasses}
                         placeholder={f.placeholder}
                       />
                     ) : (
-                      <p className="text-white text-sm py-3 px-4 bg-brand-dark rounded-xl">
-                        {(user[f.key as keyof typeof user] as string) || "�"}
+                      <p className="text-slate-900 dark:text-white text-sm py-3 px-4 bg-slate-50 dark:bg-[#1e1e1e] border border-slate-200 dark:border-white/5 rounded-xl">
+                        {(user[f.key as keyof typeof user] as string) || "—"}
                       </p>
                     )}
                   </div>
@@ -262,16 +282,16 @@ export default function ProfilePage() {
                   <button
                     onClick={handleSave}
                     disabled={saving}
-                    className="btn-primary flex items-center gap-2 px-6 py-2.5 text-sm"
+                    className="btn-primary mt-2 flex items-center gap-2 px-6 py-3 text-sm font-medium"
                   >
                     {saving ? (
                       <>
                         <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />{" "}
-                        �ang luu...
+                        Đang lưu...
                       </>
                     ) : (
                       <>
-                        <Save size={14} /> Luu thay d?i
+                        <Save size={15} /> Lưu thay đổi
                       </>
                     )}
                   </button>
@@ -280,27 +300,34 @@ export default function ProfilePage() {
             </div>
 
             {/* Change password */}
-            <div className="card-dark p-6">
+            <div className={`${cardClasses} p-6`}>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                  <Lock size={16} className="text-brand-gold" /> �?i m?t kh?u
+                  <Lock
+                    size={16}
+                    className="text-amber-500 dark:text-brand-gold"
+                  />{" "}
+                  Đổi mật khẩu
                 </h3>
                 <button
                   onClick={() => setShowChangePass(!showChangePass)}
-                  className="text-xs text-brand-gold hover:text-brand-orange transition-colors"
+                  className="text-sm font-medium text-amber-600 dark:text-brand-gold hover:text-amber-700 dark:hover:text-brand-orange transition-colors"
                 >
-                  {showChangePass ? "��ng" : "�?i m?t kh?u"}
+                  {showChangePass ? "Đóng" : "Đổi mật khẩu"}
                 </button>
               </div>
               {showChangePass && (
-                <form onSubmit={handleChangePassword} className="space-y-3">
+                <form
+                  onSubmit={handleChangePassword}
+                  className="space-y-4 pt-2"
+                >
                   {[
-                    { label: "M?t kh?u hi?n t?i", key: "currentPassword" },
-                    { label: "M?t kh?u m?i", key: "newPassword" },
-                    { label: "X�c nh?n m?t kh?u m?i", key: "confirmPassword" },
+                    { label: "Mật khẩu hiện tại", key: "currentPassword" },
+                    { label: "Mật khẩu mới", key: "newPassword" },
+                    { label: "Xác nhận mật khẩu mới", key: "confirmPassword" },
                   ].map((f) => (
                     <div key={f.key}>
-                      <label className="text-xs text-brand-muted mb-1.5 block">
+                      <label className="text-xs font-medium text-slate-500 dark:text-brand-muted mb-1.5 block">
                         {f.label}
                       </label>
                       <div className="relative">
@@ -313,15 +340,15 @@ export default function ProfilePage() {
                               [f.key]: e.target.value,
                             }))
                           }
-                          className="input-dark pr-11"
-                          placeholder="��������"
+                          className={`${inputClasses} pr-11`}
+                          placeholder="••••••••"
                         />
                         <button
                           type="button"
                           onClick={() => setShowPass(!showPass)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-muted hover:text-white"
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-brand-muted hover:text-slate-700 dark:hover:text-white transition-colors"
                         >
-                          {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
+                          {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                         </button>
                       </div>
                     </div>
@@ -329,16 +356,16 @@ export default function ProfilePage() {
                   <button
                     type="submit"
                     disabled={changingPass}
-                    className="btn-primary flex items-center gap-2 px-5 py-2.5 text-sm"
+                    className="btn-primary mt-2 flex items-center gap-2 px-6 py-3 text-sm font-medium"
                   >
                     {changingPass ? (
                       <>
                         <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />{" "}
-                        �ang d?i...
+                        Đang đổi...
                       </>
                     ) : (
                       <>
-                        <Save size={13} /> �?i m?t kh?u
+                        <Save size={15} /> Xác nhận đổi
                       </>
                     )}
                   </button>
@@ -347,9 +374,9 @@ export default function ProfilePage() {
             </div>
 
             {/* My applications */}
-            <div className="card-dark p-6">
-              <h3 className="font-semibold text-slate-900 dark:text-white mb-4">
-                ?? �on ?ng tuy?n c?a t�i
+            <div className={`${cardClasses} p-6`}>
+              <h3 className="font-semibold text-slate-900 dark:text-white mb-5 flex items-center gap-2">
+                📋 Đơn ứng tuyển của tôi
               </h3>
 
               {loadingApps ? (
@@ -357,21 +384,21 @@ export default function ProfilePage() {
                   {[...Array(3)].map((_, i) => (
                     <div
                       key={i}
-                      className="h-16 bg-brand-dark rounded-xl animate-pulse"
+                      className="h-20 bg-slate-100 dark:bg-[#1e1e1e] rounded-xl animate-pulse"
                     />
                   ))}
                 </div>
               ) : myApps.length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-3xl mb-2">??</p>
-                  <p className="text-brand-muted text-sm">
-                    B?n chua c� don ?ng tuy?n n�o
+                <div className="text-center py-10 bg-slate-50 dark:bg-transparent rounded-2xl border border-dashed border-slate-200 dark:border-white/10">
+                  <p className="text-4xl mb-3">📭</p>
+                  <p className="text-slate-600 dark:text-brand-muted text-sm mb-4">
+                    Bạn chưa có đơn ứng tuyển nào
                   </p>
                   <Link
                     to="/jobs"
-                    className="inline-block mt-3 btn-primary text-sm px-5 py-2"
+                    className="inline-block btn-primary text-sm px-6 py-2.5"
                   >
-                    T�m vi?c ngay
+                    Tìm việc ngay
                   </Link>
                 </div>
               ) : (
@@ -379,28 +406,28 @@ export default function ProfilePage() {
                   {myApps.map((app) => (
                     <div
                       key={app.id}
-                      className="flex items-center gap-3 p-4 bg-brand-dark rounded-xl"
+                      className="flex items-center gap-4 p-4 bg-slate-50 border border-slate-100 dark:bg-[#1e1e1e] dark:border-white/5 rounded-xl transition-all hover:shadow-sm"
                     >
                       <div className="flex-1 min-w-0">
-                        <p className="text-white text-sm font-medium truncate">
+                        <p className="text-slate-900 dark:text-white text-sm font-semibold truncate mb-1">
                           {app.job?.title}
                         </p>
-                        <p className="text-brand-muted text-xs">
-                          {app.job?.company} � {formatDate(app.createdAt)}
+                        <p className="text-slate-500 dark:text-brand-muted text-xs truncate">
+                          {app.job?.company} — {formatDate(app.createdAt)}
                         </p>
                       </div>
                       <span
-                        className={`shrink-0 text-xs px-2.5 py-1 rounded-full border font-medium ${APP_STATUS_LABELS[app.status]?.color}`}
+                        className={`shrink-0 text-xs px-3 py-1.5 rounded-full border font-medium ${APP_STATUS_LABELS[app.status]?.color}`}
                       >
                         {APP_STATUS_LABELS[app.status]?.label}
                       </span>
                       {app.status === "pending" && (
                         <button
                           onClick={() => handleWithdraw(app.id)}
-                          title="R�t don"
-                          className="shrink-0 text-red-400 hover:text-red-300 transition-colors"
+                          title="Rút đơn"
+                          className="shrink-0 p-2 text-slate-400 hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
                         >
-                          <XCircle size={16} />
+                          <XCircle size={18} />
                         </button>
                       )}
                     </div>

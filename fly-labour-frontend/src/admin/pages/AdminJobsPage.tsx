@@ -11,6 +11,10 @@ import {
   Upload,
   Image as ImageIcon,
   Clock,
+  Briefcase,
+  Search,
+  Filter,
+  DollarSign,
 } from "lucide-react";
 import type { Category, Job } from "@/core/types";
 import {
@@ -23,13 +27,13 @@ import toast from "react-hot-toast";
 import { categoriesApi, jobsApi, getImageUrl } from "@/core/services/api";
 
 const STATUS_COLORS = {
-  active: "text-green-400 bg-green-400/10 border-green-400/20",
-  paused: "text-yellow-400 bg-yellow-400/10 border-yellow-400/20",
-  closed: "text-red-400 bg-red-400/10 border-red-400/20",
-  draft:
-    "text-gray-700 dark:text-gray-400 bg-gray-100 dark:bg-gray-400/10 border-gray-300 dark:border-gray-400/20",
-  pending_review: "text-amber-400 bg-orange-400/10 border-amber-400/20",
+  active: "text-green-600 bg-green-50 border-green-200 dark:text-green-400 dark:bg-green-400/10 dark:border-green-400/20",
+  paused: "text-amber-600 bg-amber-50 border-amber-200 dark:text-yellow-400 dark:bg-yellow-400/10 dark:border-yellow-400/20",
+  closed: "text-red-600 bg-red-50 border-red-200 dark:text-red-400 dark:bg-red-400/10 dark:border-red-400/20",
+  draft: "text-slate-500 bg-slate-100 border-slate-200 dark:text-gray-400 dark:bg-gray-400/10 dark:border-gray-400/20",
+  pending_review: "text-orange-600 bg-orange-50 border-orange-200 dark:text-amber-400 dark:bg-orange-400/10 dark:border-amber-400/20",
 };
+
 const STATUS_LABELS = {
   active: "Hoạt động",
   paused: "Tạm dừng",
@@ -38,7 +42,6 @@ const STATUS_LABELS = {
   pending_review: "Chờ duyệt",
 };
 
-// Danh sách quốc gia có sẵn
 const PRESET_COUNTRIES = [
   { value: "australia", label: "🇦🇺 Úc (Australia)" },
   { value: "canada", label: "🇨🇦 Canada" },
@@ -101,7 +104,6 @@ const EMPTY_FORM: FormData = {
   imagePreview: "",
 };
 
-// Default images per category for suggestion
 const SUGGESTED_IMAGES: Record<string, string> = {
   "1": "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=75",
   "2": "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=800&q=75",
@@ -123,25 +125,18 @@ export default function AdminJobsPage() {
   const [modal, setModal] = useState<"add" | "edit" | null>(null);
   const [editing, setEditing] = useState<Job | null>(null);
   const [form, setForm] = useState<FormData>(EMPTY_FORM);
-  const [deleting, setDeleting] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
   const [imgTab, setImgTab] = useState<"upload" | "url">("upload");
   const [urlInput, setUrlInput] = useState("");
-  const [salaryPeriod, setSalaryPeriod] = useState<
-    "hourly" | "weekly" | "monthly" | "yearly"
-  >("monthly");
-  const [tableSalaryPeriod, setTableSalaryPeriod] = useState<
-    "hourly" | "weekly" | "monthly" | "yearly"
-  >("monthly");
+  const [salaryPeriod, setSalaryPeriod] = useState<"hourly" | "weekly" | "monthly" | "yearly">("monthly");
+  const [tableSalaryPeriod, setTableSalaryPeriod] = useState<"hourly" | "weekly" | "monthly" | "yearly">("monthly");
   const fileRef = useRef<HTMLInputElement>(null);
   const fileObjRef = useRef<File | null>(null);
 
   const pendingJobs = jobs.filter((j) => j.status === "pending_review");
   const filtered = jobs.filter((j) => {
-    const matchSearch =
-      !search ||
-      j.title.toLowerCase().includes(search.toLowerCase()) ||
-      j.company?.toLowerCase().includes(search.toLowerCase());
+    const matchSearch = !search || j.title.toLowerCase().includes(search.toLowerCase()) || j.company?.toLowerCase().includes(search.toLowerCase());
     const matchStatus = !statusFilter || j.status === statusFilter;
     return matchSearch && matchStatus;
   });
@@ -149,20 +144,12 @@ export default function AdminJobsPage() {
   const getSalaryEstimates = (value: number, period: string) => {
     let monthly: number;
     switch (period) {
-      case "hourly":
-        monthly = (value * 40 * 52) / 12;
-        break;
-      case "weekly":
-        monthly = (value * 52) / 12;
-        break;
-      case "yearly":
-        monthly = value / 12;
-        break;
-      default:
-        monthly = value;
+      case "hourly": monthly = (value * 40 * 52) / 12; break;
+      case "weekly": monthly = (value * 52) / 12; break;
+      case "yearly": monthly = value / 12; break;
+      default: monthly = value;
     }
-    const fmt = (n: number) =>
-      n >= 1000 ? `${(n / 1000).toFixed(1)}k` : n.toFixed(0);
+    const fmt = (n: number) => n >= 1000 ? `${(n / 1000).toFixed(1)}k` : n.toFixed(0);
     return {
       hourly: fmt(monthly / ((40 * 52) / 12)),
       weekly: fmt((monthly * 12) / 52),
@@ -180,11 +167,11 @@ export default function AdminJobsPage() {
     setSalaryPeriod("monthly");
     setModal("add");
   };
+
   const openEdit = (job: Job) => {
-    const isPreset = PRESET_COUNTRIES.some(
-      (c) => c.value === job.country && c.value !== "__other__",
-    );
+    const isPreset = PRESET_COUNTRIES.some((c) => c.value === job.country && c.value !== "__other__");
     setForm({
+      ...EMPTY_FORM,
       title: job.title,
       company: job.company || "",
       location: job.location || "",
@@ -211,18 +198,13 @@ export default function AdminJobsPage() {
     setModal("edit");
   };
 
-  // Handle file upload → lưu File object + tạo preview
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 20 * 1024 * 1024) {
-      toast.error("Ảnh tối đa 20MB");
-      return;
-    }
+    if (file.size > 10 * 1024 * 1024) { toast.error("Ảnh tối đa 10MB"); return; }
     fileObjRef.current = file;
     const reader = new FileReader();
-    reader.onload = () =>
-      setForm((f) => ({ ...f, imagePreview: reader.result as string }));
+    reader.onload = () => setForm((f) => ({ ...f, imagePreview: reader.result as string }));
     reader.readAsDataURL(file);
   };
 
@@ -239,70 +221,39 @@ export default function AdminJobsPage() {
       setUrlInput(url);
     }
   };
+
   const loadJobs = () => {
     setLoading(true);
-    jobsApi
-      .getAllAdmin({ search, limit: 50 })
-      .then((r) => {
-        setJobs(r.data.data);
-        setTotal(r.data.meta.total);
-      })
+    jobsApi.getAllAdmin({ search, limit: 50 })
+      .then((r) => { setJobs(r.data.data); setTotal(r.data.meta.total); })
       .catch(() => {})
       .finally(() => setLoading(false));
   };
 
   useEffect(() => {
-    categoriesApi
-      .getAllAdmin()
-      .then((r) => setCats(r.data))
-      .catch(() => {});
-  }, []);
-
-  useEffect(() => {
+    categoriesApi.getAllAdmin().then((r) => setCats(r.data)).catch(() => {});
     loadJobs();
   }, [search]);
+
   const handleSave = async () => {
-    if (!form.title) {
-      toast.error("Vui lòng nhập tiêu đề");
-      return;
-    }
+    if (!form.title) { toast.error("Vui lòng nhập tiêu đề"); return; }
     setSaving(true);
     try {
       const fd = new FormData();
-
-      // Gắn từng field, bỏ qua imagePreview, countryCustom và giá trị rỗng
       const skipKeys = ["imagePreview", "countryCustom"];
       Object.entries(form).forEach(([k, v]) => {
         if (skipKeys.includes(k)) return;
         if (v === "" || v === undefined || v === null) return;
-        if (typeof v === "boolean") {
-          fd.append(k, v ? "true" : "false");
-        } else {
-          fd.append(k, String(v));
-        }
+        fd.append(k, String(v));
       });
-
-      // Nếu chọn "Khác", ghi đè country bằng giá trị nhập tay
       if (form.country === "__other__") {
-        if (!form.countryCustom.trim()) {
-          toast.error("Vui lòng nhập tên quốc gia");
-          setSaving(false);
-          return;
-        }
+        if (!form.countryCustom.trim()) { toast.error("Vui lòng nhập tên quốc gia"); setSaving(false); return; }
         fd.set("country", form.countryCustom.trim());
       }
+      if (imgTab === "upload" && fileObjRef.current) fd.append("image", fileObjRef.current);
+      else if (imgTab === "url" && urlInput.trim()) fd.set("image", urlInput.trim());
 
-      // Xử lý ảnh
-      if (imgTab === "upload" && fileObjRef.current) {
-        fd.append("image", fileObjRef.current);
-      } else if (imgTab === "url" && urlInput.trim()) {
-        fd.set("image", urlInput.trim());
-      }
-
-      // Nếu categoryId rỗng hoặc không hợp lệ thì xóa đi
-      if (!form.categoryId || form.categoryId.length < 10) {
-        fd.delete("categoryId");
-      }
+      if (!form.categoryId || form.categoryId.length < 10) fd.delete("categoryId");
 
       if (modal === "edit" && editing) {
         await jobsApi.update(editing.id, fd);
@@ -326,19 +277,15 @@ export default function AdminJobsPage() {
       toast.success("Đã xóa bài đăng");
       setDeleting(null);
       loadJobs();
-    } catch {
-      toast.error("Xóa thất bại");
-    }
+    } catch { toast.error("Xóa thất bại"); }
   };
 
   const handleApprove = async (id: string) => {
     try {
       await jobsApi.approveJob(id);
-      toast.success("Đã duyệt bài đăng — tin đã lên live");
+      toast.success("Đã duyệt bài đăng");
       loadJobs();
-    } catch {
-      toast.error("Duyệt thất bại");
-    }
+    } catch { toast.error("Duyệt thất bại"); }
   };
 
   const handleReject = async (id: string) => {
@@ -346,19 +293,11 @@ export default function AdminJobsPage() {
       await jobsApi.rejectJob(id);
       toast.success("Đã từ chối bài đăng");
       loadJobs();
-    } catch {
-      toast.error("Từ chối thất bại");
-    }
+    } catch { toast.error("Từ chối thất bại"); }
   };
 
-  const set =
-    (k: keyof FormData) =>
-    (
-      e: React.ChangeEvent<
-        HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-      >,
-    ) =>
-      setForm((f) => ({ ...f, [k]: e.target.value }));
+  const setField = (k: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+    setForm((f) => ({ ...f, [k]: e.target.value }));
 
   const handleCurrencyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const currency = e.target.value;
@@ -366,812 +305,354 @@ export default function AdminJobsPage() {
     setForm((f) => ({ ...f, salaryCurrency: currency }));
   };
 
+  // UI Helpers
+  const cardClasses = "bg-white dark:bg-brand-card border border-slate-200 dark:border-brand-border rounded-2xl shadow-sm transition-colors";
+  const inputClasses = "w-full text-sm rounded-xl px-4 bg-slate-50 dark:bg-[#1a1a1a] border border-slate-200 dark:border-white/5 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-black focus:border-amber-400 dark:focus:border-brand-gold outline-none transition-all";
+
   return (
-    <div className="space-y-5">
-      {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
+    <div className="space-y-6 transition-colors duration-300">
+      {/* Header Area */}
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
             Quản lý Việc làm
             {pendingJobs.length > 0 && (
-              <span className="text-xs px-2 py-0.5 rounded-full bg-orange-400/20 text-amber-400 border border-amber-400/30 font-semibold">
-                {pendingJobs.length} chờ duyệt
+              <span className="text-[10px] px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-400/10 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-400/30 font-black uppercase tracking-widest animate-pulse">
+                {pendingJobs.length} đơn chờ duyệt
               </span>
             )}
           </h1>
-          <p className="text-brand-muted text-sm">{jobs.length} bài đăng</p>
+          <p className="text-slate-500 dark:text-brand-muted text-sm mt-1">Tổng cộng {total} tin tuyển dụng trên hệ thống</p>
         </div>
-        <button
-          onClick={openAdd}
-          className="btn-primary flex items-center gap-2 text-sm px-4 py-2.5"
-        >
-          <Plus size={15} /> Thêm bài đăng
+        <button onClick={openAdd} className="btn-primary flex items-center gap-2 text-sm px-5 py-2.5 shadow-lg shadow-amber-500/20">
+          <Plus size={18} /> Đăng bài mới
         </button>
       </div>
 
-      {/* Filter tabs */}
+      {/* Filter Tabs */}
       <div className="flex flex-wrap gap-2">
         {[
           { value: "", label: "Tất cả", count: jobs.length },
-          {
-            value: "pending_review",
-            label: "⏳ Chờ duyệt",
-            count: jobs.filter((j) => j.status === "pending_review").length,
-          },
-          {
-            value: "active",
-            label: "✅ Hoạt động",
-            count: jobs.filter((j) => j.status === "active").length,
-          },
-          {
-            value: "paused",
-            label: "⏸ Tạm dừng",
-            count: jobs.filter((j) => j.status === "paused").length,
-          },
-          {
-            value: "closed",
-            label: "❌ Đã đóng",
-            count: jobs.filter((j) => j.status === "closed").length,
-          },
+          { value: "pending_review", label: "⌛ Chờ duyệt", count: pendingJobs.length },
+          { value: "active", label: "✅ Hoạt động", count: jobs.filter(j => j.status === 'active').length },
+          { value: "paused", label: "⏸ Tạm dừng", count: jobs.filter(j => j.status === 'paused').length },
+          { value: "closed", label: "❌ Đã đóng", count: jobs.filter(j => j.status === 'closed').length },
         ].map((tab) => (
           <button
             key={tab.value}
             onClick={() => setStatusFilter(tab.value)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all ${
               statusFilter === tab.value
-                ? "bg-brand-gold/15 border-brand-gold/40 text-brand-gold"
-                : "border-brand-border text-brand-muted hover:border-white/20 hover:text-white"
+                ? "bg-amber-600 border-amber-600 text-white shadow-md shadow-amber-600/20"
+                : "bg-white dark:bg-brand-card border-slate-200 dark:border-white/10 text-slate-500 dark:text-brand-muted hover:border-amber-400"
             }`}
           >
-            {tab.label}
-            <span className="opacity-70">({tab.count})</span>
+            {tab.label} <span className="ml-1 opacity-60">({tab.count})</span>
           </button>
         ))}
       </div>
 
-      {/* Search */}
-      <div className="card-dark p-4 flex flex-wrap gap-3 items-center">
-        <div className="relative flex-1 min-w-[180px] max-w-sm">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-muted text-sm">
-            🔍
-          </span>
+      {/* Toolbar Area */}
+      <div className={`${cardClasses} p-4 flex flex-wrap gap-4 items-center`}>
+        <div className="relative flex-1 min-w-[280px] max-w-sm">
+          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-brand-muted" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="input-dark pl-9 py-2 text-sm h-10"
-            placeholder="Tìm tên việc, công ty..."
+            className={inputClasses}
+            placeholder="Tìm theo tên công việc, công ty..."
           />
         </div>
-        <div className="flex items-center gap-2 ml-auto">
-          <span className="text-xs text-brand-muted whitespace-nowrap">
-            Hiển thị lương:
-          </span>
-          <div className="flex rounded-lg border border-brand-border overflow-hidden text-xs">
-            {(["hourly", "weekly", "monthly", "yearly"] as const).map((p) => {
-              const label = {
-                hourly: "Giờ",
-                weekly: "Tuần",
-                monthly: "Tháng",
-                yearly: "Năm",
-              }[p];
-              return (
-                <button
-                  key={p}
-                  onClick={() => setTableSalaryPeriod(p)}
-                  className={`px-3 py-1.5 font-medium transition-colors ${
-                    tableSalaryPeriod === p
-                      ? "bg-brand-gold/20 text-brand-gold"
-                      : "text-brand-muted hover:text-white hover:bg-white/5"
-                  }`}
-                >
-                  {label}
-                </button>
-              );
-            })}
+        <div className="flex items-center gap-3 ml-auto">
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Đổi đơn vị lương:</span>
+          <div className="flex p-1 bg-slate-100 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/5">
+            {(["hourly", "weekly", "monthly", "yearly"] as const).map((p) => (
+              <button
+                key={p}
+                onClick={() => setTableSalaryPeriod(p)}
+                className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase transition-all ${
+                  tableSalaryPeriod === p ? "bg-white dark:bg-brand-gold shadow-sm text-amber-700 dark:text-amber-900" : "text-slate-500 dark:text-brand-muted hover:text-slate-900 dark:hover:text-white"
+                }`}
+              >
+                {{ hourly: "Giờ", weekly: "Tuần", monthly: "Tháng", yearly: "Năm" }[p]}
+              </button>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Table */}
-      <div className="card-dark overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
+      {/* Table Section */}
+      <div className={`${cardClasses} overflow-hidden`}>
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full border-collapse">
             <thead>
-              <tr className="border-b border-brand-border bg-brand-dark/50">
-                <th className="text-left px-4 py-3 text-xs text-black uppercase tracking-wide font-semibold w-12">
-                  Ảnh
-                </th>
-                <th className="text-left px-4 py-3 text-xs text-black uppercase tracking-wide font-semibold">
-                  Tiêu đề
-                </th>
-                <th className="text-left px-4 py-3 text-xs text-black uppercase tracking-wide font-semibold hidden sm:table-cell">
-                  Quốc gia
-                </th>
-                <th className="text-left px-4 py-3 text-xs text-black uppercase tracking-wide font-semibold hidden md:table-cell">
-                  Lương /{" "}
-                  {
-                    {
-                      hourly: "Giờ",
-                      weekly: "Tuần",
-                      monthly: "Tháng",
-                      yearly: "Năm",
-                    }[tableSalaryPeriod]
-                  }
-                </th>
-                <th className="text-left px-4 py-3 text-xs text-black uppercase tracking-wide font-semibold hidden lg:table-cell">
-                  Nguồn đăng
-                </th>
-                <th className="text-left px-4 py-3 text-xs text-black uppercase tracking-wide font-semibold hidden lg:table-cell">
-                  Ngày đăng
-                </th>
-                <th className="text-left px-4 py-3 text-xs text-black uppercase tracking-wide font-semibold">
-                  Trạng thái
-                </th>
-                <th className="text-right px-4 py-3 text-xs text-black uppercase tracking-wide font-semibold">
-                  Thao tác
-                </th>
+              <tr className="border-b border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-black/20 text-[10px] font-bold text-slate-400 dark:text-brand-muted uppercase tracking-widest">
+                <th className="text-left px-5 py-4 w-16 text-center">Ảnh</th>
+                <th className="text-left px-5 py-4">Công việc</th>
+                <th className="text-left px-5 py-4 hidden sm:table-cell">Quốc gia</th>
+                <th className="text-left px-5 py-4 hidden md:table-cell">Lương ({tableSalaryPeriod})</th>
+                <th className="text-left px-5 py-4 hidden lg:table-cell">Nguồn</th>
+                <th className="text-left px-5 py-4">Trạng thái</th>
+                <th className="text-right px-5 py-4">Thao tác</th>
               </tr>
             </thead>
-            <tbody>
-              {filtered.map((job) => (
-                <tr
-                  key={job.id}
-                  className="border-b border-brand-border/40 hover:bg-white/[0.03] transition-colors"
-                >
-                  {/* Thumbnail */}
-                  <td className="px-4 py-3">
-                    <div className="w-10 h-10 rounded-xl overflow-hidden bg-brand-dark border border-brand-border flex-shrink-0">
+            <tbody className="divide-y divide-slate-100 dark:divide-white/5">
+              {loading ? (
+                [...Array(6)].map((_, i) => <tr key={i}><td colSpan={7} className="px-5 py-4"><div className="h-12 bg-slate-50 dark:bg-white/5 rounded-xl animate-pulse" /></td></tr>)
+              ) : filtered.map((job) => (
+                <tr key={job.id} className="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors group">
+                  <td className="px-5 py-4">
+                    <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-100 dark:bg-brand-dark border border-slate-200 dark:border-white/5 flex-shrink-0 shadow-sm">
                       {job.image ? (
-                        <img
-                          src={getImageUrl(job.image)}
-                          alt={job.title}
-                          className="w-full h-full object-cover"
-                        />
+                        <img src={getImageUrl(job.image)} alt="" className="w-full h-full object-cover transition-transform group-hover:scale-110" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-brand-muted">
-                          <ImageIcon size={14} />
-                        </div>
+                        <div className="w-full h-full flex items-center justify-center text-slate-300 dark:text-brand-muted"><ImageIcon size={18} /></div>
                       )}
                     </div>
                   </td>
-                  <td className="px-4 py-3">
-                    <div>
-                      <p className="text-[#f59e0b] text-sm font-medium line-clamp-1">
-                        {job.title}
-                      </p>
-                      <p className="text-brand-muted text-xs">{job.company}</p>
-                      <div className="flex gap-1 mt-1">
-                        {job.isHot && (
-                          <span className="badge-hot text-[10px] px-1.5 py-0">
-                            Hot
-                          </span>
-                        )}
-                        {job.isFeatured && (
-                          <span className="bg-brand-gold/20 text-brand-gold text-[10px] font-bold px-1.5 py-0 rounded-full">
-                            Nổi bật
-                          </span>
-                        )}
+                  <td className="px-5 py-4">
+                    <div className="min-w-0">
+                      <p className="text-slate-900 dark:text-white font-bold text-sm line-clamp-1 group-hover:text-amber-600 dark:group-hover:text-brand-gold transition-colors">{job.title}</p>
+                      <p className="text-slate-500 dark:text-brand-muted text-[11px] font-medium">{job.company}</p>
+                      <div className="flex gap-1.5 mt-1">
+                        {job.isHot && <span className="bg-red-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded uppercase shadow-sm shadow-red-500/20">Hot</span>}
+                        {job.isFeatured && <span className="bg-amber-100 dark:bg-brand-gold/20 text-amber-700 dark:text-brand-gold text-[8px] font-black px-1.5 py-0.5 rounded border border-amber-200 dark:border-brand-gold/30 uppercase">Nổi bật</span>}
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3 hidden sm:table-cell">
-                    <span className="badge-country text-xs">
-                      {getCountryLabels()[job.country]}
+                  <td className="px-5 py-4 hidden sm:table-cell">
+                    <span className="badge-country border-slate-200 dark:border-transparent text-[10px]">{getCountryLabels()[job.country]}</span>
+                  </td>
+                  <td className="px-5 py-4 hidden md:table-cell">
+                    <span className="text-amber-700 dark:text-brand-gold font-bold text-xs">
+                      {job.salaryMin || job.salaryMax ? (() => {
+                        const cur = job.salaryCurrency || "";
+                        if (tableSalaryPeriod === "monthly") return formatSalary(job.salaryMin, job.salaryMax, cur);
+                        const minE = job.salaryMin ? getSalaryEstimates(job.salaryMin, "monthly")[tableSalaryPeriod] : null;
+                        const maxE = job.salaryMax ? getSalaryEstimates(job.salaryMax, "monthly")[tableSalaryPeriod] : null;
+                        return [minE, maxE].filter(Boolean).join(" – ") + " " + cur;
+                      })() : "—"}
                     </span>
                   </td>
-                  <td className="px-4 py-3 hidden md:table-cell">
-                    {job.salaryMin || job.salaryMax ? (
-                      <span className="text-brand-gold text-xs font-medium">
-                        {(() => {
-                          const cur = job.salaryCurrency || "";
-                          if (tableSalaryPeriod === "monthly") {
-                            return formatSalary(
-                              job.salaryMin,
-                              job.salaryMax,
-                              cur,
-                            );
-                          }
-                          const minE = job.salaryMin
-                            ? getSalaryEstimates(job.salaryMin, "monthly")[
-                                tableSalaryPeriod
-                              ]
-                            : null;
-                          const maxE = job.salaryMax
-                            ? getSalaryEstimates(job.salaryMax, "monthly")[
-                                tableSalaryPeriod
-                              ]
-                            : null;
-                          const range = [minE, maxE]
-                            .filter(Boolean)
-                            .join(" – ");
-                          return range ? `${cur} ${range}` : "—";
-                        })()}
-                      </span>
-                    ) : (
-                      <span className="text-brand-muted text-xs">—</span>
-                    )}
+                  <td className="px-5 py-4 hidden lg:table-cell">
+                    <div className="flex flex-col gap-0.5">
+                      <p className="text-slate-700 dark:text-gray-300 text-[11px] font-bold truncate max-w-[140px]">{job.createdBy?.companyName || job.createdBy?.fullName || "Hệ thống"}</p>
+                      <span className={`text-[9px] font-bold uppercase tracking-tighter ${job.createdBy ? "text-blue-500" : "text-amber-500"}`}>{job.createdBy ? "Đối tác" : "Nội bộ"}</span>
+                    </div>
                   </td>
-                  {/* Nguồn đăng */}
-                  <td className="px-4 py-3 hidden lg:table-cell">
-                    {job.createdBy ? (
-                      <div>
-                        <p className="text-xs text-white font-medium truncate max-w-[120px]">
-                          {job.createdBy.companyName || job.createdBy.fullName}
-                        </p>
-                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-500/15 text-blue-400 border border-blue-400/20 font-medium">
-                          Doanh nghiệp
-                        </span>
-                      </div>
-                    ) : (
-                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-brand-gold/15 text-brand-gold border border-brand-gold/20 font-medium">
-                        Fly Labour
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 hidden lg:table-cell text-brand-muted text-xs">
-                    {formatDate(job.createdAt)}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`text-xs px-2 py-0.5 rounded-full border font-medium ${STATUS_COLORS[job.status]}`}
-                    >
+                  <td className="px-5 py-4">
+                    <span className={`text-[10px] px-2.5 py-1 rounded-full border font-black uppercase tracking-wider ${STATUS_COLORS[job.status] || ""}`}>
                       {STATUS_LABELS[job.status]}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-4">
                     <div className="flex items-center justify-end gap-1">
                       {job.status === "pending_review" && (
                         <>
-                          <button
-                            onClick={() => handleApprove(job.id)}
-                            title="Duyệt bài"
-                            className="w-7 h-7 rounded-lg flex items-center justify-center text-green-400 hover:bg-green-500/10 transition-colors"
-                          >
-                            <CheckCircle size={13} />
-                          </button>
-                          <button
-                            onClick={() => handleReject(job.id)}
-                            title="Từ chối"
-                            className="w-7 h-7 rounded-lg flex items-center justify-center text-red-400 hover:bg-red-500/10 transition-colors"
-                          >
-                            <XCircle size={13} />
-                          </button>
+                          <button onClick={() => handleApprove(job.id)} title="Duyệt bài" className="p-2 rounded-xl bg-green-50 dark:bg-green-400/10 text-green-600 hover:bg-green-100 transition-all"><CheckCircle size={16} /></button>
+                          <button onClick={() => handleReject(job.id)} title="Từ chối" className="p-2 rounded-xl bg-red-50 dark:bg-red-400/10 text-red-600 hover:bg-red-100 transition-all"><XCircle size={16} /></button>
                         </>
                       )}
-                      <a
-                        href={`/jobs/${job.id}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="w-7 h-7 rounded-lg flex items-center justify-center text-brand-muted hover:text-white hover:bg-white/10 transition-colors"
-                      >
-                        <Eye size={13} />
-                      </a>
-                      <button
-                        onClick={() => openEdit(job)}
-                        className="w-7 h-7 rounded-lg flex items-center justify-center text-brand-muted hover:text-brand-gold hover:bg-brand-gold/10 transition-colors"
-                      >
-                        <Pencil size={13} />
-                      </button>
-                      <button
-                        onClick={() => setDeleting(job.id)}
-                        className="w-7 h-7 rounded-lg flex items-center justify-center text-brand-muted hover:text-red-400 hover:bg-red-500/10 transition-colors"
-                      >
-                        <Trash2 size={13} />
-                      </button>
+                      <button onClick={() => openEdit(job)} className="p-2 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-brand-muted hover:text-amber-600 dark:hover:text-brand-gold transition-all"><Pencil size={16} /></button>
+                      <button onClick={() => setDeleting(job.id)} className="p-2 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-500 hover:text-red-500 transition-all"><Trash2 size={16} /></button>
                     </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          {filtered.length === 0 && (
-            <div className="py-12 text-center text-brand-muted text-sm">
-              Không tìm thấy kết quả
-            </div>
-          )}
         </div>
       </div>
 
       {/* ══ Add/Edit Modal ══ */}
       {modal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-            onClick={() => setModal(null)}
-          />
-          <div className="relative bg-brand-card border border-brand-border rounded-2xl w-full max-w-2xl max-h-[92vh] overflow-y-auto shadow-2xl">
-            <div className="flex items-center justify-between p-5 border-b border-brand-border sticky top-0 bg-brand-card z-10">
-              <h2 className="font-semibold text-theme-text-base">
-                {modal === "add"
-                  ? "➕ Thêm bài đăng mới"
-                  : "✏️ Chỉnh sửa bài đăng"}
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-brand-card border border-slate-200 dark:border-brand-border rounded-3xl w-full max-w-2xl max-h-[92vh] overflow-hidden flex flex-col shadow-2xl">
+            <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-white/5 shrink-0">
+              <h2 className="font-bold text-slate-900 dark:text-white text-lg flex items-center gap-2">
+                <Briefcase className="text-amber-600" />
+                {modal === "add" ? "Đăng bài mới" : "Chỉnh sửa bài đăng"}
               </h2>
-              <button onClick={() => setModal(null)}>
-                <X size={18} className="text-brand-muted hover:text-white" />
-              </button>
+              <button onClick={() => setModal(null)} className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 transition-colors"><X size={20} /></button>
             </div>
 
-            <div className="p-5 space-y-4">
-              {/* ── IMAGE UPLOAD SECTION ── */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+              {/* Image Section */}
               <div className="space-y-3">
-                <label className="text-xs text-brand-muted font-semibold uppercase tracking-wider block">
-                  Ảnh bài đăng
-                </label>
-
-                {/* Preview */}
-                <div className="relative w-full h-44 rounded-xl overflow-hidden border border-brand-border bg-brand-dark">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Hình ảnh đại diện</p>
+                <div className="relative w-full h-48 rounded-2xl overflow-hidden border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-black/40 group">
                   {form.imagePreview ? (
-                    <>
-                      <img
-                        src={form.imagePreview}
-                        alt="preview"
-                        className="w-full h-full object-cover"
-                        onError={() =>
-                          setForm((f) => ({ ...f, imagePreview: "" }))
-                        }
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
-                        <button
-                          onClick={() => {
-                            setForm((f) => ({ ...f, imagePreview: "" }));
-                            setUrlInput("");
-                            fileObjRef.current = null;
-                          }}
-                          className="text-xs bg-red-500 hover:bg-red-600 text-white px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1"
-                        >
-                          <X size={11} /> Xóa ảnh
-                        </button>
-                      </div>
-                    </>
+                    <img src={form.imagePreview} alt="preview" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center text-brand-muted gap-2">
-                      <ImageIcon size={32} className="opacity-30" />
-                      <p className="text-xs">Chưa có ảnh</p>
+                    <div className="w-full h-full flex flex-col items-center justify-center text-slate-300 dark:text-brand-muted gap-2">
+                      <ImageIcon size={40} className="opacity-20" />
+                      <p className="text-xs font-medium">Chưa có hình ảnh</p>
                     </div>
+                  )}
+                  {form.imagePreview && (
+                    <button onClick={() => { setForm((f) => ({ ...f, imagePreview: "" })); setUrlInput(""); fileObjRef.current = null; }}
+                            className="absolute top-3 right-3 bg-red-600 text-white p-2 rounded-xl shadow-lg hover:scale-110 transition-transform"><Trash2 size={16} /></button>
                   )}
                 </div>
 
-                {/* Tabs: Upload vs URL */}
-                <div className="flex gap-1.5 text-xs">
-                  <button
-                    onClick={() => setImgTab("upload")}
-                    className={`px-3 py-1.5 rounded-lg border transition-colors ${imgTab === "upload" ? "bg-brand-gold/15 border-brand-gold/30 text-brand-gold" : "border-brand-border text-brand-muted hover:text-white"}`}
-                  >
-                    📁 Upload từ máy
-                  </button>
-                  <button
-                    onClick={() => setImgTab("url")}
-                    className={`px-3 py-1.5 rounded-lg border transition-colors ${imgTab === "url" ? "bg-brand-gold/15 border-brand-gold/30 text-brand-gold" : "border-brand-border text-brand-muted hover:text-white"}`}
-                  >
-                    🔗 Nhập URL ảnh
-                  </button>
+                <div className="flex gap-2">
+                  <button onClick={() => setImgTab("upload")} className={`flex-1 py-2 text-xs font-bold rounded-xl border transition-all ${imgTab === "upload" ? "bg-slate-900 text-white border-slate-900 dark:bg-brand-gold dark:text-amber-900 dark:border-brand-gold" : "bg-white dark:bg-black/20 text-slate-500 border-slate-200 dark:border-white/5"}`}>UPLOAD FILE</button>
+                  <button onClick={() => setImgTab("url")} className={`flex-1 py-2 text-xs font-bold rounded-xl border transition-all ${imgTab === "url" ? "bg-slate-900 text-white border-slate-900 dark:bg-brand-gold dark:text-amber-900 dark:border-brand-gold" : "bg-white dark:bg-black/20 text-slate-500 border-slate-200 dark:border-white/5"}`}>DÙNG LINK ẢNH</button>
                 </div>
 
-                {imgTab === "upload" && (
-                  <div>
-                    <input
-                      ref={fileRef}
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={handleFileChange}
-                    />
-                    <button
-                      onClick={() => fileRef.current?.click()}
-                      className="w-full border-2 border-dashed border-brand-border hover:border-brand-gold/40 rounded-xl py-4 flex flex-col items-center gap-2 text-brand-muted hover:text-white transition-all duration-200 group"
-                    >
-                      <Upload
-                        size={20}
-                        className="group-hover:text-brand-gold transition-colors"
-                      />
-                      <span className="text-sm">Nhấn để chọn ảnh</span>
-                      <span className="text-xs opacity-60">
-                        JPG, PNG, WEBP — tối đa 5MB
-                      </span>
-                    </button>
-                  </div>
-                )}
-
-                {imgTab === "url" && (
+                {imgTab === "upload" ? (
+                  <label className="w-full border-2 border-dashed border-slate-200 dark:border-white/10 hover:border-amber-400 dark:hover:border-brand-gold/40 rounded-2xl py-6 flex flex-col items-center gap-2 text-slate-400 hover:text-amber-600 transition-all cursor-pointer">
+                    <Upload size={24} /> <span className="text-sm font-bold">Chọn tệp hình ảnh</span>
+                    <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+                  </label>
+                ) : (
                   <div className="flex gap-2">
-                    <input
-                      value={urlInput}
-                      onChange={(e) => setUrlInput(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && applyUrlInput()}
-                      className="input-dark flex-1 text-sm"
-                      placeholder="https://example.com/image.jpg"
-                    />
-                    <button
-                      onClick={applyUrlInput}
-                      className="btn-primary px-4 text-sm whitespace-nowrap"
-                    >
-                      Áp dụng
-                    </button>
-                  </div>
-                )}
-
-                {/* Suggested images by category */}
-                {form.categoryId && SUGGESTED_IMAGES[form.categoryId] && (
-                  <div className="flex items-center gap-3 p-3 bg-brand-gold/5 border border-brand-gold/15 rounded-xl">
-                    <img
-                      src={SUGGESTED_IMAGES[form.categoryId]}
-                      alt="suggested"
-                      className="w-12 h-10 rounded-lg object-cover border border-brand-border"
-                    />
-                    <div className="flex-1">
-                      <p className="text-xs text-brand-gold font-medium">
-                        💡 Ảnh gợi ý theo danh mục
-                      </p>
-                      <p className="text-xs text-brand-muted mt-0.5">
-                        Ảnh mặc định phù hợp với ngành{" "}
-                        {cats.find((c) => c.id === form.categoryId)?.name}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => useSuggestedImage(form.categoryId)}
-                      className="text-xs btn-outline px-3 py-1.5 whitespace-nowrap"
-                    >
-                      Dùng ảnh này
-                    </button>
+                    <input value={urlInput} onChange={(e) => setUrlInput(e.target.value)} className={`${inputClasses} h-11`} placeholder="Dán link ảnh từ Unsplash, Google..." />
+                    <button onClick={applyUrlInput} className="bg-slate-900 dark:bg-brand-gold text-white dark:text-amber-900 px-4 rounded-xl font-bold text-sm">Lấy ảnh</button>
                   </div>
                 )}
               </div>
 
-              {/* ── JOB INFO ── */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="sm:col-span-2">
-                  <label className="text-xs text-brand-muted mb-1.5 block">
-                    Tiêu đề *
-                  </label>
-                  <input
-                    value={form.title}
-                    onChange={set("title")}
-                    className="input-dark"
-                    placeholder="VD: Công nhân Hái Quả Mùa Vụ"
-                  />
+              {/* Main Form Fields */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="md:col-span-2 space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Tiêu đề bài tuyển dụng *</label>
+                  <input value={form.title} onChange={setField("title")} className={`${inputClasses} h-12`} placeholder="VD: Nam nhân viên kho lạnh tại Úc" />
                 </div>
-                <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">
-                    Công ty
-                  </label>
-                  <input
-                    value={form.company}
-                    onChange={set("company")}
-                    className="input-dark"
-                    placeholder="Tên công ty"
-                  />
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Tên doanh nghiệp</label>
+                  <input value={form.company} onChange={setField("company")} className={`${inputClasses} h-12`} placeholder="VD: Harvest Australia Ltd" />
                 </div>
-                <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">
-                    Địa điểm
-                  </label>
-                  <input
-                    value={form.location}
-                    onChange={set("location")}
-                    className="input-dark"
-                    placeholder="VD: Sydney, NSW"
-                  />
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Địa điểm cụ thể</label>
+                  <input value={form.location} onChange={setField("location")} className={`${inputClasses} h-12`} placeholder="VD: Brisbane, QLD" />
                 </div>
-                <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">
-                    Quốc gia
-                  </label>
-                  <select
-                    value={form.country}
-                    onChange={set("country")}
-                    className="input-dark"
-                  >
-                    {PRESET_COUNTRIES.map((c) => (
-                      <option key={c.value} value={c.value}>
-                        {c.label}
-                      </option>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Quốc gia mục tiêu *</label>
+                  <select value={form.country} onChange={setField("country")} className={`${inputClasses} h-12 appearance-none`}>
+                    {PRESET_COUNTRIES.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
+                  </select>
+                  {form.country === "__other__" && <input value={form.countryCustom} onChange={e => setForm(f => ({ ...f, countryCustom: e.target.value }))} className={`${inputClasses} h-12 mt-2`} placeholder="Nhập tên quốc gia..." />}
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Loại hình làm việc</label>
+                  <select value={form.jobType} onChange={setField("jobType")} className={`${inputClasses} h-12 appearance-none`}>
+                    {Object.entries(JOBTYPE_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              {/* Salary Section */}
+              <div className="p-5 bg-slate-50 dark:bg-black/20 border border-slate-100 dark:border-white/5 rounded-2xl space-y-4">
+                <div className="flex items-center gap-2 mb-2 text-amber-700 dark:text-brand-gold font-bold text-xs uppercase tracking-widest">
+                  <DollarSign size={14} /> Cấu hình mức lương
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-slate-400">Min</label>
+                    <input type="number" value={form.salaryMin} onChange={setField("salaryMin")} className={`${inputClasses} h-11`} placeholder="3000" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-slate-400">Max</label>
+                    <input type="number" value={form.salaryMax} onChange={setField("salaryMax")} className={`${inputClasses} h-11`} placeholder="4500" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-slate-400">Tiền tệ</label>
+                    <select value={form.salaryCurrency} onChange={handleCurrencyChange} className={`${inputClasses} h-11 appearance-none`}>
+                      <option value="AUD">🇦🇺 AUD (Úc)</option>
+                      <option value="CAD">🇨🇦 CAD (Canada)</option>
+                      <option value="VND">🇻🇳 VND (Việt Nam)</option>
+                      <option value="USD">🇺🇸 USD (Mỹ)</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Đơn vị lương khi nhập liệu:</label>
+                  <div className="flex gap-2">
+                    {(["hourly", "weekly", "monthly", "yearly"] as const).map(p => (
+                      <button key={p} onClick={() => setSalaryPeriod(p)} className={`flex-1 py-2 rounded-xl text-[10px] font-bold border transition-all ${salaryPeriod === p ? "bg-amber-600 border-amber-600 text-white" : "bg-white dark:bg-black/20 border-slate-200 dark:border-white/5 text-slate-500"}`}>
+                        {{ hourly: "GIỜ", weekly: "TUẦN", monthly: "THÁNG", yearly: "NĂM" }[p]}
+                      </button>
                     ))}
-                  </select>
-                  {form.country === "__other__" && (
-                    <input
-                      value={form.countryCustom}
-                      onChange={(e) =>
-                        setForm((f) => ({
-                          ...f,
-                          countryCustom: e.target.value,
-                        }))
-                      }
-                      className="input-dark mt-2"
-                      placeholder="Nhập tên quốc gia (VD: Malaysia, Israel...)"
-                    />
-                  )}
-                </div>
-                <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">
-                    Loại hình
-                  </label>
-                  <select
-                    value={form.jobType}
-                    onChange={set("jobType")}
-                    className="input-dark"
-                  >
-                    <option value="full_time">Toàn thời gian</option>
-                    <option value="part_time">Bán thời gian</option>
-                    <option value="contract">Hợp đồng</option>
-                    <option value="seasonal">Theo mùa vụ</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">
-                    Lương tối thiểu
-                  </label>
-                  <input
-                    type="number"
-                    value={form.salaryMin}
-                    onChange={set("salaryMin")}
-                    className="input-dark"
-                    placeholder="3000"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">
-                    Lương tối đa
-                  </label>
-                  <input
-                    type="number"
-                    value={form.salaryMax}
-                    onChange={set("salaryMax")}
-                    className="input-dark"
-                    placeholder="5000"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">
-                    Tiền tệ
-                  </label>
-                  <select
-                    value={form.salaryCurrency}
-                    onChange={handleCurrencyChange}
-                    className="input-dark"
-                  >
-                    <option value="AUD">🇦🇺 AUD (Úc)</option>
-                    <option value="CAD">🇨🇦 CAD (Canada)</option>
-                    <option value="NZD">🇳🇿 NZD (New Zealand)</option>
-                    <option value="USD">🇺🇸 USD (Mỹ)</option>
-                    <option value="GBP">🇬🇧 GBP (Anh)</option>
-                    <option value="EUR">🇪🇺 EUR (Châu Âu)</option>
-                    <option value="JPY">🇯🇵 JPY (Nhật Bản)</option>
-                    <option value="KRW">🇰🇷 KRW (Hàn Quốc)</option>
-                    <option value="SGD">🇸🇬 SGD (Singapore)</option>
-                    <option value="TWD">🇹🇼 TWD (Đài Loan)</option>
-                    <option value="NOK">🇳🇴 NOK (Na Uy)</option>
-                    <option value="CHF">🇨🇭 CHF (Thụy Sĩ)</option>
-                    <option value="CNY">🇨🇳 CNY (Trung Quốc)</option>
-                    <option value="THB">🇹🇭 THB (Thái Lan)</option>
-                    <option value="INR">🇮🇳 INR (Ấn Độ)</option>
-                    <option value="MYR">🇲🇾 MYR (Malaysia)</option>
-                    <option value="IDR">🇮🇩 IDR (Indonesia)</option>
-                    <option value="PHP">🇵🇭 PHP (Philippines)</option>
-                    <option value="VND">🇻🇳 VND (Việt Nam)</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">
-                    Đơn vị lương nhập
-                  </label>
-                  <select
-                    value={salaryPeriod}
-                    onChange={(e) =>
-                      setSalaryPeriod(
-                        e.target.value as
-                          | "hourly"
-                          | "weekly"
-                          | "monthly"
-                          | "yearly",
-                      )
-                    }
-                    className="input-dark"
-                  >
-                    <option value="hourly">Theo giờ</option>
-                    <option value="weekly">Theo tuần</option>
-                    <option value="monthly">Theo tháng</option>
-                    <option value="yearly">Theo năm</option>
-                  </select>
+                  </div>
                 </div>
                 {(form.salaryMin || form.salaryMax) && (
-                  <div className="sm:col-span-2 p-3 bg-brand-gold/5 border border-brand-gold/20 rounded-xl">
-                    <p className="text-xs text-brand-gold font-semibold mb-2 flex items-center gap-1.5">
-                      <Clock size={12} /> Ước lượng lương ({form.salaryCurrency}
-                      )
-                    </p>
-                    <div className="grid grid-cols-4 gap-2">
-                      {(["hourly", "weekly", "monthly", "yearly"] as const).map(
-                        (p) => {
-                          const labels = {
-                            hourly: "/ giờ",
-                            weekly: "/ tuần",
-                            monthly: "/ tháng",
-                            yearly: "/ năm",
-                          };
-                          const minEst = form.salaryMin
-                            ? getSalaryEstimates(
-                                Number(form.salaryMin),
-                                salaryPeriod,
-                              )[p]
-                            : null;
-                          const maxEst = form.salaryMax
-                            ? getSalaryEstimates(
-                                Number(form.salaryMax),
-                                salaryPeriod,
-                              )[p]
-                            : null;
-                          return (
-                            <div
-                              key={p}
-                              className={`rounded-lg p-2 text-center border ${p === salaryPeriod ? "border-brand-gold/40 bg-brand-gold/10" : "border-brand-border bg-brand-dark/40"}`}
-                            >
-                              <p className="text-[10px] text-brand-muted mb-1">
-                                {labels[p]}
+                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-200/50 dark:border-white/5">
+                      {["hourly", "weekly", "monthly", "yearly"].map(p => {
+                         const estsMin = form.salaryMin ? getSalaryEstimates(Number(form.salaryMin), salaryPeriod) : null;
+                         const estsMax = form.salaryMax ? getSalaryEstimates(Number(form.salaryMax), salaryPeriod) : null;
+                         return (
+                           <div key={p} className="p-2 text-center rounded-lg bg-white/50 dark:bg-black/20 border border-slate-100 dark:border-white/5">
+                              <p className="text-[8px] font-bold text-slate-400 uppercase">{p}</p>
+                              <p className="text-[10px] font-black text-slate-900 dark:text-white truncate">
+                                {estsMin?.[p as keyof typeof estsMin] || "0"} - {estsMax?.[p as keyof typeof estsMax] || "0"}
                               </p>
-                              <p className="text-xs font-semibold text-white leading-tight">
-                                {minEst && maxEst
-                                  ? `${minEst} – ${maxEst}`
-                                  : minEst || maxEst || "—"}
-                              </p>
-                            </div>
-                          );
-                        },
-                      )}
-                    </div>
-                  </div>
+                           </div>
+                         )
+                      })}
+                   </div>
                 )}
-                <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">
-                    Số chỉ tiêu
-                  </label>
-                  <input
-                    type="number"
-                    value={form.slots}
-                    onChange={set("slots")}
-                    className="input-dark"
-                    placeholder="Số lượng tuyển"
-                  />
+              </div>
+
+              {/* Status & Categorization */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Chỉ tiêu (Slot)</label>
+                  <input type="number" value={form.slots} onChange={setField("slots")} className={`${inputClasses} h-12`} placeholder="Số lượng" />
                 </div>
-                <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">
-                    Hạn nộp hồ sơ
-                  </label>
-                  <input
-                    type="date"
-                    value={form.deadline}
-                    onChange={set("deadline")}
-                    className="input-dark"
-                  />
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Hạn nộp</label>
+                  <input type="date" value={form.deadline} onChange={setField("deadline")} className={`${inputClasses} h-12 appearance-none`} />
                 </div>
-                <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">
-                    Danh mục
-                  </label>
-                  <select
-                    value={form.categoryId}
-                    onChange={(e) => {
-                      set("categoryId")(e);
-                      if (!form.imagePreview) useSuggestedImage(e.target.value);
-                    }}
-                    className="input-dark"
-                  >
-                    <option value="">-- Chọn danh mục --</option>
-                    {cats.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.icon} {c.name}
-                      </option>
-                    ))}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Ngành nghề</label>
+                  <select value={form.categoryId} onChange={e => { setField("categoryId")(e); if (!form.imagePreview) useSuggestedImage(e.target.value); }} className={`${inputClasses} h-12 appearance-none`}>
+                    <option value="">-- Chọn ngành --</option>
+                    {cats.map((c) => <option key={c.id} value={c.id}>{c.icon} {c.name}</option>)}
                   </select>
-                </div>
-                <div>
-                  <label className="text-xs text-brand-muted mb-1.5 block">
-                    Trạng thái
-                  </label>
-                  <select
-                    value={form.status}
-                    onChange={set("status")}
-                    className="input-dark"
-                  >
-                    <option
-                      value="active"
-                      style={{ backgroundColor: "#10b981", color: "#fff" }}
-                    >
-                      Hoạt động
-                    </option>
-                    <option
-                      value="paused"
-                      style={{ backgroundColor: "#f59e0b", color: "#000" }}
-                    >
-                      Tạm dừng
-                    </option>
-                    <option
-                      value="closed"
-                      style={{ backgroundColor: "#ef4444", color: "#fff" }}
-                    >
-                      Đã đóng
-                    </option>
-                    <option
-                      value="draft"
-                      style={{ backgroundColor: "#6b7280", color: "#fff" }}
-                    >
-                      Nháp
-                    </option>
-                  </select>
-                </div>
-                <div className="sm:col-span-2 flex gap-6">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={form.isHot}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, isHot: e.target.checked }))
-                      }
-                      className="w-4 h-4 accent-brand-orange"
-                    />
-                    <span className="text-sm text-white">🔥 Đánh dấu Hot</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={form.isFeatured}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, isFeatured: e.target.checked }))
-                      }
-                      className="w-4 h-4 accent-brand-gold"
-                    />
-                    <span className="text-sm text-white">⭐ Nổi bật</span>
-                  </label>
-                </div>
-                <div className="sm:col-span-2">
-                  <label className="text-xs text-brand-muted mb-1.5 block">
-                    Mô tả công việc *
-                  </label>
-                  <textarea
-                    value={form.description}
-                    onChange={set("description")}
-                    className="input-dark h-24 resize-none"
-                    placeholder="Mô tả chi tiết..."
-                  />
-                </div>
-                <div className="sm:col-span-2">
-                  <label className="text-xs text-brand-muted mb-1.5 block">
-                    Yêu cầu
-                  </label>
-                  <textarea
-                    value={form.requirements}
-                    onChange={set("requirements")}
-                    className="input-dark h-20 resize-none"
-                    placeholder="Yêu cầu đối với ứng viên..."
-                  />
-                </div>
-                <div className="sm:col-span-2">
-                  <label className="text-xs text-brand-muted mb-1.5 block">
-                    Quyền lợi
-                  </label>
-                  <textarea
-                    value={form.benefits}
-                    onChange={set("benefits")}
-                    className="input-dark h-20 resize-none"
-                    placeholder="Quyền lợi dành cho nhân viên..."
-                  />
                 </div>
               </div>
 
-              <div className="flex gap-3 pt-2">
-                <button
-                  onClick={handleSave}
-                  className="btn-primary flex-1 flex items-center justify-center gap-2 py-3"
-                >
-                  <CheckCircle size={15} />{" "}
-                  {modal === "add" ? "Đăng bài" : "Lưu thay đổi"}
-                </button>
-                <button
-                  onClick={() => setModal(null)}
-                  className="btn-outline px-6"
-                >
-                  Hủy
-                </button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 py-2">
+                 <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Trạng thái tin đăng</label>
+                    <select value={form.status} onChange={setField("status")} className={`${inputClasses} h-12 appearance-none font-bold`}>
+                       {Object.entries(STATUS_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+                    </select>
+                 </div>
+                 <div className="flex gap-4 items-end pb-3">
+                    <label className="flex items-center gap-2.5 cursor-pointer group">
+                      <input type="checkbox" checked={form.isHot} onChange={e => setForm(f => ({ ...f, isHot: e.target.checked }))} className="w-5 h-5 accent-red-500 rounded-lg" />
+                      <span className="text-sm font-bold text-slate-700 dark:text-white group-hover:text-red-500 transition-colors">🔥 HOT</span>
+                    </label>
+                    <label className="flex items-center gap-2.5 cursor-pointer group">
+                      <input type="checkbox" checked={form.isFeatured} onChange={e => setForm(f => ({ ...f, isFeatured: e.target.checked }))} className="w-5 h-5 accent-amber-500 rounded-lg" />
+                      <span className="text-sm font-bold text-slate-700 dark:text-white group-hover:text-amber-500 transition-colors">⭐ NỔI BẬT</span>
+                    </label>
+                 </div>
               </div>
+
+              <div className="space-y-5 pt-2 border-t border-slate-100 dark:border-white/5">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Mô tả công việc *</label>
+                  <textarea value={form.description} onChange={setField("description")} className={`${inputClasses} h-32 py-3 resize-none`} placeholder="Nội dung công việc chính..." />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Yêu cầu ứng tuyển</label>
+                  <textarea value={form.requirements} onChange={setField("requirements")} className={`${inputClasses} h-24 py-3 resize-none`} placeholder="Kỹ năng, kinh nghiệm cần có..." />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Quyền lợi đãi ngộ</label>
+                  <textarea value={form.benefits} onChange={setField("benefits")} className={`${inputClasses} h-24 py-3 resize-none`} placeholder="Lương thưởng, bảo hiểm, hỗ trợ ăn ở..." />
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6 border-t border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-black/20 flex gap-3">
+              <button onClick={() => setModal(null)} className="flex-1 h-12 rounded-2xl font-bold border border-slate-200 dark:border-brand-border text-slate-600 dark:text-white hover:bg-white dark:hover:bg-white/5 transition-all">Hủy bỏ</button>
+              <button onClick={handleSave} disabled={saving} className="flex-[2] h-12 btn-primary font-bold shadow-lg shadow-amber-500/20 disabled:opacity-50">
+                {saving ? "Đang xử lý..." : modal === "add" ? "Đăng bài tuyển dụng" : "Cập nhật bài viết"}
+              </button>
             </div>
           </div>
         </div>
@@ -1179,7 +660,7 @@ export default function AdminJobsPage() {
 
       {deleting && (
         <ConfirmDeleteModal
-          message="Bài đăng sẽ bị xóa vĩnh viễn."
+          message="Hành động này sẽ xóa vĩnh viễn tin tuyển dụng và toàn bộ hồ sơ ứng tuyển liên quan."
           onConfirm={() => handleDelete(deleting)}
           onCancel={() => setDeleting(null)}
         />
