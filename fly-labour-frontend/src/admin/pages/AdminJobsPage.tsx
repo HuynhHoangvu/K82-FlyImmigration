@@ -89,6 +89,7 @@ type FormData = {
   req_language?: string;
   req_other?: string;
   req_checklist?: string[];
+  req_transport?: string;
   ben_departure?: string;
   ben_checklist?: string[];
 };
@@ -119,6 +120,7 @@ const EMPTY_FORM: FormData = {
   req_language: "",
   req_other: "",
   req_checklist: [],
+  req_transport: "",
   ben_departure: "",
   ben_checklist: [],
 };
@@ -224,6 +226,7 @@ export default function AdminJobsPage() {
           req_language: parsed.v2.language || "",
           req_other: parsed.v2.other || "",
           req_checklist: parsed.v2.checklist || [],
+          req_transport: parsed.v2.transport || "",
           requirements: parsed.v2.raw || job.requirements
         }));
       }
@@ -295,6 +298,7 @@ export default function AdminJobsPage() {
         "req_language",
         "req_other",
         "req_checklist",
+        "req_transport",
         "ben_departure",
         "ben_checklist"
       ];
@@ -318,6 +322,7 @@ export default function AdminJobsPage() {
             language: form.req_language,
             other: form.req_other,
             checklist: form.req_checklist,
+            transport: form.req_transport,
             raw: form.requirements
           }
         };
@@ -730,6 +735,10 @@ export default function AdminJobsPage() {
                       <div className="space-y-1">
                         <label className="text-[9px] font-bold text-slate-400 uppercase">Ngoại ngữ</label>
                         <input value={form.req_language} onChange={e => setForm({...form, req_language: e.target.value})} className={`${inputClasses} h-9`} placeholder="PTE/IELTS" />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[9px] font-bold text-slate-400 uppercase">Phương tiện đi lại</label>
+                        <input value={form.req_transport} onChange={e => setForm({...form, req_transport: e.target.value})} className={`${inputClasses} h-9`} placeholder="Xe đưa đón / Tự túc" />
                       </div>
                       <div className="space-y-1">
                         <label className="text-[9px] font-bold text-slate-400 uppercase">Yêu cầu khác</label>

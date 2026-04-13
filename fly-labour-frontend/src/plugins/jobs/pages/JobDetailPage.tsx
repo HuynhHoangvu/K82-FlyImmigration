@@ -387,6 +387,12 @@ export default function JobDetailPage() {
                               <td className="p-4 text-slate-700 dark:text-white font-medium group-hover:bg-slate-50 dark:group-hover:bg-white/5 transition-colors">{row.value || "—"}</td>
                             </tr>
                           ))}
+                          {structReq?.transport && (
+                            <tr>
+                              <td className="p-4 font-bold text-slate-400 dark:text-brand-muted bg-slate-50/50 dark:bg-black/10">PHƯƠNG TIỆN</td>
+                              <td className="p-4 text-slate-700 dark:text-gray-300 font-medium">{structReq.transport}</td>
+                            </tr>
+                          )}
                           <tr>
                             <td className="p-4 font-bold text-slate-400 dark:text-brand-muted bg-slate-50/50 dark:bg-black/10">YÊU CẦU KHÁC</td>
                             <td className="p-4">
