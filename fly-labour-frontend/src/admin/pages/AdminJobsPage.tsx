@@ -286,7 +286,18 @@ export default function AdminJobsPage() {
     setSaving(true);
     try {
       const fd = new FormData();
-      const skipKeys = ["imagePreview", "countryCustom"];
+      const skipKeys = [
+        "imagePreview",
+        "countryCustom",
+        "req_age",
+        "req_workTime",
+        "req_experience",
+        "req_language",
+        "req_other",
+        "req_checklist",
+        "ben_departure",
+        "ben_checklist"
+      ];
       Object.entries(form).forEach(([k, v]) => {
         if (skipKeys.includes(k)) return;
         if (v === "" || v === undefined || v === null) return;

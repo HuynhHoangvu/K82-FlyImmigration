@@ -111,13 +111,20 @@ export function EditableText({
   const textStyle: React.CSSProperties = {
     ...(activeColor ? { color: activeColor } : {}),
     ...(currentSize ? { fontSize: currentSize } : {}),
+    ...(multiline ? { whiteSpace: 'pre-line' } : {}),
+  }
+
+  // Chuyển đổi <br> thành \n để hiển thị đúng khi dùng whitespace-pre-line
+  const formatText = (val: string) => {
+    if (!val) return "";
+    return val.replace(/<br\s*\/?>/gi, '\n');
   }
 
   // ── Non-edit mode ─────────────────────────────────────────────
   if (!isEditMode) {
     return (
       <Tag className={className} style={Object.keys(textStyle).length ? textStyle : undefined}>
-        {currentValue}
+        {formatText(currentValue)}
       </Tag>
     )
   }
@@ -237,9 +244,10 @@ export function EditableText({
                   background: '#111827',
                   color: draftColorDark || '#ffffff',
                   fontSize: draftSize || 'inherit',
+                  whiteSpace: 'pre-line',
                 }}
               >
-                {draft || defaultValue || 'Preview'}
+                {formatText(draft || defaultValue) || 'Preview'}
               </span>
               {/* Light bg preview */}
               <span
@@ -248,9 +256,10 @@ export function EditableText({
                   background: '#f9fafb',
                   color: draftColorLight || '#111827',
                   fontSize: draftSize || 'inherit',
+                  whiteSpace: 'pre-line',
                 }}
               >
-                {draft || defaultValue || 'Preview'}
+                {formatText(draft || defaultValue) || 'Preview'}
               </span>
             </span>
             <span className="flex text-[9px] text-gray-600">
@@ -285,6 +294,7 @@ export function EditableText({
   const idleStyle: React.CSSProperties = {
     ...(activeColor ? { color: activeColor } : {}),
     ...(currentSize ? { fontSize: currentSize } : {}),
+    ...(multiline ? { whiteSpace: 'pre-line' } : {}),
   }
 
   return (
@@ -293,7 +303,7 @@ export function EditableText({
         className={`${className} outline-dashed outline-1 outline-brand-gold/50 rounded px-0.5 group-hover:outline-brand-gold transition-all`}
         style={Object.keys(idleStyle).length ? idleStyle : undefined}
       >
-        {currentValue}
+        {formatText(currentValue)}
       </Tag>
       <span className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
         <button
