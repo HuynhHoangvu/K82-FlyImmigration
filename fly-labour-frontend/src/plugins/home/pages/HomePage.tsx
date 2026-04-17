@@ -20,8 +20,7 @@ import LatestJobsSection from "@/themes/fly-labour/parts/home/LatestJobsSection"
 import WhyChooseUs from "@/themes/fly-labour/parts/home/WhyChooseUs";
 import NewsSection from "@/themes/fly-labour/parts/home/NewsSection";
 import EmployerCTASection from "@/themes/fly-labour/parts/home/EmployerCTASection";
-import CtaSection from "@/themes/fly-labour/parts/home/CtaSection";
-import EnglishTestSection from "@/themes/fly-labour/parts/home/EnglishTestSection";
+import EnglishTestCtaRow from "@/themes/fly-labour/parts/home/EnglishTestCtaRow";
 import { useEditModeStore } from "@/core/store/editModeStore";
 import { useSectionManager } from "@/core/hooks/useSectionManager";
 
@@ -33,8 +32,7 @@ const SECTION_COMPONENTS: Record<string, React.ReactNode> = {
   why: <WhyChooseUs />,
   employer: <EmployerCTASection />,
   news: <NewsSection />,
-  englishtest: <EnglishTestSection />,
-  cta: <CtaSection />,
+  englishtestcta: <EnglishTestCtaRow />,
 };
 
 // Khôi phục component DraggableSection dành riêng cho Edit Mode

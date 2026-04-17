@@ -18,8 +18,7 @@ export const HOME_SECTIONS: SectionDef[] = [
   { id: 'why',        label: 'Tại sao chọn chúng tôi',     icon: '✅' },
   { id: 'employer',   label: 'Dành cho nhà tuyển dụng',    icon: '🏢' },
   { id: 'news',        label: 'Tin tức',                    icon: '📰' },
-  { id: 'englishtest', label: 'Test tiếng Anh miễn phí',   icon: '📝' },
-  { id: 'cta',         label: 'Call to Action',             icon: '🚀' },
+  { id: 'englishtestcta', label: 'Test tiếng Anh + CTA', icon: '📝' },
 ]
 
 const DEFAULT_ORDER = HOME_SECTIONS.map(s => s.id)
