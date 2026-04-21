@@ -92,43 +92,25 @@ export default function FlashSaleJobs() {
   const jobs = hotJobsQuery.data ?? [];
   const isLoading = hotJobsQuery.isLoading;
 
-  const sliderSettings: Settings = useMemo(
-    () => ({
-      dots: false,
-      infinite: jobs.length > 3,
-      speed: 500,
-      autoplay: true,
-      autoplaySpeed: 5200,
-      pauseOnHover: true,
-      swipeToSlide: true,
-      slidesToShow: 5,
-      slidesToScroll: 3,
-      arrows: false,
-      responsive: [
-        {
-          breakpoint: 1536,
-          settings: { slidesToShow: 4, slidesToScroll: 3 },
-        },
-        {
-          breakpoint: 1280,
-          settings: { slidesToShow: 3, slidesToScroll: 3 },
-        },
-        {
-          breakpoint: 1024,
-          settings: { slidesToShow: 2, slidesToScroll: 2 },
-        },
-        {
-          breakpoint: 768,
-          settings: { slidesToShow: 2, slidesToScroll: 2 },
-        },
-        {
-          breakpoint: 480,
-          settings: { slidesToShow: 1, slidesToScroll: 1 },
-        },
-      ],
-    }),
-    [jobs.length],
-  );
+  const sliderSettings: Settings = {
+    dots: false,
+    infinite: jobs.length > 3,
+    speed: 500,
+    autoplay: true,
+    autoplaySpeed: 5200,
+    pauseOnHover: true,
+    swipeToSlide: true,
+    slidesToShow: 5,
+    slidesToScroll: 3,
+    arrows: false,
+    responsive: [
+      { breakpoint: 1536, settings: { slidesToShow: 4, slidesToScroll: 3 } },
+      { breakpoint: 1280, settings: { slidesToShow: 3, slidesToScroll: 3 } },
+      { breakpoint: 1024, settings: { slidesToShow: 2, slidesToScroll: 2 } },
+      { breakpoint: 768,  settings: { slidesToShow: 2, slidesToScroll: 2 } },
+      { breakpoint: 480,  settings: { slidesToShow: 1, slidesToScroll: 1 } },
+    ],
+  };
 
   return (
     <section className="py-16 transition-colors duration-300">
@@ -207,6 +189,7 @@ export default function FlashSaleJobs() {
             >
               <div className="overflow-hidden">
               <Slider
+                key={jobs.length}
                 ref={sliderRef}
                 {...sliderSettings}
                 className="slick-spaced-slider -mx-2 sm:-mx-3 pb-4"
