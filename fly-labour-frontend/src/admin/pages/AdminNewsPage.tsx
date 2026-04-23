@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import ConfirmDeleteModal from "@/admin/components/ConfirmDeleteModal";
+import AdminRichTextEditor from "@/admin/components/AdminRichTextEditor";
 import {
   Plus,
   Pencil,
@@ -411,12 +412,15 @@ export default function AdminNewsPage() {
                 </div>
 
                 {/* Main Content Editor */}
-                <textarea
-                  value={form.content}
-                  onChange={setField("content")}
-                  placeholder="Bắt đầu câu chuyện của bạn..."
-                  className="!border-none !rounded-none w-full min-h-[1000px] outline-none text-slate-800 dark:text-slate-200 bg-transparent"
-                />
+                <div className="px-6 md:px-12 pb-16 md:pb-24 pt-2">
+                  <AdminRichTextEditor
+                    value={form.content}
+                    onChange={(html) =>
+                      setForm((f) => ({ ...f, content: html }))
+                    }
+                    placeholder="Soạn tin bài — định dạng, chèn ảnh và bảng từ thanh công cụ phía trên…"
+                  />
+                </div>
               </div>
             </div>
 

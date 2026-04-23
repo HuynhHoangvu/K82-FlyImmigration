@@ -13,14 +13,14 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import HeroBanner from "@themes/fly-labour/parts/home/HeroBanner";
-import FlashSaleJobs from "@themes/fly-labour/parts/home/FlashSaleJobs";
-import CategoriesSection from "@themes/fly-labour/parts/home/CategoriesSection";
-import LatestJobsSection from "@themes/fly-labour/parts/home/LatestJobsSection";
-import WhyChooseUs from "@themes/fly-labour/parts/home/WhyChooseUs";
-import NewsSection from "@themes/fly-labour/parts/home/NewsSection";
-import EmployerCTASection from "@themes/fly-labour/parts/home/EmployerCTASection";
-import EnglishTestCtaRow from "@themes/fly-labour/parts/home/EnglishTestCtaRow";
+import HeroBanner from "@components/home/HeroBanner";
+import FlashSaleJobs from "@components/home/FlashSaleJobs";
+import CategoriesSection from "@components/home/CategoriesSection";
+import LatestJobsSection from "@components/home/LatestJobsSection";
+import WhyChooseUs from "@components/home/WhyChooseUs";
+import NewsSection from "@components/home/NewsSection";
+import EmployerCTASection from "@components/home/EmployerCTASection";
+import EnglishTestCtaRow from "@components/home/EnglishTestCtaRow";
 import { useEditModeStore } from "@core/store/editModeStore";
 import { useSectionManager } from "@core/hooks/useSectionManager";
 

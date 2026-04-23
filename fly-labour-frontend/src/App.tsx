@@ -4,8 +4,8 @@ import { Toaster } from "react-hot-toast";
 
 
 import { useContentStore } from "@core/hooks/usePageContent";
-import ScrollToTop from "@themes/fly-labour/parts/widgets/ScrollToTop";
-import UserLayout from "@themes/fly-labour/layout/UserLayout";
+import ScrollToTop from "@components/widgets/ScrollToTop";
+import UserLayout from "@components/layout/UserLayout";
 import AdminLayout from "@/admin/layout/AdminLayout";
 
 // ── User pages ────────────────────────────────────────────────────────────────

@@ -20,7 +20,7 @@
       "@/*": ["./src/*"],
       "@features/*": ["./src/features/*"],
       "@core/*": ["./src/core/*"],
-      "@themes/*": ["./src/themes/*"]
+      "@components/*": ["./src/components/*"]
     },
     "ignoreDeprecations": "5.0"
   },

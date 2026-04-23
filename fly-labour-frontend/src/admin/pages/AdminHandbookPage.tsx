@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import ConfirmDeleteModal from "@/admin/components/ConfirmDeleteModal";
+import AdminRichTextEditor from "@/admin/components/AdminRichTextEditor";
 
 import {
   Plus, Pencil, Trash2, X,
@@ -389,12 +390,15 @@ export default function AdminHandbookPage() {
                     <span>Ban biên tập FLY LABOUR</span>
                   </div>
                 </div>
-                <textarea
-                  value={form.content}
-                  onChange={setField("content")}
-                  placeholder="Viết nội dung cẩm nang tại đây..."
-                  className="!border-none !rounded-none w-full min-h-[1000px] outline-none text-slate-800 dark:text-slate-200 bg-transparent"
-                />
+                <div className="px-6 md:px-12 pb-16 md:pb-24 pt-2">
+                  <AdminRichTextEditor
+                    value={form.content}
+                    onChange={(html) =>
+                      setForm((f) => ({ ...f, content: html }))
+                    }
+                    placeholder="Soạn nội dung cẩm nang — định dạng như Word, chèn ảnh và bảng từ thanh công cụ phía trên…"
+                  />
+                </div>
               </div>
             </div>
 

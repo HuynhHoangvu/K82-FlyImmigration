@@ -1,8 +1,8 @@
 import { Outlet } from "react-router-dom";
-import Header from "@themes/fly-labour/parts/Header";
-import Footer from "@themes/fly-labour/parts/Footer";
-import FloatingContact from "@themes/fly-labour/parts/widgets/FloatingContact";
-import BackgroundMusic from "@themes/fly-labour/parts/widgets/BackgroundMusic";
+import Header from "@components/layout/Header";
+import Footer from "@components/layout/Footer";
+import FloatingContact from "@components/widgets/FloatingContact";
+import BackgroundMusic from "@components/widgets/BackgroundMusic";
 
 export default function UserLayout() {
   return (
