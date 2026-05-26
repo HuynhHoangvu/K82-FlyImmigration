@@ -4,8 +4,11 @@ import { GcsService } from '../../common/services/gcs.service';
 export declare class CreateNewsDto {
     title: string;
     slug: string;
+    titleEn?: string;
     excerpt?: string;
+    excerptEn?: string;
     content?: string;
+    contentEn?: string;
     image?: string;
     isPublished?: boolean;
     type?: 'news' | 'handbook' | 'study' | 'travel';
@@ -15,6 +18,7 @@ export declare class CreateNewsDto {
     priceTo?: number;
     priceCurrency?: string;
     itinerary?: string;
+    itineraryEn?: string;
     studyType?: string;
 }
 export declare class NewsService {

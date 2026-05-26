@@ -1,6 +1,7 @@
 export type Country = string
 export type JobType = 'full_time' | 'part_time' | 'contract' | 'seasonal'
 export type JobStatus = 'active' | 'paused' | 'closed' | 'draft' | 'pending_review'
+export type LabourType = 'onshore' | 'offshore'
 export type AppStatus = 'pending' | 'reviewing' | 'approved' | 'rejected' | 'withdrawn'
 export type UserRole = 'admin' | 'user' | 'employer'
 
@@ -30,6 +31,7 @@ export interface Job {
   location?: string
   country: Country
   jobType: JobType
+  labourType?: LabourType
   status: JobStatus
   salaryMin?: number
   salaryMax?: number
@@ -118,9 +120,12 @@ export interface StudyApplication {
 export interface News {
   id: string
   title: string
+  titleEn?: string
   slug: string
   excerpt?: string
+  excerptEn?: string
   content: string
+  contentEn?: string
   image?: string
   isPublished: boolean
   type: 'news' | 'handbook' | 'study' | 'travel'
@@ -131,6 +136,7 @@ export interface News {
   priceTo?: number
   priceCurrency?: string
   itinerary?: string
+  itineraryEn?: string
   createdAt: string
 }
 

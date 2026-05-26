@@ -15,6 +15,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.flylabour.app",
+      "buildNumber": "1",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Ứng dụng cần truy cập thư viện ảnh để tải CV lên.",
         "NSCameraUsageDescription": "Ứng dụng cần camera để chụp ảnh CV."
@@ -34,8 +35,7 @@
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.VIBRATE",
         "android.permission.POST_NOTIFICATIONS"
-      ],
-
+      ]
     },
     "web": {
       "bundler": "metro",

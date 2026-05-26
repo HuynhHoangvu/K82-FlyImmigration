@@ -46,9 +46,12 @@ function slugify(str: string) {
 
 type FormData = {
   title: string;
+  titleEn: string;
   slug: string;
   excerpt: string;
+  excerptEn: string;
   content: string;
+  contentEn: string;
   isPublished: boolean;
   imagePreview: string;
   country: string;
@@ -56,14 +59,18 @@ type FormData = {
   priceTo: string;
   priceCurrency: string;
   itinerary: string;
+  itineraryEn: string;
   registerUrl: string;
 };
 
 const EMPTY: FormData = {
   title: "",
+  titleEn: "",
   slug: "",
   excerpt: "",
+  excerptEn: "",
   content: "",
+  contentEn: "",
   isPublished: true,
   imagePreview: "",
   country: "",
@@ -71,6 +78,7 @@ const EMPTY: FormData = {
   priceTo: "",
   priceCurrency: "VND",
   itinerary: "",
+  itineraryEn: "",
   registerUrl: "",
 };
 
@@ -92,6 +100,7 @@ export default function AdminTravelPage() {
   const [saving, setSaving] = useState(false);
   const [imgTab, setImgTab] = useState<"upload" | "url">("upload");
   const [urlInput, setUrlInput] = useState("");
+  const [langTab, setLangTab] = useState<"vi" | "en">("vi");
   const fileRef = useRef<HTMLInputElement>(null);
   const fileObj = useRef<File | null>(null);
 
@@ -115,15 +124,19 @@ export default function AdminTravelPage() {
     setEditing(null);
     setUrlInput("");
     fileObj.current = null;
+    setLangTab("vi");
     setModal("add");
   };
 
   const openEdit = (n: News) => {
     setForm({
       title: n.title,
+      titleEn: n.titleEn || "",
       slug: n.slug,
       excerpt: n.excerpt || "",
+      excerptEn: n.excerptEn || "",
       content: n.content || "",
+      contentEn: n.contentEn || "",
       isPublished: n.isPublished,
       imagePreview: n.image || "",
       country: n.country || "",
@@ -131,11 +144,13 @@ export default function AdminTravelPage() {
       priceTo: n.priceTo?.toString() || "",
       priceCurrency: n.priceCurrency || "VND",
       itinerary: n.itinerary || "",
+      itineraryEn: n.itineraryEn || "",
       registerUrl: n.registerUrl || "",
     });
     setUrlInput(n.image?.startsWith("http") ? n.image : "");
     fileObj.current = null;
     setEditing(n);
+    setLangTab("vi");
     setModal("edit");
   };
 
@@ -179,16 +194,20 @@ export default function AdminTravelPage() {
     try {
       const fd = new FormData();
       fd.append("title", form.title);
+      if (form.titleEn) fd.append("titleEn", form.titleEn);
       fd.append("slug", form.slug);
       fd.append("type", "travel");
       if (form.excerpt) fd.append("excerpt", form.excerpt);
+      if (form.excerptEn) fd.append("excerptEn", form.excerptEn);
       if (form.content) fd.append("content", form.content);
+      if (form.contentEn) fd.append("contentEn", form.contentEn);
       fd.append("isPublished", form.isPublished ? "true" : "false");
       fd.append("country", form.country);
       if (form.priceFrom) fd.append("priceFrom", form.priceFrom);
       if (form.priceTo) fd.append("priceTo", form.priceTo);
       fd.append("priceCurrency", form.priceCurrency);
       fd.append("itinerary", form.itinerary);
+      if (form.itineraryEn) fd.append("itineraryEn", form.itineraryEn);
       fd.append("registerUrl", form.registerUrl);
 
       if (fileObj.current) fd.append("image", fileObj.current);
@@ -371,6 +390,47 @@ export default function AdminTravelPage() {
 
             {/* Scrollable Form Content */}
             <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
+              {/* Tab Bar */}
+              <div
+                style={{
+                  display: "flex",
+                  gap: "1.5rem",
+                  borderBottom: "1px solid #e2e8f0",
+                  paddingBottom: "0.5rem"
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setLangTab("vi")}
+                  style={{
+                    fontWeight: langTab === "vi" ? "bold" : "normal",
+                    borderBottom: langTab === "vi" ? "2px solid #d97706" : "none",
+                    paddingBottom: "0.25rem",
+                    color: langTab === "vi" ? "#d97706" : "#64748b",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer"
+                  }}
+                >
+                  🇻🇳 Tiếng Việt
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLangTab("en")}
+                  style={{
+                    fontWeight: langTab === "en" ? "bold" : "normal",
+                    borderBottom: langTab === "en" ? "2px solid #d97706" : "none",
+                    paddingBottom: "0.25rem",
+                    color: langTab === "en" ? "#d97706" : "#64748b",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer"
+                  }}
+                >
+                  🇬🇧 Tiếng Anh (English)
+                </button>
+              </div>
+
               {/* 1. Hình ảnh & Thông tin chính */}
               <div className="grid grid-cols-1 md:grid-cols-12 gap-6 pb-6 border-b border-slate-100">
                 {/* Image Section */}
@@ -445,12 +505,14 @@ export default function AdminTravelPage() {
                 {/* Form fields right */}
                 <div className="md:col-span-8 space-y-4">
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Tên Tour / Tiêu đề gói du lịch *</label>
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      Tên Tour / Tiêu đề gói du lịch {langTab === "vi" ? "*" : "(Tiếng Anh)"}
+                    </label>
                     <input
-                      value={form.title}
-                      onChange={setField("title")}
+                      value={langTab === "vi" ? form.title : form.titleEn}
+                      onChange={setField(langTab === "vi" ? "title" : "titleEn")}
                       className={`${inputClasses} h-11 text-base font-bold`}
-                      placeholder="VD: Tour Hàn Quốc 5N4Đ - Seoul / Nami / Everland"
+                      placeholder={langTab === "vi" ? "VD: Tour Hàn Quốc 5N4Đ - Seoul / Nami / Everland" : "Nhập tiêu đề tiếng Anh (để trống để tự động dịch)..."}
                     />
                   </div>
                   
@@ -543,12 +605,14 @@ export default function AdminTravelPage() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Lộ trình ngắn gọn / Itinerary</label>
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    Lộ trình ngắn gọn / Itinerary {langTab === "vi" ? "" : "(Tiếng Anh)"}
+                  </label>
                   <input
-                    value={form.itinerary}
-                    onChange={setField("itinerary")}
+                    value={langTab === "vi" ? form.itinerary : form.itineraryEn}
+                    onChange={setField(langTab === "vi" ? "itinerary" : "itineraryEn")}
                     className={`${inputClasses} h-11`}
-                    placeholder="VD: Seoul - Nami - Everland - Shopping - Về Việt Nam"
+                    placeholder={langTab === "vi" ? "VD: Seoul - Nami - Everland - Shopping - Về Việt Nam" : "VD: Seoul - Nami - Everland - Shopping - Back to Vietnam (leave empty to translate)..."}
                   />
                 </div>
               </div>
@@ -556,12 +620,14 @@ export default function AdminTravelPage() {
               {/* 3. Tóm tắt ngắn & Trạng thái */}
               <div className="grid grid-cols-1 md:grid-cols-12 gap-6 pb-6 border-b border-slate-100">
                 <div className="md:col-span-8 space-y-1.5">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Tóm tắt ngắn (Hiển thị ngoài danh sách)</label>
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    Tóm tắt ngắn {langTab === "vi" ? "(Hiển thị ngoài danh sách)" : "(Hiển thị ngoài danh sách - EN)"}
+                  </label>
                   <textarea
-                    value={form.excerpt}
-                    onChange={setField("excerpt")}
+                    value={langTab === "vi" ? form.excerpt : form.excerptEn}
+                    onChange={setField(langTab === "vi" ? "excerpt" : "excerptEn")}
                     className={`${inputClasses} h-20 py-2 resize-none text-xs`}
-                    placeholder="Mô tả súc tích cho tour du lịch này..."
+                    placeholder={langTab === "vi" ? "Mô tả súc tích cho tour du lịch này..." : "Mô tả bằng tiếng Anh (để trống để tự động dịch)..."}
                   />
                 </div>
 
@@ -584,13 +650,23 @@ export default function AdminTravelPage() {
 
               {/* 4. Nội dung chi tiết */}
               <div className="space-y-3">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Nội dung chi tiết chương trình *</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                  Nội dung chi tiết chương trình {langTab === "vi" ? "*" : "(Tiếng Anh)"}
+                </label>
                 <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white">
-                  <AdminRichTextEditor
-                    value={form.content}
-                    onChange={(html) => setForm((f) => ({ ...f, content: html }))}
-                    placeholder="Soạn thảo thông tin chi tiết về tour du lịch — lịch trình cụ thể từng ngày, chính sách hoàn hủy, bảo hiểm du lịch..."
-                  />
+                  {langTab === "vi" ? (
+                    <AdminRichTextEditor
+                      value={form.content}
+                      onChange={(html) => setForm((f) => ({ ...f, content: html }))}
+                      placeholder="Soạn thảo thông tin chi tiết về tour du lịch — lịch trình cụ thể từng ngày, chính sách hoàn hủy, bảo hiểm du lịch..."
+                    />
+                  ) : (
+                    <AdminRichTextEditor
+                      value={form.contentEn}
+                      onChange={(html) => setForm((f) => ({ ...f, contentEn: html }))}
+                      placeholder="Soạn thảo thông tin chi tiết bằng tiếng Anh (để trống để tự động dịch)..."
+                    />
+                  )}
                 </div>
               </div>
             </div>

@@ -8,6 +8,9 @@ export class News {
   @Column()
   title: string
 
+  @Column({ nullable: true })
+  titleEn: string
+
   @Column({ unique: true })
   slug: string
 
@@ -15,7 +18,13 @@ export class News {
   excerpt: string
 
   @Column({ type: 'text', nullable: true })
+  excerptEn: string
+
+  @Column({ type: 'text', nullable: true })
   content: string
+
+  @Column({ type: 'text', nullable: true })
+  contentEn: string
 
   @Column({ nullable: true })
   image: string
@@ -43,6 +52,9 @@ export class News {
 
   @Column({ type: 'text', nullable: true })
   itinerary: string
+
+  @Column({ type: 'text', nullable: true })
+  itineraryEn: string
 
   @Column({ default: true })
   isPublished: boolean

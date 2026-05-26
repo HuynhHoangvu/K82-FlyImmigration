@@ -14,6 +14,8 @@ import {
   DollarSign,
   TrendingUp,
   FileText,
+  Home,
+  Globe,
 } from "lucide-react";
 import type { Category, Job } from "@core/types";
 import {
@@ -67,6 +69,7 @@ type FormData = {
   country: string;
   countryCustom: string;
   jobType: string;
+  labourType: string;
   status: string;
   salaryMin: string;
   salaryMax: string;
@@ -98,6 +101,7 @@ const EMPTY_FORM: FormData = {
   country: "australia",
   countryCustom: "",
   jobType: "full_time",
+  labourType: "offshore",
   status: "active",
   salaryMin: "",
   salaryMax: "",
@@ -189,7 +193,8 @@ export default function AdminJobsPage() {
 
   const openAdd = () => {
     const lastCurrency = localStorage.getItem("lastSalaryCurrency") || "AUD";
-    setForm({ ...EMPTY_FORM, salaryCurrency: lastCurrency });
+    const defaultLabourType = localStorage.getItem("defaultLabourType") || "offshore";
+    setForm({ ...EMPTY_FORM, salaryCurrency: lastCurrency, labourType: defaultLabourType });
     setEditing(null);
     setUrlInput("");
     fileObjRef.current = null;
@@ -207,6 +212,7 @@ export default function AdminJobsPage() {
       country: isPreset ? job.country : "__other__",
       countryCustom: isPreset ? "" : job.country || "",
       jobType: job.jobType,
+      labourType: job.labourType || "offshore",
       status: job.status,
       salaryMin: job.salaryMin?.toString() || "",
       salaryMax: job.salaryMax?.toString() || "",
@@ -494,6 +500,7 @@ export default function AdminJobsPage() {
                 <th className="text-left px-5 py-4 w-16 text-center">Ảnh</th>
                 <th className="text-left px-5 py-4">Công việc</th>
                 <th className="text-left px-5 py-4 hidden sm:table-cell">Quốc gia</th>
+                <th className="text-left px-5 py-4 hidden md:table-cell">Loại LD</th>
                 <th className="text-left px-5 py-4 hidden md:table-cell">Lương ({tableSalaryPeriod})</th>
                 <th className="text-left px-5 py-4 hidden lg:table-cell">Nguồn</th>
                 <th className="text-left px-5 py-4">Trạng thái</th>
@@ -502,7 +509,7 @@ export default function AdminJobsPage() {
             </thead>
             <tbody className="divide-y divide-slate-100 ">
               {loading ? (
-                [...Array(6)].map((_, i) => <tr key={i}><td colSpan={7} className="px-5 py-4"><div className="h-12 bg-slate-50  rounded-xl animate-pulse" /></td></tr>)
+                [...Array(6)].map((_, i) => <tr key={i}><td colSpan={8} className="px-5 py-4"><div className="h-12 bg-slate-50  rounded-xl animate-pulse" /></td></tr>)
               ) : filtered.map((job) => (
                 <tr key={job.id} className="hover:bg-slate-50  transition-colors group">
                   <td className="px-5 py-4">
@@ -526,6 +533,16 @@ export default function AdminJobsPage() {
                   </td>
                   <td className="px-5 py-4 hidden sm:table-cell">
                     <span className="badge-country border-slate-200  text-[10px]">{getCountryLabels()[job.country]}</span>
+                  </td>
+                  <td className="px-5 py-4 hidden md:table-cell">
+                    <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-lg ${
+                      job.labourType === 'onshore' 
+                        ? 'bg-blue-50 text-blue-700 border border-blue-200' 
+                        : 'bg-purple-50 text-purple-700 border border-purple-200'
+                    }`}>
+                      {job.labourType === 'onshore' ? <Home size={10} /> : <Globe size={10} />}
+                      {job.labourType === 'onshore' ? 'OnShore' : 'OffShore'}
+                    </span>
                   </td>
                   <td className="px-5 py-4 hidden md:table-cell">
                     <span className="text-amber-700  font-bold text-xs">
@@ -652,11 +669,18 @@ export default function AdminJobsPage() {
 
               {/* 2. Chi tiết & Hậu cần */}
               <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Quốc gia *</label>
                     <select value={form.country} onChange={setField("country")} className={`${inputClasses} h-11 appearance-none`}>
                       {PRESET_COUNTRIES.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
+                    </select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Loại lao động *</label>
+                    <select value={form.labourType} onChange={setField("labourType")} className={`${inputClasses} h-11 appearance-none`}>
+                      <option value="onshore">🏠 OnShore - Trong nước</option>
+                      <option value="offshore">🌍 OffShore - Ngoài nước</option>
                     </select>
                   </div>
                   <div className="space-y-1.5">

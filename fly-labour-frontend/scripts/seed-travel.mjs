@@ -6,11 +6,11 @@
  * Điền ADMIN_EMAIL + ADMIN_PASSWORD trước khi chạy
  */
 
-import fetch from "node:fetch"; // Node 18+ built-in
+// fetch is a global in Node 18+
 
-const BASE_URL = "http://localhost:3000";
-const ADMIN_EMAIL = "admin@fly-labour.vn"; // ← Đổi nếu khác
-const ADMIN_PASSWORD = "Admin@123456";     // ← Đổi nếu khác
+const BASE_URL = "http://localhost:3005";
+const ADMIN_EMAIL = "admin@flylabour.com";
+const ADMIN_PASSWORD = "Admin@123";
 
 const TOURS = [
   {
@@ -205,7 +205,12 @@ async function main() {
     process.exit(1);
   }
 
-  const { access_token } = await loginRes.json();
+  const loginData = await loginRes.json();
+  const token = loginData.token || loginData.access_token;
+  if (!token) {
+    console.error("❌ No token in login response:", JSON.stringify(loginData));
+    process.exit(1);
+  }
   console.log("✅ Login successful");
 
   // 2. Seed tours
@@ -217,20 +222,18 @@ async function main() {
       continue;
     }
 
-    // Build FormData-like body (using URLSearchParams since no file upload)
-    const body = new URLSearchParams();
+    // Use global FormData (Node 18+) for multipart/form-data
+    const fd = new FormData();
     for (const [k, v] of Object.entries(tour)) {
-      body.append(k, v);
+      fd.append(k, v);
     }
 
-    // The backend uses multipart/form-data but we can send form-urlencoded for text fields
     const res = await fetch(`${BASE_URL}/news`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${access_token}`,
-        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `Bearer ${token}`,
       },
-      body: body.toString(),
+      body: fd,
     });
 
     if (res.ok) {

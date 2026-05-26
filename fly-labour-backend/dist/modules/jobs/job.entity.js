@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Job = exports.JobStatus = exports.JobType = void 0;
+exports.Job = exports.LabourType = exports.JobStatus = exports.JobType = void 0;
 const typeorm_1 = require("typeorm");
 const category_entity_1 = require("../categories/category.entity");
 const user_entity_1 = require("../users/user.entity");
@@ -28,6 +28,11 @@ var JobStatus;
     JobStatus["DRAFT"] = "draft";
     JobStatus["PENDING_REVIEW"] = "pending_review";
 })(JobStatus || (exports.JobStatus = JobStatus = {}));
+var LabourType;
+(function (LabourType) {
+    LabourType["ONSHORE"] = "onshore";
+    LabourType["OFFSHORE"] = "offshore";
+})(LabourType || (exports.LabourType = LabourType = {}));
 let Job = class Job {
 };
 exports.Job = Job;
@@ -84,6 +89,11 @@ __decorate([
     (0, typeorm_1.Column)({ type: 'enum', enum: JobType, default: JobType.FULL_TIME }),
     __metadata("design:type", String)
 ], Job.prototype, "jobType", void 0);
+__decorate([
+    (0, typeorm_1.Index)(),
+    (0, typeorm_1.Column)({ type: 'enum', enum: LabourType, default: LabourType.OFFSHORE }),
+    __metadata("design:type", String)
+], Job.prototype, "labourType", void 0);
 __decorate([
     (0, typeorm_1.Index)(),
     (0, typeorm_1.Column)({ type: 'enum', enum: JobStatus, default: JobStatus.ACTIVE }),

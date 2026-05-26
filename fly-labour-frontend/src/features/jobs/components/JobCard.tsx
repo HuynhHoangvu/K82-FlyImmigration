@@ -6,6 +6,8 @@ import {
   TrendingUp,
   Flame,
   TimerOff,
+  Home,
+  Globe,
 } from "lucide-react";
 import type { Job } from "@core/types";
 import {
@@ -98,6 +100,16 @@ export default function JobCard({ job, compact }: Props) {
             {!expired && job.isFeatured && (
               <span className={s.badgeFeatured}>{jc.featured}</span>
             )}
+            {job.labourType && (
+              <span className={`inline-flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full ${
+                job.labourType === 'onshore' 
+                  ? 'bg-blue-500/90 text-white' 
+                  : 'bg-purple-500/90 text-white'
+              }`}>
+                {job.labourType === 'onshore' ? <Home size={9} /> : <Globe size={9} />}
+                {job.labourType === 'onshore' ? 'OnShore' : 'OffShore'}
+              </span>
+            )}
           </div>
 
           <div className={s.countryBadgeWrap}>
@@ -129,6 +141,16 @@ export default function JobCard({ job, compact }: Props) {
             {!expired && job.isHot && (
               <span className={s.badgeHot}>
                 <Flame size={9} className={s.badgeHotIcon} /> HOT
+              </span>
+            )}
+            {job.labourType && (
+              <span className={`inline-flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full ${
+                job.labourType === 'onshore' 
+                  ? 'bg-blue-100 text-blue-700 border border-blue-200' 
+                  : 'bg-purple-100 text-purple-700 border border-purple-200'
+              }`}>
+                {job.labourType === 'onshore' ? <Home size={9} /> : <Globe size={9} />}
+                {job.labourType === 'onshore' ? 'OnShore' : 'OffShore'}
               </span>
             )}
             <span className={s.badgeCountryCompact}>

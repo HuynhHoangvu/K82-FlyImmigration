@@ -64,7 +64,8 @@ export default function Footer() {
   };
 
   return (
-    <footer className={s.footer}>
+    <>
+      <footer className={s.footer}>
       <div className={`${s.footer__inner} fl-max-7xl`}>
         <div>
           <div className={s.footer__brandBlock}>
@@ -246,5 +247,6 @@ export default function Footer() {
         </div>
       </div>
     </footer>
+    </>
   );
 }

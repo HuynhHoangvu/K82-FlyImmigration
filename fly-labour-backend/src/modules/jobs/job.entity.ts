@@ -4,6 +4,7 @@ import { User } from '../users/user.entity'
 
 export enum JobType { FULL_TIME = 'full_time', PART_TIME = 'part_time', CONTRACT = 'contract', SEASONAL = 'seasonal' }
 export enum JobStatus { ACTIVE = 'active', PAUSED = 'paused', CLOSED = 'closed', DRAFT = 'draft', PENDING_REVIEW = 'pending_review' }
+export enum LabourType { ONSHORE = 'onshore', OFFSHORE = 'offshore' }
 
 @Entity('jobs')
 export class Job {
@@ -46,6 +47,10 @@ export class Job {
 
   @Column({ type: 'enum', enum: JobType, default: JobType.FULL_TIME })
   jobType: JobType
+
+  @Index()
+  @Column({ type: 'enum', enum: LabourType, default: LabourType.OFFSHORE })
+  labourType: LabourType
 
   @Index()
   @Column({ type: 'enum', enum: JobStatus, default: JobStatus.ACTIVE })

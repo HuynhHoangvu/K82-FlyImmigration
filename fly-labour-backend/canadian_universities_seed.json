@@ -1,0 +1,202 @@
+[
+    {
+        "ten_truong_vi": "Đại học Alberta",
+        "ten_truong_en": "University of Alberta",
+        "tinh_bang": "Alberta",
+        "trang_web": "https://www.ualberta.ca",
+        "hoc_phi_uoc_tinh_cad": "22,000 - 39,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học Calgary",
+        "ten_truong_en": "University of Calgary",
+        "tinh_bang": "Alberta",
+        "trang_web": "https://www.ucalgary.ca",
+        "hoc_phi_uoc_tinh_cad": "20,000 - 35,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học Lethbridge",
+        "ten_truong_en": "University of Lethbridge",
+        "tinh_bang": "Alberta",
+        "trang_web": "https://www.ulethbridge.ca",
+        "hoc_phi_uoc_tinh_cad": "17,000 - 25,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học Mount Royal",
+        "ten_truong_en": "Mount Royal University",
+        "tinh_bang": "Alberta",
+        "trang_web": "https://www.mtroyal.ca",
+        "hoc_phi_uoc_tinh_cad": "18,000 - 24,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học British Columbia",
+        "ten_truong_en": "University of British Columbia",
+        "tinh_bang": "British Columbia",
+        "trang_web": "https://www.ubc.ca",
+        "hoc_phi_uoc_tinh_cad": "38,000 - 55,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học Simon Fraser",
+        "ten_truong_en": "Simon Fraser University",
+        "tinh_bang": "British Columbia",
+        "trang_web": "https://www.sfu.ca",
+        "hoc_phi_uoc_tinh_cad": "26,000 - 35,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học Victoria",
+        "ten_truong_en": "University of Victoria",
+        "tinh_bang": "British Columbia",
+        "trang_web": "https://www.uvic.ca",
+        "hoc_phi_uoc_tinh_cad": "25,000 - 32,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học Đảo Vancouver",
+        "ten_truong_en": "Vancouver Island University",
+        "tinh_bang": "British Columbia",
+        "trang_web": "https://www.viu.ca",
+        "hoc_phi_uoc_tinh_cad": "16,000 - 22,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học Manitoba",
+        "ten_truong_en": "University of Manitoba",
+        "tinh_bang": "Manitoba",
+        "trang_web": "https://umanitoba.ca",
+        "hoc_phi_uoc_tinh_cad": "16,000 - 24,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học Winnipeg",
+        "ten_truong_en": "University of Winnipeg",
+        "tinh_bang": "Manitoba",
+        "trang_web": "https://www.uwinnipeg.ca",
+        "hoc_phi_uoc_tinh_cad": "14,000 - 20,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học New Brunswick",
+        "ten_truong_en": "University of New Brunswick",
+        "tinh_bang": "New Brunswick",
+        "trang_web": "https://www.unb.ca",
+        "hoc_phi_uoc_tinh_cad": "16,000 - 21,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học Mount Allison",
+        "ten_truong_en": "Mount Allison University",
+        "tinh_bang": "New Brunswick",
+        "trang_web": "https://mta.ca",
+        "hoc_phi_uoc_tinh_cad": "18,000 - 22,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học Toronto",
+        "ten_truong_en": "University of Toronto",
+        "tinh_bang": "Ontario",
+        "trang_web": "https://www.utoronto.ca",
+        "hoc_phi_uoc_tinh_cad": "45,000 - 60,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học Waterloo",
+        "ten_truong_en": "University of Waterloo",
+        "tinh_bang": "Ontario",
+        "trang_web": "https://uwaterloo.ca",
+        "hoc_phi_uoc_tinh_cad": "40,000 - 55,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học McMaster",
+        "ten_truong_en": "McMaster University",
+        "tinh_bang": "Ontario",
+        "trang_web": "https://www.mcmaster.ca",
+        "hoc_phi_uoc_tinh_cad": "35,000 - 45,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học Western Ontario",
+        "ten_truong_en": "Western University",
+        "tinh_bang": "Ontario",
+        "trang_web": "https://www.uwo.ca",
+        "hoc_phi_uoc_tinh_cad": "30,000 - 45,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học Ottawa",
+        "ten_truong_en": "University of Ottawa",
+        "tinh_bang": "Ontario",
+        "trang_web": "https://www.uottawa.ca",
+        "hoc_phi_uoc_tinh_cad": "28,000 - 42,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học McGill",
+        "ten_truong_en": "McGill University",
+        "tinh_bang": "Quebec",
+        "trang_web": "https://www.mcgill.ca",
+        "hoc_phi_uoc_tinh_cad": "25,000 - 50,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học Montréal",
+        "ten_truong_en": "Université de Montréal",
+        "tinh_bang": "Quebec",
+        "trang_web": "https://www.umontreal.ca",
+        "hoc_phi_uoc_tinh_cad": "20,000 - 30,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học Laval",
+        "ten_truong_en": "Université Laval",
+        "tinh_bang": "Quebec",
+        "trang_web": "https://www.ulaval.ca",
+        "hoc_phi_uoc_tinh_cad": "18,000 - 26,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học Concordia",
+        "ten_truong_en": "Concordia University",
+        "tinh_bang": "Quebec",
+        "trang_web": "https://www.concordia.ca",
+        "hoc_phi_uoc_tinh_cad": "22,000 - 32,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học Saskatchewan",
+        "ten_truong_en": "University of Saskatchewan",
+        "tinh_bang": "Saskatchewan",
+        "trang_web": "https://www.usask.ca",
+        "hoc_phi_uoc_tinh_cad": "18,000 - 28,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học Regina",
+        "ten_truong_en": "University of Regina",
+        "tinh_bang": "Saskatchewan",
+        "trang_web": "https://www.uregina.ca",
+        "hoc_phi_uoc_tinh_cad": "17,000 - 24,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học Dalhousie",
+        "ten_truong_en": "Dalhousie University",
+        "tinh_bang": "Nova Scotia",
+        "trang_web": "https://www.dal.ca",
+        "hoc_phi_uoc_tinh_cad": "20,000 - 32,000",
+        "loai_truong": "Công lập"
+    },
+    {
+        "ten_truong_vi": "Đại học Acadia",
+        "ten_truong_en": "Acadia University",
+        "tinh_bang": "Nova Scotia",
+        "trang_web": "https://www2.acadiau.ca",
+        "hoc_phi_uoc_tinh_cad": "18,000 - 22,000",
+        "loai_truong": "Công lập"
+    }
+]

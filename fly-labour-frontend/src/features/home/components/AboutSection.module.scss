@@ -1,0 +1,511 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Award Section */
+.awardSection {
+  padding: 4rem 1.5rem;
+  background: linear-gradient(to bottom, #fffbeb, #ffffff);
+}
+
+.awardHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.awardBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #fdd52f, #e4a808);
+  border-radius: 9999px;
+  color: #422006;
+  font-weight: 700;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.awardTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #d97706;
+  margin-bottom: 0.5rem;
+}
+
+.awardDesc {
+  font-size: 1rem;
+  color: #64748b;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.awardImages {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  padding: 0 15px;
+}
+
+.awardImg {
+  height: 400px;
+  width: auto;
+  object-fit: contain;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  border-radius: 1rem;
+}
+
+.awardImg:hover {
+  transform: scale(1.05);
+}
+
+/* Media Section */
+.mediaSection {
+  padding: 4rem 1.5rem;
+}
+
+.centerHead {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.sectionBadge {
+  color: #d97706;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.sectionTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+}
+
+.sectionSubtitle {
+  font-size: 1rem;
+  color: #64748b;
+}
+
+/* Video */
+.videoWrapper {
+  max-width: 800px;
+  margin: 0 auto 3rem;
+}
+
+.videoThumbnail {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 1rem;
+  overflow: hidden;
+  cursor: pointer;
+  background: #f1f5f9;
+}
+
+.videoImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.playButton {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4rem;
+  height: 4rem;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+}
+
+.videoThumbnail:hover .playButton {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* Gallery */
+.galleryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .galleryGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.galleryItem {
+  position: relative;
+  aspect-ratio: 4/3;
+  border-radius: 1rem;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.galleryImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.galleryItem:hover .galleryImage {
+  transform: scale(1.05);
+}
+
+.galleryOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  display: flex;
+  align-items: flex-end;
+  padding: 1rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.galleryItem:hover .galleryOverlay {
+  opacity: 1;
+}
+
+.galleryOverlay span {
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* Video Modal */
+.videoModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 2rem;
+}
+
+.videoModalContent {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+}
+
+.closeButton {
+  position: absolute;
+  top: -2.5rem;
+  right: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: background 0.2s ease;
+  z-index: 10;
+}
+
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.videoFrame {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 1rem;
+  background: black;
+}
+
+/* Lightbox */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 2rem;
+}
+
+.lightboxImage {
+  max-width: 90%;
+  max-height: 90vh;
+  border-radius: 1rem;
+}
+
+/* Markets Section */
+.marketsSection {
+  padding: 4rem 1.5rem;
+  background: #f8fafc;
+}
+
+.twoCol {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .twoCol {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.paragraph {
+  color: #475569;
+  line-height: 1.7;
+}
+
+.paragraphSpacing {
+  margin-bottom: 1rem;
+}
+
+.countriesGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.countryCard {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1.25rem;
+  text-align: center;
+  transition: border-color 0.2s ease;
+}
+
+.countryCard:hover {
+  border-color: #f59e0b;
+}
+
+.countryLabel {
+  font-weight: 600;
+  color: #0f172a;
+  margin-top: 0.5rem;
+}
+
+.countryJobs {
+  font-size: 0.875rem;
+  color: #d97706;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+/* Services Section */
+.servicesSection {
+  padding: 4rem 1.5rem;
+}
+
+.servicesGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .servicesGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.serviceCard {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.serviceCard:hover {
+  border-color: #f59e0b;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.serviceIcon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  color: #422006;
+}
+
+.serviceTitle {
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+}
+
+.serviceDesc {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+/* Why Section */
+.whySection {
+  padding: 4rem 1.5rem;
+  background: #f8fafc;
+}
+
+.whyList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.whyItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.whyIcon {
+  color: #16a34a;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.whyText {
+  color: #475569;
+  font-size: 0.9375rem;
+}
+
+.teamPanel {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.teamTitle {
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 1.25rem;
+}
+
+.teamGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.teamMember {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.memberAvatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #422006;
+}
+
+.memberName {
+  font-weight: 600;
+  color: #0f172a;
+  font-size: 0.875rem;
+}
+
+.memberRole {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* Contact Section */
+.contactSection {
+  padding: 4rem 1.5rem;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+}
+
+.contactHead {
+  text-align: center;
+}
+
+.contactTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.contactDesc {
+  color: #94a3b8;
+  margin-bottom: 2rem;
+}
+
+.contactGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .contactGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.contactCard {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.contactIcon {
+  color: #f59e0b;
+  margin-bottom: 0.5rem;
+}
+
+.contactLabel {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-bottom: 0.25rem;
+}
+
+.contactValue {
+  color: white;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.contactCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}

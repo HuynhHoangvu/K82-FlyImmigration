@@ -1,4 +1,4 @@
-import { JobType, JobStatus } from '../job.entity';
+import { JobType, JobStatus, LabourType } from '../job.entity';
 export declare class CreateJobDto {
     title: string;
     titleEn?: string;
@@ -12,6 +12,7 @@ export declare class CreateJobDto {
     location?: string;
     country: string;
     jobType?: JobType;
+    labourType?: LabourType;
     status?: JobStatus;
     salaryMin?: number;
     salaryMax?: number;

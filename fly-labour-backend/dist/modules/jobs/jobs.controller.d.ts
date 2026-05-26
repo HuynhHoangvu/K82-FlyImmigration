@@ -55,6 +55,7 @@ export declare class JobsController {
             location: string;
             country: string;
             jobType: import("./job.entity").JobType;
+            labourType: import("./job.entity").LabourType;
             status: import("./job.entity").JobStatus;
             salaryMin: number;
             salaryMax: number;

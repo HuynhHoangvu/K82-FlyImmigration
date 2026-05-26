@@ -13,6 +13,10 @@ export declare enum JobStatus {
     DRAFT = "draft",
     PENDING_REVIEW = "pending_review"
 }
+export declare enum LabourType {
+    ONSHORE = "onshore",
+    OFFSHORE = "offshore"
+}
 export declare class Job {
     id: string;
     title: string;
@@ -27,6 +31,7 @@ export declare class Job {
     location: string;
     country: string;
     jobType: JobType;
+    labourType: LabourType;
     status: JobStatus;
     salaryMin: number;
     salaryMax: number;

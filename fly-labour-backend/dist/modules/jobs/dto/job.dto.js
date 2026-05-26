@@ -87,6 +87,12 @@ __decorate([
     __metadata("design:type", String)
 ], CreateJobDto.prototype, "jobType", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({ enum: job_entity_1.LabourType, required: false, description: 'Loại lao động: onshore (trong nước) hoặc offshore (ngoài nước)' }),
+    (0, class_validator_1.IsEnum)(job_entity_1.LabourType),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateJobDto.prototype, "labourType", void 0);
+__decorate([
     (0, swagger_1.ApiProperty)({ enum: job_entity_1.JobStatus, required: false }),
     (0, class_validator_1.IsEnum)(job_entity_1.JobStatus),
     (0, class_validator_1.IsOptional)(),

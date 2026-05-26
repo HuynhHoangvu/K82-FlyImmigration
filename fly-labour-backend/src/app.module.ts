@@ -13,6 +13,7 @@ import { SettingsModule } from './modules/settings/settings.module'
 import { UploadModule } from './modules/upload/upload.module'
 import { GcsModule } from './common/services/gcs.module'
 import { ChoresModule } from './modules/chores/chores.module'
+import { UniversitiesModule } from './modules/universities/universities.module'
 import { join } from 'path'
 
 const logger = new Logger('TypeORM')
@@ -83,6 +84,7 @@ const logger = new Logger('TypeORM')
     SettingsModule,
     UploadModule,
     ChoresModule,
+    UniversitiesModule,
   ],
 })
 export class AppModule {}

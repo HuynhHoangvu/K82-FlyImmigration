@@ -1,14 +1,11 @@
 import { ExternalLink, CheckCircle, Zap } from "lucide-react";
 import s from "./EnglishTestSection.module.scss";
-
-const FEATURES = [
-  "Đánh giá 4 kỹ năng: Nghe, Nói, Đọc, Viết",
-  "Kết quả ngay lập tức, không cần chờ đợi",
-  "Phù hợp hồ sơ xuất khẩu lao động",
-  "Hoàn toàn miễn phí, không cần đăng ký",
-];
+import { useT } from "@core/hooks/useT";
 
 export default function EnglishTestSection() {
+  const { t } = useT();
+  const test = t("englishTest");
+
   return (
     <section className={s.section}>
       <div className={`fl-shell ${s.shell}`}>
@@ -21,21 +18,20 @@ export default function EnglishTestSection() {
                 <div className={s.badge}>
                   <Zap size={12} className={s.badgeIcon} />
                   <span className={s.badgeText}>
-                    Miễn phí 100%
+                    {test.badge}
                   </span>
                 </div>
 
                 <h2 className={s.title}>
-                  KIỂM TRA TIẾNG ANH MIỄN PHÍ{" "}
+                  {test.title}{" "}
                 </h2>
 
                 <p className={s.desc}>
-                  Kiểm tra trình độ tiếng Anh ngay hôm nay để tăng cơ hội được
-                  chọn trong các đơn tuyển dụng quốc tế.
+                  {test.desc}
                 </p>
 
                 <ul className={s.features}>
-                  {FEATURES.map((f) => (
+                  {test.features.map((f: string) => (
                     <li key={f} className={s.featureItem}>
                       <CheckCircle size={15} className={s.featureIcon} />
                       <span className={s.featureText}>{f}</span>
@@ -49,7 +45,7 @@ export default function EnglishTestSection() {
                   rel="noopener noreferrer"
                   className={s.testBtn}
                 >
-                  Làm bài ngay
+                  {test.btn}
                   <ExternalLink size={15} className={s.testBtnIcon} />
                 </a>
               </div>

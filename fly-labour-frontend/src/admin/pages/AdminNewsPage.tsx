@@ -33,18 +33,24 @@ function slugify(str: string) {
 
 type FormData = {
   title: string;
+  titleEn: string;
   slug: string;
   excerpt: string;
+  excerptEn: string;
   content: string;
+  contentEn: string;
   isPublished: boolean;
   imagePreview: string;
 };
 
 const EMPTY: FormData = {
   title: "",
+  titleEn: "",
   slug: "",
   excerpt: "",
+  excerptEn: "",
   content: "",
+  contentEn: "",
   isPublished: true,
   imagePreview: "",
 };
@@ -59,6 +65,7 @@ export default function AdminNewsPage() {
   const [saving, setSaving] = useState(false);
   const [imgTab, setImgTab] = useState<"upload" | "url">("upload");
   const [urlInput, setUrlInput] = useState("");
+  const [langTab, setLangTab] = useState<"vi" | "en">("vi");
   const fileRef = useRef<HTMLInputElement>(null);
   const fileObj = useRef<File | null>(null);
 
@@ -80,21 +87,26 @@ export default function AdminNewsPage() {
     setEditing(null);
     setUrlInput("");
     fileObj.current = null;
+    setLangTab("vi");
     setModal("add");
   };
 
   const openEdit = (n: News) => {
     setForm({
       title: n.title,
+      titleEn: n.titleEn || "",
       slug: n.slug,
       excerpt: n.excerpt || "",
+      excerptEn: n.excerptEn || "",
       content: n.content || "",
+      contentEn: n.contentEn || "",
       isPublished: n.isPublished,
       imagePreview: n.image || "",
     });
     setUrlInput(n.image?.startsWith("http") ? n.image : "");
     fileObj.current = null;
     setEditing(n);
+    setLangTab("vi");
     setModal("edit");
   };
 
@@ -137,9 +149,12 @@ export default function AdminNewsPage() {
     try {
       const fd = new FormData();
       fd.append("title", form.title);
+      if (form.titleEn) fd.append("titleEn", form.titleEn);
       fd.append("slug", form.slug);
       if (form.excerpt) fd.append("excerpt", form.excerpt);
+      if (form.excerptEn) fd.append("excerptEn", form.excerptEn);
       if (form.content) fd.append("content", form.content);
+      if (form.contentEn) fd.append("contentEn", form.contentEn);
       fd.append("isPublished", form.isPublished ? "true" : "false");
       if (fileObj.current) fd.append("image", fileObj.current);
       else if (imgTab === "url" && urlInput.trim()) fd.set("image", urlInput.trim());
@@ -318,27 +333,88 @@ export default function AdminNewsPage() {
 
           <div className={s.workspace}>
             <div className={clsx(s.editorArea, "custom-scrollbar")}>
+              {/* Language Tabs */}
+              <div style={{ display: "flex", gap: "1rem", borderBottom: "1px solid #e2e8f0", padding: "0.75rem 1.5rem 0.5rem", background: "#f8fafc" }}>
+                <button
+                  type="button"
+                  onClick={() => setLangTab("vi")}
+                  style={{
+                    fontWeight: langTab === "vi" ? "bold" : "normal",
+                    borderBottom: langTab === "vi" ? "2px solid #d97706" : "none",
+                    paddingBottom: "0.25rem",
+                    color: langTab === "vi" ? "#d97706" : "#64748b",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer"
+                  }}
+                >
+                  🇻🇳 Tiếng Việt
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLangTab("en")}
+                  style={{
+                    fontWeight: langTab === "en" ? "bold" : "normal",
+                    borderBottom: langTab === "en" ? "2px solid #d97706" : "none",
+                    paddingBottom: "0.25rem",
+                    color: langTab === "en" ? "#d97706" : "#64748b",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer"
+                  }}
+                >
+                  🇬🇧 Tiếng Anh (English)
+                </button>
+              </div>
+
               <div className={s.paper}>
-                <div className={s.paperHead}>
-                  <input
-                    value={form.title}
-                    onChange={setField("title")}
-                    placeholder="Nhập tiêu đề bài viết của bạn tại đây..."
-                    className={s.titleInput}
-                  />
-                  <div className={s.metaRow}>
-                    <span>{formatDate(new Date().toISOString())}</span>
-                    <span className={s.metaDot} />
-                    <span>Ban biên tập FLY LABOUR</span>
-                  </div>
-                </div>
-                <div className={s.editorWrap}>
-                  <AdminRichTextEditor
-                    value={form.content}
-                    onChange={(html) => setForm((f) => ({ ...f, content: html }))}
-                    placeholder="Soạn tin bài — định dạng, chèn ảnh và bảng từ thanh công cụ phía trên…"
-                  />
-                </div>
+                {langTab === "vi" ? (
+                  <>
+                    <div className={s.paperHead}>
+                      <input
+                        value={form.title}
+                        onChange={setField("title")}
+                        placeholder="Nhập tiêu đề bài viết của bạn tại đây..."
+                        className={s.titleInput}
+                      />
+                      <div className={s.metaRow}>
+                        <span>{formatDate(new Date().toISOString())}</span>
+                        <span className={s.metaDot} />
+                        <span>Ban biên tập FLY LABOUR</span>
+                      </div>
+                    </div>
+                    <div className={s.editorWrap}>
+                      <AdminRichTextEditor
+                        value={form.content}
+                        onChange={(html) => setForm((f) => ({ ...f, content: html }))}
+                        placeholder="Soạn tin bài — định dạng, chèn ảnh và bảng từ thanh công cụ phía trên…"
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className={s.paperHead}>
+                      <input
+                        value={form.titleEn}
+                        onChange={setField("titleEn")}
+                        placeholder="Nhập tiêu đề tiếng Anh (để trống để tự động dịch)..."
+                        className={s.titleInput}
+                      />
+                      <div className={s.metaRow}>
+                        <span>{formatDate(new Date().toISOString())}</span>
+                        <span className={s.metaDot} />
+                        <span>FLY LABOUR Editorial Team</span>
+                      </div>
+                    </div>
+                    <div className={s.editorWrap}>
+                      <AdminRichTextEditor
+                        value={form.contentEn}
+                        onChange={(html) => setForm((f) => ({ ...f, contentEn: html }))}
+                        placeholder="Soạn tin bài tiếng Anh (để trống để tự động dịch từ tiếng Việt)…"
+                      />
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
@@ -443,12 +519,22 @@ export default function AdminNewsPage() {
               </div>
 
               <div className={s.section}>
-                <h3 className={s.sectionTitle}>Tóm tắt (Trích dẫn)</h3>
+                <h3 className={s.sectionTitle}>Tóm tắt (Trích dẫn VI)</h3>
                 <textarea
                   value={form.excerpt}
                   onChange={setField("excerpt")}
                   className={s.textArea}
-                  placeholder="Mô tả súc tích cho bài viết này..."
+                  placeholder="Mô tả súc tích cho bài viết này bằng tiếng Việt..."
+                />
+              </div>
+
+              <div className={s.section}>
+                <h3 className={s.sectionTitle}>Tóm tắt (Trích dẫn EN)</h3>
+                <textarea
+                  value={form.excerptEn}
+                  onChange={setField("excerptEn")}
+                  className={s.textArea}
+                  placeholder="Mô tả bằng tiếng Anh (để trống để tự động dịch)..."
                 />
               </div>
 

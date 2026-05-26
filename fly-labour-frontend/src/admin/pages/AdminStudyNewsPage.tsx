@@ -33,18 +33,24 @@ function slugify(str: string) {
 
 type FormData = {
   title: string;
+  titleEn: string;
   slug: string;
   excerpt: string;
+  excerptEn: string;
   content: string;
+  contentEn: string;
   isPublished: boolean;
   imagePreview: string;
 };
 
 const EMPTY: FormData = {
   title: "",
+  titleEn: "",
   slug: "",
   excerpt: "",
+  excerptEn: "",
   content: "",
+  contentEn: "",
   isPublished: true,
   imagePreview: "",
 };
@@ -59,6 +65,7 @@ export default function AdminStudyNewsPage() {
   const [saving, setSaving] = useState(false);
   const [imgTab, setImgTab] = useState<"upload" | "url">("upload");
   const [urlInput, setUrlInput] = useState("");
+  const [langTab, setLangTab] = useState<"vi" | "en">("vi");
   const fileRef = useRef<HTMLInputElement>(null);
   const fileObj = useRef<File | null>(null);
 
@@ -84,21 +91,25 @@ export default function AdminStudyNewsPage() {
     setEditing(null);
     setUrlInput("");
     fileObj.current = null;
+    setLangTab("vi");
     setModal("add");
   };
 
   const openEdit = (n: News) => {
     setForm({
       title: n.title,
+      titleEn: n.titleEn || "",
       slug: n.slug,
       excerpt: n.excerpt || "",
+      excerptEn: n.excerptEn || "",
       content: n.content || "",
+      contentEn: n.contentEn || "",
       isPublished: n.isPublished,
       imagePreview: n.image || "",
     });
     setUrlInput(n.image?.startsWith("http") ? n.image : "");
     fileObj.current = null;
-    setEditing(n);
+    setLangTab("vi");
     setModal("edit");
   };
 
@@ -141,10 +152,13 @@ export default function AdminStudyNewsPage() {
     try {
       const fd = new FormData();
       fd.append("title", form.title);
+      if (form.titleEn) fd.append("titleEn", form.titleEn);
       fd.append("slug", form.slug);
       fd.append("type", "study");
       if (form.excerpt) fd.append("excerpt", form.excerpt);
+      if (form.excerptEn) fd.append("excerptEn", form.excerptEn);
       if (form.content) fd.append("content", form.content);
+      if (form.contentEn) fd.append("contentEn", form.contentEn);
       fd.append("isPublished", form.isPublished ? "true" : "false");
       fd.append("country", "");
       fd.append("studyType", "");
@@ -329,31 +343,104 @@ export default function AdminStudyNewsPage() {
 
           <div className={s.workspace}>
             <div className={clsx(s.editorArea, "custom-scrollbar")}>
+              {/* Tab Bar */}
+              <div
+                style={{
+                  display: "flex",
+                  gap: "1.5rem",
+                  padding: "0 2rem",
+                  borderBottom: "1px solid #e2e8f0",
+                  marginBottom: "1rem"
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setLangTab("vi")}
+                  style={{
+                    fontWeight: langTab === "vi" ? "bold" : "normal",
+                    borderBottom: langTab === "vi" ? "2px solid #d97706" : "none",
+                    paddingBottom: "0.25rem",
+                    color: langTab === "vi" ? "#d97706" : "#64748b",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer"
+                  }}
+                >
+                  🇻🇳 Tiếng Việt
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLangTab("en")}
+                  style={{
+                    fontWeight: langTab === "en" ? "bold" : "normal",
+                    borderBottom: langTab === "en" ? "2px solid #d97706" : "none",
+                    paddingBottom: "0.25rem",
+                    color: langTab === "en" ? "#d97706" : "#64748b",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer"
+                  }}
+                >
+                  🇬🇧 Tiếng Anh (English)
+                </button>
+              </div>
+
               <div className={s.paper}>
-                <div className={s.paperHead}>
-                  <div className={s.kindRow}>
-                    <Newspaper size={14} className={s.titleIcon} />
-                    <span className={s.kindText}>Cẩm nang & Tin tức Du học</span>
-                  </div>
-                  <input
-                    value={form.title}
-                    onChange={setField("title")}
-                    placeholder="Nhập tiêu đề bài viết tin tức / cẩm nang du học..."
-                    className={s.titleInput}
-                  />
-                  <div className={s.metaRow}>
-                    <span>{formatDate(new Date().toISOString())}</span>
-                    <span className={s.metaDot} />
-                    <span>FLY LABOUR EDITORIAL</span>
-                  </div>
-                </div>
-                <div className={s.editorWrap}>
-                  <AdminRichTextEditor
-                    value={form.content}
-                    onChange={(html) => setForm((f) => ({ ...f, content: html }))}
-                    placeholder="Soạn nội dung tin tức, cẩm nang chi tiết tại đây..."
-                  />
-                </div>
+                {langTab === "vi" ? (
+                  <>
+                    <div className={s.paperHead}>
+                      <div className={s.kindRow}>
+                        <Newspaper size={14} className={s.titleIcon} />
+                        <span className={s.kindText}>Cẩm nang & Tin tức Du học</span>
+                      </div>
+                      <input
+                        value={form.title}
+                        onChange={setField("title")}
+                        placeholder="Nhập tiêu đề bài viết tin tức / cẩm nang du học..."
+                        className={s.titleInput}
+                      />
+                      <div className={s.metaRow}>
+                        <span>{formatDate(new Date().toISOString())}</span>
+                        <span className={s.metaDot} />
+                        <span>FLY LABOUR EDITORIAL</span>
+                      </div>
+                    </div>
+                    <div className={s.editorWrap}>
+                      <AdminRichTextEditor
+                        value={form.content}
+                        onChange={(html) => setForm((f) => ({ ...f, content: html }))}
+                        placeholder="Soạn nội dung tin tức, cẩm nang chi tiết tại đây..."
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className={s.paperHead}>
+                      <div className={s.kindRow}>
+                        <Newspaper size={14} className={s.titleIcon} />
+                        <span className={s.kindText}>Study News & Handbook</span>
+                      </div>
+                      <input
+                        value={form.titleEn}
+                        onChange={setField("titleEn")}
+                        placeholder="Enter English title (leave empty to translate automatically)..."
+                        className={s.titleInput}
+                      />
+                      <div className={s.metaRow}>
+                        <span>{formatDate(new Date().toISOString())}</span>
+                        <span className={s.metaDot} />
+                        <span>FLY LABOUR EDITORIAL</span>
+                      </div>
+                    </div>
+                    <div className={s.editorWrap}>
+                      <AdminRichTextEditor
+                        value={form.contentEn}
+                        onChange={(html) => setForm((f) => ({ ...f, contentEn: html }))}
+                        placeholder="Compose English content (leave empty to translate automatically)..."
+                      />
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
@@ -458,12 +545,22 @@ export default function AdminStudyNewsPage() {
               </div>
 
               <div className={s.section}>
-                <h3 className={s.sectionTitle}>Tóm tắt ngắn</h3>
+                <h3 className={s.sectionTitle}>Tóm tắt ngắn (VI)</h3>
                 <textarea
                   value={form.excerpt}
                   onChange={setField("excerpt")}
                   className={s.textArea}
                   placeholder="Mô tả súc tích nội dung bài viết..."
+                />
+              </div>
+
+              <div className={s.section}>
+                <h3 className={s.sectionTitle}>Tóm tắt ngắn (EN)</h3>
+                <textarea
+                  value={form.excerptEn}
+                  onChange={setField("excerptEn")}
+                  className={s.textArea}
+                  placeholder="Mô tả bằng tiếng Anh (để trống để tự động dịch)..."
                 />
               </div>
 

@@ -300,3 +300,54 @@
 @media (max-width: 639px) {
   .spacer { display: none; }
 }
+
+/* Labour Type Options */
+.labourTypeOptions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.labourTypeBtn {
+  flex: 1;
+  min-width: 180px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.labourTypeBtn:hover {
+  border-color: #cbd5e1;
+  background: #fff;
+}
+
+.labourTypeBtnActive {
+  border-color: #f59e0b;
+  background: #fffbeb;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+.labourTypeBtnActive:hover {
+  border-color: #f59e0b;
+}
+
+.labourTypeLabel {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.labourTypeDesc {
+  display: block;
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 0.125rem;
+}

@@ -12,6 +12,8 @@ import {
   Building2,
   FileText,
   Upload,
+  Home,
+  Globe,
 } from "lucide-react";
 import {
   getCountryLabels,
@@ -257,6 +259,16 @@ export default function JobDetailPage() {
                   <span className="inline-flex items-center text-xs font-bold px-3 py-1.5 rounded-full bg-black/70 text-white backdrop-blur-sm border border-white/30 shadow-lg">
                     {getJobTypeLabel(job.jobType)}
                   </span>
+                  {job.labourType && (
+                    <span className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-sm border shadow-lg ${
+                      job.labourType === 'onshore' 
+                        ? 'bg-blue-500/90 text-white border-blue-400/50' 
+                        : 'bg-purple-500/90 text-white border-purple-400/50'
+                    }`}>
+                      {job.labourType === 'onshore' ? <Home size={12} /> : <Globe size={12} />}
+                      {job.labourType === 'onshore' ? 'OnShore' : 'OffShore'}
+                    </span>
+                  )}
                 </div>
                 <div className="absolute top-4 right-4 flex gap-2">
                   {job.isHot && (
@@ -288,6 +300,16 @@ export default function JobDetailPage() {
                   <span className="text-xs font-medium px-3 py-1 rounded-full border text-slate-800  bg-slate-100  border-slate-200 ">
                     {getJobTypeLabel(job.jobType)}
                   </span>
+                  {job.labourType && (
+                    <span className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full ${
+                      job.labourType === 'onshore' 
+                        ? 'bg-blue-100 text-blue-700 border border-blue-200' 
+                        : 'bg-purple-100 text-purple-700 border border-purple-200'
+                    }`}>
+                      {job.labourType === 'onshore' ? <Home size={12} /> : <Globe size={12} />}
+                      {job.labourType === 'onshore' ? 'OnShore - Trong nước' : 'OffShore - Ngoài nước'}
+                    </span>
+                  )}
                 </div>
 
                 <h1 className="text-2xl md:text-3xl font-bold text-slate-900  mb-3">

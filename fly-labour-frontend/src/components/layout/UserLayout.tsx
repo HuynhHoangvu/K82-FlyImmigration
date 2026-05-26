@@ -4,6 +4,7 @@ import Footer from "@components/layout/Footer";
 import FloatingContact from "@components/widgets/FloatingContact";
 import BackgroundMusic from "@components/widgets/BackgroundMusic";
 import s from "./UserLayout.module.scss";
+import AboutPage from "@/features/static-pages/pages/AboutPage";
 
 export default function UserLayout() {
   return (

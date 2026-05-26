@@ -15,7 +15,7 @@ export const HOME_SECTIONS: SectionDef[] = [
   { id: 'flashsale',  label: 'Flash Sale Jobs',            icon: '⚡' },
   { id: 'categories', label: 'Danh mục việc làm',          icon: '📂' },
   { id: 'latestjobs', label: 'Việc làm mới nhất',          icon: '💼' },
-  { id: 'why',        label: 'Tại sao chọn chúng tôi',     icon: '✅' },
+  { id: 'about',      label: 'Giới thiệu công ty',         icon: '🏆' },
   { id: 'employer',   label: 'Dành cho nhà tuyển dụng',    icon: '🏢' },
   { id: 'news',        label: 'Tin tức',                    icon: '📰' },
   { id: 'englishtestcta', label: 'Test tiếng Anh + CTA', icon: '📝' },

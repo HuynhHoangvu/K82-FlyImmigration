@@ -8,6 +8,8 @@ import {
   Shield,
   Settings,
   Loader2,
+  Home,
+  Briefcase,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { settingsApi, usersApi } from "@core/services/api";
@@ -33,6 +35,7 @@ export default function AdminSettingsPage() {
     facebookUrl: "https://facebook.com/flylabour",
     zaloNumber: "0333318882",
     messengerUrl: "https://m.me/flylabour",
+    defaultLabourType: "offshore",
   });
 
   const [security, setSecurity] = useState({
@@ -100,6 +103,8 @@ export default function AdminSettingsPage() {
     setSaving(true);
     try {
       await settingsApi.save({ ...general, ...notifs });
+      // Lưu defaultLabourType vào localStorage để AdminJobsPage sử dụng
+      localStorage.setItem("defaultLabourType", general.defaultLabourType);
       toast.success("Đã lưu cài đặt");
     } catch {
       toast.error("Lưu thất bại");
@@ -171,6 +176,50 @@ export default function AdminSettingsPage() {
                 </div>
               ))}
             </div>
+
+            {/* Cài đặt loại lao động mặc định */}
+            <div className={s.sectionHead} style={{ marginTop: "2rem" }}>
+              <Briefcase size={18} className={s.iconAmber} />
+              <h3 className={s.sectionTitle}>Cài đặt tuyển dụng</h3>
+            </div>
+            <div className={s.gridGap}>
+              <div className={s.field}>
+                <label className={s.label}>Loại lao động mặc định</label>
+                <p className={s.hint} style={{ marginBottom: "0.75rem", fontSize: "12px", color: "#64748b" }}>
+                  Giá trị mặc định khi tạo tin tuyển dụng mới
+                </p>
+                <div className={s.labourTypeOptions}>
+                  <button
+                    type="button"
+                    onClick={() => setGeneral((g) => ({ ...g, defaultLabourType: "onshore" }))}
+                    className={clsx(
+                      s.labourTypeBtn,
+                      general.defaultLabourType === "onshore" && s.labourTypeBtnActive
+                    )}
+                  >
+                    <Home size={18} />
+                    <div>
+                      <span className={s.labourTypeLabel}>OnShore</span>
+                      <span className={s.labourTypeDesc}>Lao động trong nước</span>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setGeneral((g) => ({ ...g, defaultLabourType: "offshore" }))}
+                    className={clsx(
+                      s.labourTypeBtn,
+                      general.defaultLabourType === "offshore" && s.labourTypeBtnActive
+                    )}
+                  >
+                    <Globe size={18} />
+                    <div>
+                      <span className={s.labourTypeLabel}>OffShore</span>
+                      <span className={s.labourTypeDesc}>Lao động ngoài nước</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
@@ -182,9 +231,9 @@ export default function AdminSettingsPage() {
             </div>
             <div className={s.grid2}>
               {[
-                { label: "Hotline hiển thị", key: "hotline", placeholder: "0901 234 567" },
-                { label: "Email hệ thống", key: "email", placeholder: "info@flylabour.com" },
-                { label: "Địa chỉ văn phòng", key: "address", placeholder: "123 Nguyễn Văn Linh...", colSpan: true },
+                { label: "Hotline hiển thị", key: "hotline", placeholder: "0866879755" },
+                { label: "Email hệ thống", key: "email", placeholder: "visa.service@flyimmigration.vn" },
+                { label: "Địa chỉ văn phòng", key: "address", placeholder: "219A Nơ Trang Long, Phường Bình Thạnh", colSpan: true },
                 { label: "Facebook Page URL", key: "facebookUrl", placeholder: "https://facebook.com/..." },
                 { label: "Zalo (số điện thoại)", key: "zaloNumber", placeholder: "0901234567" },
                 { label: "Messenger URL", key: "messengerUrl", placeholder: "https://m.me/...", colSpan: true },

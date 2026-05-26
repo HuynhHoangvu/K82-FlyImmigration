@@ -9,6 +9,15 @@
   }
 }
 
+@keyframes shineSweep {
+  0% {
+    transform: translateX(-100%) skewX(-20deg);
+  }
+  100% {
+    transform: translateX(200%) skewX(-20deg);
+  }
+}
+
 .root {
   position: fixed;
   top: 0;
@@ -48,10 +57,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 4rem;
+  height: 5rem;
 
   @media (min-width: 768px) {
-    height: 5rem;
+    height: 6rem;
   }
 }
 
@@ -59,16 +68,58 @@
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  position: relative;
+  overflow: visible;
+  z-index: 10;
 }
 
 .logoImg {
-  height: 3.5rem;
+  height: 5.5rem;
   width: auto;
   object-fit: contain;
+  display: block;
+  transition: transform 0.3s ease;
 
   @media (min-width: 768px) {
-    height: 4rem;
+    height: 7rem;
   }
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+// Shine layer for sweep effect - chỉ bao quanh logo image
+.shineLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.shineElement {
+  position: absolute;
+  top: -50%;
+  left: -100%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 255, 255, 0.9) 45%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(255, 255, 255, 0.9) 55%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  will-change: transform, left;
+}
+
+.shineElementActive {
+  animation: shineSweep 0.8s ease-in-out;
 }
 
 .navDesktop {

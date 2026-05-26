@@ -11,6 +11,7 @@ import { AdminGuard } from '../../common/guards/admin.guard'
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { News } from './news.entity'
+import { NewsSeed } from './news.seed'
 
 @ApiTags('📰 Tin tức')
 @Controller('news')
@@ -89,6 +90,6 @@ export class NewsController {
 @Module({
   imports: [TypeOrmModule.forFeature([News])],
   controllers: [NewsController],
-  providers: [NewsService],
+  providers: [NewsService, NewsSeed],
 })
 export class NewsModule {}

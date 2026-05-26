@@ -11,9 +11,12 @@ const MOCK_TRAVEL_ITEMS: News[] = [
     id: "mock-travel-korea",
     type: "travel",
     title: "Tour Hàn Quốc 5N4Đ - Seoul / Nami / Everland",
+    titleEn: "Korea Tour 5D4N - Seoul / Nami / Everland",
     slug: "tour-han-quoc-5n4d",
     excerpt: "Gói phổ thông phù hợp gia đình, lịch trình nhẹ, khách sạn 3-4 sao.",
+    excerptEn: "Standard package suitable for families, light itinerary, 3-4 star hotels.",
     content: "Bao gồm vé máy bay khứ hồi, khách sạn, xe đưa đón, vé tham quan chính.",
+    contentEn: "Includes round-trip airfare, hotel, transfer, main sightseeing tickets.",
     image: "https://images.unsplash.com/photo-1538485399081-7c8976f33827?w=1200&q=80&fit=crop",
     isPublished: true,
     country: "south_korea",
@@ -28,9 +31,12 @@ const MOCK_TRAVEL_ITEMS: News[] = [
     id: "mock-travel-japan",
     type: "travel",
     title: "Tour Nhật Bản 6N5Đ - Tokyo / Fuji / Osaka",
+    titleEn: "Japan Tour 6D5N - Tokyo / Fuji / Osaka",
     slug: "tour-nhat-ban-6n5d",
     excerpt: "Lộ trình vàng mùa hoa, tối ưu điểm check-in và mua sắm.",
+    excerptEn: "Golden flower season route, optimized for check-in and shopping points.",
     content: "Hướng dẫn viên tiếng Việt, ăn theo chương trình, tặng sim data du lịch.",
+    contentEn: "Vietnamese speaking guide, meals per itinerary, free travel data sim.",
     image: "https://images.unsplash.com/photo-1492571350019-22de08371fd3?w=1200&q=80&fit=crop",
     isPublished: true,
     country: "japan",
@@ -45,9 +51,12 @@ const MOCK_TRAVEL_ITEMS: News[] = [
     id: "mock-travel-australia",
     type: "travel",
     title: "Tour Úc 7N6Đ - Sydney / Melbourne / Blue Mountains",
+    titleEn: "Australia Tour 7D6N - Sydney / Melbourne / Blue Mountains",
     slug: "tour-uc-7n6d",
     excerpt: "Hành trình chuẩn premium, phù hợp gia đình và khách muốn trải nghiệm city + thiên nhiên.",
+    excerptEn: "Premium itinerary, suitable for families and guests wanting city + nature experience.",
     content: "Bao gồm vé máy bay khứ hồi, khách sạn trung tâm, city tour và hướng dẫn viên tiếng Việt.",
+    contentEn: "Includes round-trip airfare, central hotel, city tour and Vietnamese speaking guide.",
     image: "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=1200&q=80&fit=crop",
     isPublished: true,
     country: "australia",
@@ -62,9 +71,12 @@ const MOCK_TRAVEL_ITEMS: News[] = [
     id: "mock-travel-europe",
     type: "travel",
     title: "Tour Châu Âu 10N9Đ - Pháp / Ý / Thụy Sĩ",
+    titleEn: "Europe Tour 10D9N - France / Italy / Switzerland",
     slug: "tour-chau-au-10n9d",
     excerpt: "Lộ trình liên tuyến nổi bật, tối ưu thời gian và chi phí visa Schengen.",
+    excerptEn: "Outstanding multi-line itinerary, optimized time and Schengen visa cost.",
     content: "Khách sạn 4 sao, xe di chuyển liên quốc gia, hỗ trợ thủ tục visa đầy đủ.",
+    contentEn: "4-star hotels, inter-country transportation, full visa assistance.",
     image: "https://images.unsplash.com/photo-1491557345352-5929e343eb89?w=1200&q=80&fit=crop",
     isPublished: true,
     country: "europe",
@@ -79,9 +91,12 @@ const MOCK_TRAVEL_ITEMS: News[] = [
     id: "mock-travel-singapore",
     type: "travel",
     title: "Tour Singapore 4N3Đ - Sentosa / Marina Bay",
+    titleEn: "Singapore Tour 4D3N - Sentosa / Marina Bay",
     slug: "tour-singapore-4n3d",
     excerpt: "Tour ngắn ngày, lịch trình nhẹ phù hợp gia đình có trẻ nhỏ.",
+    excerptEn: "Short day tour, light itinerary suitable for families with small children.",
     content: "Combo vé tham quan Universal Studios + city tour + hỗ trợ hoàn thuế mua sắm.",
+    contentEn: "Universal Studios admission tickets + city tour + tax refund support.",
     image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=1200&q=80&fit=crop",
     isPublished: true,
     country: "singapore",
@@ -141,7 +156,9 @@ export default function TravelPage() {
 
   const filteredItems = useMemo(() => {
     return items.filter((pkg) => {
-      const text = `${pkg.title} ${pkg.excerpt || ""} ${pkg.country || ""}`.toLowerCase();
+      const title = lang === "en" ? pkg.titleEn || pkg.title : pkg.title;
+      const excerpt = lang === "en" ? pkg.excerptEn || pkg.excerpt : pkg.excerpt;
+      const text = `${title} ${excerpt || ""} ${pkg.country || ""}`.toLowerCase();
       const matchesSearch = !search.trim() || text.includes(search.trim().toLowerCase());
       const matchesDestination = destination === "all" || pkg.country === destination;
 
@@ -154,7 +171,7 @@ export default function TravelPage() {
 
       return matchesSearch && matchesDestination && matchesPrice;
     });
-  }, [items, search, destination, priceFilter]);
+  }, [items, search, destination, priceFilter, lang]);
 
   const getCountryLabel = (country: string) => {
     const info = COUNTRY_NAMES[country];
@@ -164,8 +181,14 @@ export default function TravelPage() {
 
   const getDuration = (title: string) => {
     const m = title.match(/(\d+)N(\d+)Đ/i);
-    if (!m) return null;
-    return lang === "en" ? `${m[1]} days ${m[2]} nights` : `${m[1]} ngày ${m[2]} đêm`;
+    if (m) {
+      return lang === "en" ? `${m[1]} days ${m[2]} nights` : `${m[1]} ngày ${m[2]} đêm`;
+    }
+    const mEn = title.match(/(\d+)D(\d+)N/i);
+    if (mEn) {
+      return lang === "en" ? `${mEn[1]} days ${mEn[2]} nights` : `${mEn[1]} ngày ${mEn[2]} đêm`;
+    }
+    return null;
   };
 
   return (
@@ -265,7 +288,9 @@ export default function TravelPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
             {filteredItems.map((pkg) => {
               const cLabel = pkg.country ? getCountryLabel(pkg.country) : "";
-              const duration = getDuration(pkg.title);
+              const title = lang === "en" ? pkg.titleEn || pkg.title : pkg.title;
+              const excerpt = lang === "en" ? pkg.excerptEn || pkg.excerpt : pkg.excerpt;
+              const duration = getDuration(title);
 
               return (
                 <article
@@ -291,7 +316,7 @@ export default function TravelPage() {
                       {pkg.image ? (
                         <img
                           src={getImageUrl(pkg.image)}
-                          alt={pkg.title}
+                          alt={title}
                           style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                         />
                       ) : (
@@ -336,11 +361,11 @@ export default function TravelPage() {
                         )}
 
                         <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: "#0f172a", lineHeight: 1.3, marginBottom: "0.5rem" }}>
-                          {pkg.title}
+                          {title}
                         </h3>
-                        {pkg.excerpt && (
+                        {excerpt && (
                           <p style={{ color: "#64748b", fontSize: "0.875rem", lineHeight: 1.6, marginBottom: "1rem" }}>
-                            {pkg.excerpt}
+                            {excerpt}
                           </p>
                         )}
 

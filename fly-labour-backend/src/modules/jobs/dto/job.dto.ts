@@ -1,7 +1,7 @@
 import { IsString, IsEnum, IsOptional, IsNumber, IsBoolean, IsDateString } from 'class-validator'
 import { ApiProperty } from '@nestjs/swagger'
 import { Transform, Type } from 'class-transformer'
-import { JobType, JobStatus } from '../job.entity'
+import { JobType, JobStatus, LabourType } from '../job.entity'
 
 export class CreateJobDto {
   @ApiProperty({ example: 'Công nhân Hái Quả Mùa Vụ' })
@@ -51,6 +51,10 @@ export class CreateJobDto {
   @ApiProperty({ enum: JobType, required: false })
   @IsEnum(JobType) @IsOptional()
   jobType?: JobType
+
+  @ApiProperty({ enum: LabourType, required: false, description: 'Loại lao động: onshore (trong nước) hoặc offshore (ngoài nước)' })
+  @IsEnum(LabourType) @IsOptional()
+  labourType?: LabourType
 
   @ApiProperty({ enum: JobStatus, required: false })
   @IsEnum(JobStatus) @IsOptional()

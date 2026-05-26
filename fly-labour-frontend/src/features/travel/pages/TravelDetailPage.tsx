@@ -90,8 +90,9 @@ function TravelConsultModal({ tour, lang, onClose }: ModalProps) {
     if (!form.departureDate) return toast.error("Vui lòng chọn ngày khởi hành dự kiến");
     setSaving(true);
     try {
+      const tourTitle = lang === "en" ? tour.titleEn || tour.title : tour.title;
       const message = [
-        `[Đăng ký tư vấn tour] ${tour.title}`,
+        `[Đăng ký tư vấn tour] ${tourTitle}`,
         `Ngày khởi hành dự kiến: ${form.departureDate}`,
         `Số người: ${form.adults} người lớn, ${form.children} trẻ em`,
         form.note ? `Ghi chú: ${form.note}` : "",
@@ -118,6 +119,7 @@ function TravelConsultModal({ tour, lang, onClose }: ModalProps) {
   };
 
   const inputCls = "w-full h-11 rounded-xl border border-slate-200 px-4 text-sm outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 bg-slate-50 transition-all";
+  const tourTitle = lang === "en" ? tour.titleEn || tour.title : tour.title;
 
   return (
     <div className={s.modalOverlay} onClick={onClose}>
@@ -126,7 +128,7 @@ function TravelConsultModal({ tour, lang, onClose }: ModalProps) {
         <div className={s.modalHeader}>
           <div>
             <p className={s.modalSub}>{lang === "en" ? "Tour consultation" : "Đăng ký tư vấn"}</p>
-            <h3 className={s.modalTitle}>{tour.title}</h3>
+            <h3 className={s.modalTitle}>{tourTitle}</h3>
           </div>
           <button onClick={onClose} className={s.closeBtn}><X size={20} /></button>
         </div>
@@ -293,19 +295,32 @@ export default function TravelDetailPage() {
     );
   }
 
+  const title = lang === "en" ? tour.titleEn || tour.title : tour.title;
+  const excerpt = lang === "en" ? tour.excerptEn || tour.excerpt : tour.excerpt;
+  const content = lang === "en" ? tour.contentEn || tour.content : tour.content;
+
   const countryInfo = tour.country ? COUNTRY_NAMES[tour.country] : null;
   const countryLabel = countryInfo
     ? lang === "en" ? countryInfo.en : countryInfo.vi
     : tour.country || "";
   const itinerarySteps = parseItinerary(tour.itinerary);
 
-  // Detect duration from title (e.g., "5N4Đ" → "5 ngày 4 đêm")
-  const durationMatch = tour.title.match(/(\d+)N(\d+)Đ/i);
-  const duration = durationMatch
+  // Detect duration from title (e.g., "5N4Đ" → "5 ngày 4 đêm" or "5D4N")
+  const durationMatch = title.match(/(\d+)N(\d+)Đ/i);
+  let duration = durationMatch
     ? lang === "en"
       ? `${durationMatch[1]} days ${durationMatch[2]} nights`
       : `${durationMatch[1]} ngày ${durationMatch[2]} đêm`
     : null;
+
+  if (!duration) {
+    const durationMatchEn = title.match(/(\d+)D(\d+)N/i);
+    if (durationMatchEn) {
+      duration = lang === "en"
+        ? `${durationMatchEn[1]} days ${durationMatchEn[2]} nights`
+        : `${durationMatchEn[1]} ngày ${durationMatchEn[2]} đêm`;
+    }
+  }
 
   return (
     <div className={s.page}>
@@ -316,14 +331,14 @@ export default function TravelDetailPage() {
           <span className={s.breadSep}>›</span>
           <Link to="/travel" className={s.breadLink}>{lang === "en" ? "Travel" : "Du lịch"}</Link>
           <span className={s.breadSep}>›</span>
-          <span className={s.breadCurrent}>{tour.title}</span>
+          <span className={s.breadCurrent}>{title}</span>
         </div>
       </div>
 
       {/* ── Hero image ── */}
       <div className={s.hero}>
         {tour.image ? (
-          <img src={getImageUrl(tour.image)} alt={tour.title} className={s.heroImg} />
+          <img src={getImageUrl(tour.image)} alt={title} className={s.heroImg} />
         ) : (
           <div className={s.heroPlaceholder}>
             <Plane size={60} className="text-white/30" />
@@ -352,8 +367,8 @@ export default function TravelDetailPage() {
             <ArrowLeft size={16} />
             {lang === "en" ? "All tours" : "Tất cả tour"}
           </Link>
-          <h1 className={s.heroTitle}>{tour.title}</h1>
-          {tour.excerpt && <p className={s.heroExcerpt}>{tour.excerpt}</p>}
+          <h1 className={s.heroTitle}>{title}</h1>
+          {excerpt && <p className={s.heroExcerpt}>{excerpt}</p>}
         </div>
       </div>
 
@@ -426,7 +441,7 @@ export default function TravelDetailPage() {
             )}
 
             {/* Rich content */}
-            {tour.content && (
+            {content && (
               <section className={s.section}>
                 <h2 className={s.sectionTitle}>
                   <Plane size={20} className="text-amber-600" />
@@ -434,7 +449,7 @@ export default function TravelDetailPage() {
                 </h2>
                 <div
                   className={s.richContent}
-                  dangerouslySetInnerHTML={{ __html: tour.content }}
+                  dangerouslySetInnerHTML={{ __html: content }}
                 />
               </section>
             )}

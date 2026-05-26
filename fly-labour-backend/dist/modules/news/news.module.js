@@ -23,6 +23,7 @@ const admin_guard_1 = require("../../common/guards/admin.guard");
 const common_2 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const news_entity_1 = require("./news.entity");
+const news_seed_1 = require("./news.seed");
 let NewsController = class NewsController {
     constructor(newsService) {
         this.newsService = newsService;
@@ -166,7 +167,7 @@ exports.NewsModule = NewsModule = __decorate([
     (0, common_2.Module)({
         imports: [typeorm_1.TypeOrmModule.forFeature([news_entity_1.News])],
         controllers: [NewsController],
-        providers: [news_service_1.NewsService],
+        providers: [news_service_1.NewsService, news_seed_1.NewsSeed],
     })
 ], NewsModule);
 //# sourceMappingURL=news.module.js.map

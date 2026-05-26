@@ -52,7 +52,8 @@ export default function StudyDetailPage() {
       .getOne(slug)
       .then((r) => {
         setItem(r.data);
-        document.title = `${r.data.title} — Fly Labour`;
+        const docTitle = lang === "en" ? r.data.titleEn || r.data.title : r.data.title;
+        document.title = `${docTitle} — Fly Labour`;
 
         // Fetch related study articles
         newsApi
@@ -71,7 +72,7 @@ export default function StudyDetailPage() {
     return () => {
       document.title = "Fly Labour — Du học";
     };
-  }, [slug]);
+  }, [slug, lang]);
 
   if (loading) {
     return (
@@ -115,6 +116,10 @@ export default function StudyDetailPage() {
     toast.success(lang === "en" ? "Copied link to clipboard!" : "Đã sao chép liên kết vào bộ nhớ tạm!");
   };
 
+  const title = lang === "en" ? item.titleEn || item.title : item.title;
+  const excerpt = lang === "en" ? item.excerptEn || item.excerpt : item.excerpt;
+  const content = lang === "en" ? item.contentEn || item.content : item.content;
+
   return (
     <div className={s.page}>
       {/* Breadcrumb */}
@@ -128,7 +133,7 @@ export default function StudyDetailPage() {
             {lang === "en" ? "Study Abroad" : "Du học"}
           </Link>
           <span>/</span>
-          <span className={s.breadcrumbCurrent}>{item.title}</span>
+          <span className={s.breadcrumbCurrent}>{title}</span>
         </div>
       </div>
 
@@ -139,7 +144,7 @@ export default function StudyDetailPage() {
             <div className={s.card}>
               <div className={s.heroImgWrap}>
                 {item.image ? (
-                  <img src={getImageUrl(item.image)} alt={item.title} className={s.heroImg} />
+                  <img src={getImageUrl(item.image)} alt={title} className={s.heroImg} />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-amber-50/50 text-amber-500">
                     <GraduationCap size={72} />
@@ -171,9 +176,9 @@ export default function StudyDetailPage() {
                   )}
                 </div>
 
-                <h1 className={s.title}>{item.title}</h1>
+                <h1 className={s.title}>{title}</h1>
                 
-                {item.excerpt && <p className={s.excerpt}>{item.excerpt}</p>}
+                {excerpt && <p className={s.excerpt}>{excerpt}</p>}
 
                 <div className={s.metaRow}>
                   <span>{lang === "en" ? "Published:" : "Ngày đăng:"} {formatDate(item.createdAt)}</span>
@@ -191,7 +196,7 @@ export default function StudyDetailPage() {
               </h2>
               <div
                 className={s.richText}
-                dangerouslySetInnerHTML={{ __html: item.content || "" }}
+                dangerouslySetInnerHTML={{ __html: content || "" }}
               />
             </div>
           </div>
@@ -282,30 +287,33 @@ export default function StudyDetailPage() {
               {lang === "en" ? "Related Programs" : "Chương trình liên quan"}
             </h3>
             <div className={s.relatedGrid}>
-              {related.map((x) => (
-                <div key={x.id} className={s.relatedCard}>
-                  <div className={s.relatedImgWrap}>
-                    {x.image ? (
-                      <img src={getImageUrl(x.image)} alt={x.title} className={s.relatedImg} />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-slate-50 text-amber-500">
-                        <GraduationCap size={32} />
-                      </div>
-                    )}
-                  </div>
-                  <div className={s.relatedContent}>
-                    <h4 className={s.relatedCardTitle}>
-                      <Link to={`/study/${x.slug}`} className="hover:text-amber-600 transition">
-                        {x.title}
+              {related.map((x) => {
+                const rTitle = lang === "en" ? x.titleEn || x.title : x.title;
+                return (
+                  <div key={x.id} className={s.relatedCard}>
+                    <div className={s.relatedImgWrap}>
+                      {x.image ? (
+                        <img src={getImageUrl(x.image)} alt={rTitle} className={s.relatedImg} />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-slate-50 text-amber-500">
+                          <GraduationCap size={32} />
+                        </div>
+                      )}
+                    </div>
+                    <div className={s.relatedContent}>
+                      <h4 className={s.relatedCardTitle}>
+                        <Link to={`/study/${x.slug}`} className="hover:text-amber-600 transition">
+                          {rTitle}
+                        </Link>
+                      </h4>
+                      <Link to={`/study/${x.slug}`} className={s.relatedLink}>
+                        {lang === "en" ? "View details" : "Xem chi tiết"}
+                        <ArrowLeft size={13} style={{ transform: "rotate(180deg)" }} />
                       </Link>
-                    </h4>
-                    <Link to={`/study/${x.slug}`} className={s.relatedLink}>
-                      {lang === "en" ? "View details" : "Xem chi tiết"}
-                      <ArrowLeft size={13} style={{ transform: "rotate(180deg)" }} />
-                    </Link>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
@@ -316,7 +324,7 @@ export default function StudyDetailPage() {
         isOpen={applyModalOpen}
         onClose={() => setApplyModalOpen(false)}
         initialCountry={getCountryLabel(item.country)}
-        initialUniversity={item.title}
+        initialUniversity={title}
         initialStudyType={item.studyType}
       />
     </div>

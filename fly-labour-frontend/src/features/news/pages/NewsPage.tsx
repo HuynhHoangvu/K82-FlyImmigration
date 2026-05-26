@@ -4,13 +4,16 @@ import { useQuery } from "@tanstack/react-query";
 import { Search, Calendar, ArrowRight, Newspaper, Loader2 } from "lucide-react";
 import { newsApi, getImageUrl } from "@core/services/api";
 import { formatDate } from "@core/utils/helpers";
+import { useT } from "@core/hooks/useT";
 import s from "./NewsPage.module.scss";
 
 interface NewsItem {
   id: string;
   title: string;
+  titleEn?: string;
   slug: string;
   excerpt: string;
+  excerptEn?: string;
   image: string;
   isPublished: boolean;
   createdAt: string;
@@ -18,6 +21,8 @@ interface NewsItem {
 
 export default function NewsPage() {
   const [search, setSearch] = useState("");
+  const { t, lang } = useT();
+  const nTranslation = t("news");
 
   const newsQuery = useQuery<NewsItem[]>({
     queryKey: ["news"],
@@ -30,12 +35,16 @@ export default function NewsPage() {
 
   const news = newsQuery.data ?? [];
   const isLoading = newsQuery.isLoading;
-  const filtered = news.filter(
-    (n) =>
+
+  const filtered = news.filter((n) => {
+    const title = lang === 'en' ? n.titleEn || n.title : n.title;
+    const excerpt = lang === 'en' ? n.excerptEn || n.excerpt : n.excerpt;
+    return (
       !search ||
-      n.title.toLowerCase().includes(search.toLowerCase()) ||
-      (n.excerpt || "").toLowerCase().includes(search.toLowerCase()),
-  );
+      title.toLowerCase().includes(search.toLowerCase()) ||
+      (excerpt || "").toLowerCase().includes(search.toLowerCase())
+    );
+  });
 
   const featured = filtered[0];
   const rest = filtered.slice(1);
@@ -47,15 +56,14 @@ export default function NewsPage() {
           <div className={s.badge}>
             <Newspaper size={14} className={s.badgeIcon} />
             <span className={s.badgeText}>
-              Tạp chí FLY LABOUR
+              {nTranslation.magazine}
             </span>
           </div>
           <h1 className={s.title}>
-            <span className="gradient-text">Tin tức & Cập nhật</span>
+            <span className="gradient-text">{nTranslation.subtitle}</span>
           </h1>
           <p className={`${s.desc} fl-max-2xl`}>
-            Nơi cập nhật những thay đổi mới nhất về chính sách di trú và thị
-            trường nhân lực toàn cầu.
+            {nTranslation.description}
           </p>
         </div>
       </div>
@@ -66,7 +74,7 @@ export default function NewsPage() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Bạn muốn tìm hiểu thông tin gì?"
+            placeholder={nTranslation.searchPlaceholder}
             className={s.searchInput}
           />
         </div>
@@ -75,17 +83,17 @@ export default function NewsPage() {
           <div className={s.loadingWrap}>
             <Loader2 size={40} className={`animate-spin ${s.loader}`} />
             <p className={s.loadingText}>
-              Đang tải bản tin...
+              {nTranslation.loading}
             </p>
           </div>
         ) : filtered.length === 0 ? (
           <div className={`${s.empty} fl-max-3xl`}>
             <div className={s.emptyEmoji}>🏜️</div>
             <p className={s.emptyTitle}>
-              Không tìm thấy bài viết
+              {nTranslation.emptyTitle}
             </p>
             <p className={s.emptyDesc}>
-              Thử tìm kiếm với một từ khóa khác nhé!
+              {nTranslation.emptyDesc}
             </p>
           </div>
         ) : (
@@ -95,7 +103,7 @@ export default function NewsPage() {
                 <div className={s.featuredHeading}>
                   <div className={s.featuredLine} />
                   <h2 className={s.featuredLabel}>
-                    Tiêu điểm hôm nay
+                    {nTranslation.todayFocus}
                   </h2>
                   <div className={s.featuredLine} />
                 </div>
@@ -106,7 +114,7 @@ export default function NewsPage() {
                       {featured.image ? (
                         <img
                           src={getImageUrl(featured.image)}
-                          alt={featured.title}
+                          alt={lang === 'en' ? featured.titleEn || featured.title : featured.title}
                           className={s.img}
                         />
                       ) : (
@@ -115,7 +123,7 @@ export default function NewsPage() {
                         </div>
                       )}
                       <div className={s.trendBadge}>
-                        🔥 Trending
+                        🔥 {nTranslation.trending || 'Trending'}
                       </div>
                     </div>
                     <div className={s.featuredBody}>
@@ -124,15 +132,15 @@ export default function NewsPage() {
                         {formatDate(featured.createdAt)}
                       </div>
                       <h2 className={s.featuredTitle}>
-                        {featured.title}
+                        {lang === 'en' ? featured.titleEn || featured.title : featured.title}
                       </h2>
-                      {featured.excerpt && (
+                      {(lang === 'en' ? featured.excerptEn || featured.excerpt : featured.excerpt) && (
                         <p className={s.featuredExcerpt}>
-                          {featured.excerpt}
+                          {lang === 'en' ? featured.excerptEn || featured.excerpt : featured.excerpt}
                         </p>
                       )}
                       <span className={s.featuredCta}>
-                        Khám phá chi tiết <ArrowRight size={18} />
+                        {lang === 'en' ? 'Explore details' : 'Khám phá chi tiết'} <ArrowRight size={18} />
                       </span>
                     </div>
                   </div>
@@ -141,49 +149,53 @@ export default function NewsPage() {
             )}
 
             <div className={s.listGrid}>
-              {rest.map((article) => (
-                <Link
-                  key={article.id}
-                  to={`/news/${article.slug}`}
-                  className={`${s.cardBase} ${s.listCard}`}
-                >
-                  <div className={s.listImage}>
-                    {article.image ? (
-                      <img
-                        src={getImageUrl(article.image)}
-                        alt={article.title}
-                        className={s.img}
-                      />
-                    ) : (
-                      <div className={s.placeholder}>
-                        📰
-                      </div>
-                    )}
-                  </div>
-                  <div className={s.listBody}>
-                    <div className={s.meta}>
-                      <Calendar size={12} className={s.metaIcon} />
-                      {formatDate(article.createdAt)}
+              {rest.map((article) => {
+                const title = lang === 'en' ? article.titleEn || article.title : article.title;
+                const excerpt = lang === 'en' ? article.excerptEn || article.excerpt : article.excerpt;
+                return (
+                  <Link
+                    key={article.id}
+                    to={`/news/${article.slug}`}
+                    className={`${s.cardBase} ${s.listCard}`}
+                  >
+                    <div className={s.listImage}>
+                      {article.image ? (
+                        <img
+                          src={getImageUrl(article.image)}
+                          alt={title}
+                          className={s.img}
+                        />
+                      ) : (
+                        <div className={s.placeholder}>
+                          📰
+                        </div>
+                      )}
                     </div>
-                    <h3 className={s.listTitle}>
-                      {article.title}
-                    </h3>
-                    {article.excerpt && (
-                      <p className={s.listExcerpt}>
-                        "{article.excerpt}"
-                      </p>
-                    )}
-                    <div className={s.listFooter}>
-                      <span className={s.readMore}>
-                        Đọc tiếp
-                      </span>
-                      <div className={s.arrowBox}>
-                        <ArrowRight size={16} />
+                    <div className={s.listBody}>
+                      <div className={s.meta}>
+                        <Calendar size={12} className={s.metaIcon} />
+                        {formatDate(article.createdAt)}
+                      </div>
+                      <h3 className={s.listTitle}>
+                        {title}
+                      </h3>
+                      {excerpt && (
+                        <p className={s.listExcerpt}>
+                          "{excerpt}"
+                        </p>
+                      )}
+                      <div className={s.listFooter}>
+                        <span className={s.readMore}>
+                          {nTranslation.readMore}
+                        </span>
+                        <div className={s.arrowBox}>
+                          <ArrowRight size={16} />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         )}

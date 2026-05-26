@@ -3,16 +3,10 @@ import { Link } from "react-router-dom";
 import { useT } from "@core/hooks/useT";
 import s from "./EnglishTestCtaRow.module.scss";
 
-const FEATURES = [
-  "Đánh giá 4 kỹ năng: Nghe, Nói, Đọc, Viết",
-  "Kết quả ngay lập tức, không cần chờ đợi",
-  "Phù hợp hồ sơ xuất khẩu lao động",
-  "Hoàn toàn miễn phí, không cần đăng ký",
-];
-
-export default function EnglishTestCtaRow() {
+const EnglishTestCtaRow = () => {
   const { t } = useT();
   const h = t("home");
+  const test = t("englishTest");
 
   return (
     <section className={s.section}>
@@ -25,21 +19,20 @@ export default function EnglishTestCtaRow() {
               <div className={s.badge}>
                 <Zap size={12} className={s.badgeIcon} />
                 <span className={s.badgeText}>
-                  Miễn phí 100%
+                  {test.badge}
                 </span>
               </div>
 
               <h2 className={s.leftTitle}>
-                KIỂM TRA TIẾNG ANH MIỄN PHÍ
+                {test.title}
               </h2>
 
               <p className={s.leftDesc}>
-                Kiểm tra trình độ tiếng Anh ngay hôm nay để tăng cơ hội được
-                chọn trong các đơn tuyển dụng quốc tế.
+                {test.desc}
               </p>
 
               <ul className={s.featureList}>
-                {FEATURES.map((f) => (
+                {test.features.map((f: string) => (
                   <li key={f} className={s.featureItem}>
                     <CheckCircle
                       size={15}
@@ -59,7 +52,7 @@ export default function EnglishTestCtaRow() {
                   rel="noopener noreferrer"
                   className="btn-primary"
                 >
-                  Làm bài ngay
+                  {test.btn}
                   <ExternalLink
                     size={15}
                     className={s.testBtnIcon}
@@ -102,3 +95,5 @@ export default function EnglishTestCtaRow() {
     </section>
   );
 }
+
+export default EnglishTestCtaRow;

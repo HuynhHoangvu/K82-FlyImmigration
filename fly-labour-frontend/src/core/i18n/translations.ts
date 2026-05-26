@@ -75,6 +75,30 @@ const en = {
     terms: 'Terms of Service',
   },
 
+  certifications: {
+    title: 'Certifications & Awards',
+    subtitle: 'Our credibility confirmed through licenses and awards',
+    download: 'Download',
+    items: {
+      bct: {
+        title: 'Ministry of Industry & Trade',
+        description: 'Registered with Ministry of Industry & Trade',
+      },
+      license: {
+        title: 'Business License',
+        description: 'Business No: 0316444315',
+      },
+      award: {
+        title: 'Top 10 Labor Export Service',
+        description: 'Award 2025',
+      },
+      iso: {
+        title: 'ISO 9001:2015 Certified',
+        description: 'Quality Management System',
+      },
+    },
+  },
+
   auth: {
     signInTitle: 'Sign In',
     signInSub: 'Welcome back to Fly Labour',
@@ -274,6 +298,11 @@ const en = {
     ct_email: 'Email',
     ct_addr: 'Address',
     ct_btn: 'Send message now',
+    v_badge: 'Media',
+    v_title: 'Our Story in Pictures',
+    v_desc: 'Watch our introduction video and explore memorable moments from our journey',
+    award_title: 'TOP 10 International Quality Golden Brand 2026',
+    award_desc: 'Fly Visa has been honored with the "TOP 10 International Quality Golden Brand 2026" award, recognizing our commitment to excellence in visa consulting and international settlement support services.',
   },
 
   faq: {
@@ -420,6 +449,16 @@ We commit to responding within 5 working days.`,
     title: 'News',
     titleGradient: '& Blog',
     comingSoon: 'News page — coming soon',
+    magazine: 'FLY LABOUR MAGAZINE',
+    subtitle: 'News & Updates',
+    description: 'The place to update the latest changes on immigration policies and the global labor market.',
+    searchPlaceholder: 'What information do you want to find?',
+    trending: 'Trending',
+    readMore: 'Read More',
+    todayFocus: 'Today Focus',
+    emptyTitle: 'No articles found',
+    emptyDesc: 'Try searching with another keyword!',
+    loading: 'Loading news...',
   },
 
   home: {
@@ -562,6 +601,19 @@ We commit to responding within 5 working days.`,
       },
     ],
   },
+
+  englishTest: {
+    badge: '100% Free',
+    title: 'FREE ENGLISH TEST',
+    desc: 'Test your English proficiency today to increase your chances of being selected for international job opportunities.',
+    features: [
+      'Assesses 4 skills: Listening, Speaking, Reading, Writing',
+      'Instant results, no waiting required',
+      'Suitable for labor export applications',
+      'Completely free, no registration required',
+    ],
+    btn: 'Take test now',
+  },
 }
 
 const vi: typeof en = {
@@ -637,6 +689,30 @@ const vi: typeof en = {
     copyright: '© 2026 Fly Labour. Mã số DN: 0316444315',
     privacy: 'Chính sách bảo mật',
     terms: 'Điều khoản sử dụng',
+  },
+
+  certifications: {
+    title: 'Chứng nhận & Giải thưởng',
+    subtitle: 'Uy tín được khẳng định qua các giấy phép và giải thưởng',
+    download: 'Tải xuống',
+    items: {
+      bct: {
+        title: 'Đăng ký Bộ Công Thương',
+        description: 'Đã thông báo với Bộ Công Thương',
+      },
+      license: {
+        title: 'Giấy phép kinh doanh',
+        description: 'Mã số DN: 0316444315',
+      },
+      award: {
+        title: 'Top 10 Dịch vụ Xuất khẩu Lao động',
+        description: 'Giải thưởng 2025',
+      },
+      iso: {
+        title: 'Chứng nhận ISO 9001:2015',
+        description: 'Hệ thống quản lý chất lượng',
+      },
+    },
   },
 
   auth: {
@@ -838,6 +914,11 @@ const vi: typeof en = {
     ct_email: 'Email',
     ct_addr: 'Địa chỉ',
     ct_btn: 'Gửi liên hệ ngay',
+    v_badge: 'Thư viện',
+    v_title: 'Câu chuyện qua hình ảnh',
+    v_desc: 'Xem video giới thiệu và khám phá những khoảnh khắc đáng nhớ trong hành trình của chúng tôi',
+    award_title: 'TOP 10 Thương hiệu Vàng Chất lượng Quốc tế 2026',
+    award_desc: 'Fly Visa vinh dự được xướng tên trong "TOP 10 Thương hiệu Vàng Chất lượng Quốc tế 2026" - ghi nhận những nỗ lực không ngừng trong việc cung cấp dịch vụ tư vấn visa chuyên nghiệp, uy tín và tận tâm.',
   },
 
   faq: {
@@ -984,6 +1065,16 @@ Chúng tôi cam kết phản hồi trong vòng 5 ngày làm việc.`,
     title: 'Tin tức',
     titleGradient: '& Blog',
     comingSoon: 'Trang tin tức — đang phát triển',
+    magazine: 'Tạp chí FLY LABOUR',
+    subtitle: 'Tin tức & Cập nhật',
+    description: 'Nơi cập nhật những thay đổi mới nhất về chính sách di trú và thị trường nhân lực toàn cầu.',
+    searchPlaceholder: 'Bạn muốn tìm hiểu thông tin gì?',
+    trending: 'Trending',
+    readMore: 'Đọc tiếp',
+    todayFocus: 'Tiêu điểm hôm nay',
+    emptyTitle: 'Không tìm thấy bài viết',
+    emptyDesc: 'Thử tìm kiếm với một từ khóa khác nhé!',
+    loading: 'Đang tải bản tin...',
   },
 
   home: {
@@ -1116,6 +1207,19 @@ Chúng tôi cam kết phản hồi trong vòng 5 ngày làm việc.`,
         statsValues: ['70+', '100%', '€3k+'],
       },
     ],
+  },
+
+  englishTest: {
+    badge: 'Miễn phí 100%',
+    title: 'KIỂM TRA TIẾNG ANH MIỄN PHÍ',
+    desc: 'Kiểm tra trình độ tiếng Anh ngay hôm nay để tăng cơ hội được chọn trong các đơn tuyển dụng quốc tế.',
+    features: [
+      'Đánh giá 4 kỹ năng: Nghe, Nói, Đọc, Viết',
+      'Kết quả ngay lập tức, không cần chờ đợi',
+      'Phù hợp hồ sơ xuất khẩu lao động',
+      'Hoàn toàn miễn phí, không cần đăng ký',
+    ],
+    btn: 'Làm bài ngay',
   },
 }
 

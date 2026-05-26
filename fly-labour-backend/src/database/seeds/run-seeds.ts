@@ -37,305 +37,7 @@ async function seed() {
   await AppDataSource.initialize()
   console.log('🌱 Bắt đầu seed dữ liệu...')
 
-  // ── 1. Users ──
-  const userRepo = AppDataSource.getRepository(User)
-  const existAdmin = await userRepo.findOne({ where: { email: 'admin@flylabour.com' } })
-  if (!existAdmin) {
-    await userRepo.save([
-      userRepo.create({
-        fullName: 'Admin Fly Labour',
-        email: 'admin@flylabour.com',
-        phone: '0901234567',
-        password: await bcrypt.hash('Admin@123', 12),
-        role: UserRole.ADMIN,
-        isActive: true,
-      }),
-      userRepo.create({
-        fullName: 'Nguyễn Văn A',
-        email: 'user@example.com',
-        phone: '0912345678',
-        password: await bcrypt.hash('User@123', 12),
-        role: UserRole.USER,
-        isActive: true,
-      }),
-    ])
-    console.log('✅ Tạo 2 users (admin + user demo)')
-  } else {
-    console.log('⏭️  Users đã tồn tại, bỏ qua')
-  }
 
-  // ── 2. Categories ──
-  const catRepo = AppDataSource.getRepository(Category)
-  const catCount = await catRepo.count()
-  if (catCount === 0) {
-    const categories = [
-      { name: 'Nông nghiệp', nameEn: 'Farm', icon: '1', description: 'Hái quả, trồng trọt, chăn nuôi', sortOrder: 1 },
-      { name: 'Nail & Spa', nameEn: 'Nail', icon: '2', description: 'Kỹ thuật viên nail, thẩm mỹ', sortOrder: 2 },
-      { name: 'Kỹ thuật', nameEn: 'Engineering', icon: '3', description: 'Kỹ sư, vận hành máy móc', sortOrder: 3 },
-      { name: 'Xây dựng', nameEn: 'Construction', icon: '4', description: 'Thợ hồ, xây dựng công trình', sortOrder: 4 },
-      { name: 'Nhà hàng', nameEn: 'Hospitality', icon: '5', description: 'Đầu bếp, phục vụ nhà hàng', sortOrder: 5 },
-      { name: 'Y tế', nameEn: 'Healthcare', icon: '6', description: 'Y tá, chăm sóc người cao tuổi', sortOrder: 6 },
-      { name: 'Logistics', nameEn: 'Logistics', icon: '7', description: 'Lái xe, kho vận, giao hàng', sortOrder: 7 },
-      { name: 'Công nghệ', nameEn: 'IT', icon: '8', description: 'Lập trình viên, IT support', sortOrder: 8 },
-      { name: 'Dịch vụ', nameEn: 'Services', icon: '9', description: 'Bán lẻ, dịch vụ khách hàng, văn phòng', sortOrder: 9 },
-    ]
-    const savedCats = await catRepo.save(categories.map(c => catRepo.create(c)))
-    console.log(`✅ Tạo ${savedCats.length} danh mục`)
-
-    // ── 3. Jobs ──
-    const jobRepo = AppDataSource.getRepository(Job)
-    const farmCat = savedCats[0]
-    const nailCat = savedCats[1]
-    const engCat  = savedCats[2]
-    const resCat  = savedCats[4]
-
-    await jobRepo.save([
-      jobRepo.create({
-        title: 'Công nhân Hái Quả Mùa Vụ',
-        company: 'Sunshine Farms',
-        location: 'Queensland',
-        country: 'australia',
-        jobType: JobType.SEASONAL,
-        status: JobStatus.ACTIVE,
-        salaryMin: 2800, salaryMax: 3500, salaryCurrency: 'AUD',
-        slots: 50, deadline: '2025-06-30',
-        description: 'Tuyển 50 lao động hái quả mùa vụ tại Queensland, Úc. Bao ăn ở, hỗ trợ visa.',
-        requirements: 'Sức khỏe tốt, chịu khó, không yêu cầu kinh nghiệm.',
-        benefits: 'Bao visa. Bao vé máy bay. Bao ăn ở tại farm.',
-        isHot: true, isFeatured: true,
-        image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=75',
-        categoryId: farmCat.id,
-      }),
-      jobRepo.create({
-        title: 'Kỹ thuật viên Nail cao cấp',
-        company: 'Melbourne Nail Studio',
-        location: 'Melbourne',
-        country: 'australia',
-        jobType: JobType.FULL_TIME,
-        status: JobStatus.ACTIVE,
-        salaryMin: 3200, salaryMax: 4500, salaryCurrency: 'AUD',
-        slots: 10, deadline: '2025-05-30',
-        description: 'Cần tuyển kỹ thuật viên nail có kinh nghiệm làm việc tại studio sang trọng Melbourne.',
-        requirements: 'Kinh nghiệm nail tối thiểu 1 năm. Biết tiếng Anh cơ bản.',
-        benefits: 'Lương + tip. Hỗ trợ tìm nhà ở. Visa sponsored.',
-        isHot: true, isFeatured: true,
-        image: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=800&q=75',
-        categoryId: nailCat.id,
-      }),
-      jobRepo.create({
-        title: 'Thợ Hàn Công Nghiệp',
-        company: 'BC Steel Works',
-        location: 'British Columbia',
-        country: 'canada',
-        jobType: JobType.FULL_TIME,
-        status: JobStatus.ACTIVE,
-        salaryMin: 3500, salaryMax: 5000, salaryCurrency: 'CAD',
-        slots: 20, deadline: '2025-07-15',
-        description: 'Tuyển thợ hàn có tay nghề làm việc tại nhà máy thép British Columbia, Canada.',
-        requirements: 'Bằng nghề hàn. Kinh nghiệm 2 năm trở lên.',
-        benefits: 'Lương cao. Bao visa. Bảo hiểm y tế đầy đủ.',
-        isHot: true, isFeatured: false,
-        image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=75',
-        categoryId: engCat.id,
-      }),
-      jobRepo.create({
-        title: 'Đầu bếp Việt Nam',
-        company: 'Pho Saigon Restaurant',
-        location: 'Auckland',
-        country: 'new_zealand',
-        jobType: JobType.FULL_TIME,
-        status: JobStatus.ACTIVE,
-        salaryMin: 2900, salaryMax: 3800, salaryCurrency: 'NZD',
-        slots: 5, deadline: '2025-06-01',
-        description: 'Nhà hàng Việt Nam tại Auckland cần tuyển đầu bếp có kinh nghiệm nấu ẩm thực Việt.',
-        requirements: 'Kinh nghiệm nấu ăn 2 năm. Ưu tiên có bằng nghề bếp.',
-        benefits: 'Bao ăn ở. Hỗ trợ visa. Môi trường thân thiện.',
-        isHot: false, isFeatured: false,
-        image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=75',
-        categoryId: resCat.id,
-      }),
-      jobRepo.create({
-        title: 'Lái Xe Container Hạng Nặng',
-        company: 'TransOz Logistics',
-        location: 'Perth',
-        country: 'australia',
-        jobType: JobType.FULL_TIME,
-        status: JobStatus.ACTIVE,
-        salaryMin: 4000, salaryMax: 5500, salaryCurrency: 'AUD',
-        slots: 15, deadline: '2026-06-15',
-        description: 'Tuyển lái xe container hạng nặng có bằng HR tại Perth, Úc.',
-        requirements: 'Bằng lái HR. Kinh nghiệm 2 năm. Tiếng Anh giao tiếp.',
-        benefits: 'Lương rất cao. Phụ cấp đường dài. Visa sponsored.',
-        isHot: true, isFeatured: false,
-        image: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=800&q=75',
-        categoryId: savedCats[6].id,
-      }),
-      // ── 10 jobs mới ──
-      jobRepo.create({
-        title: 'Y Tá Chăm Sóc Người Cao Tuổi',
-        company: 'Sunrise Aged Care',
-        location: 'Sydney',
-        country: 'australia',
-        jobType: JobType.FULL_TIME,
-        status: JobStatus.ACTIVE,
-        salaryMin: 3800, salaryMax: 5200, salaryCurrency: 'AUD',
-        slots: 20, deadline: '2026-08-31',
-        description: 'Tuyển y tá và trợ lý chăm sóc người cao tuổi tại trung tâm dưỡng lão Sydney. Bao gồm hỗ trợ vật lý trị liệu, chăm sóc hàng ngày và giao tiếp với gia đình bệnh nhân.',
-        requirements: 'Bằng y tá hoặc điều dưỡng. Tiếng Anh IELTS 6.0+. Có kinh nghiệm chăm sóc người cao tuổi là lợi thế.',
-        benefits: 'Visa 482 sponsored. Lương theo giờ cao. Bảo hiểm y tế. Cơ hội PR sau 2 năm.',
-        isHot: true, isFeatured: true,
-        image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&q=75',
-        categoryId: savedCats[5].id,
-      }),
-      jobRepo.create({
-        title: 'Kỹ Sư Phần Mềm Backend',
-        company: 'TechVenture Canada',
-        location: 'Toronto',
-        country: 'canada',
-        jobType: JobType.FULL_TIME,
-        status: JobStatus.ACTIVE,
-        salaryMin: 6000, salaryMax: 9000, salaryCurrency: 'CAD',
-        slots: 8, deadline: '2026-09-30',
-        description: 'Startup công nghệ tại Toronto cần tuyển kỹ sư backend có kinh nghiệm Node.js/Python. Làm việc remote 3 ngày/tuần, văn phòng 2 ngày.',
-        requirements: 'Kinh nghiệm 3 năm Node.js hoặc Python. Biết Docker, AWS. Tiếng Anh tốt.',
-        benefits: 'Lương cạnh tranh. Work permit sponsored. Stock options. Remote linh hoạt.',
-        isHot: true, isFeatured: true,
-        image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&q=75',
-        categoryId: savedCats[7].id,
-      }),
-      jobRepo.create({
-        title: 'Công Nhân Xây Dựng Tổng Hợp',
-        company: 'Auckland Build Group',
-        location: 'Auckland',
-        country: 'new_zealand',
-        jobType: JobType.CONTRACT,
-        status: JobStatus.ACTIVE,
-        salaryMin: 2600, salaryMax: 3400, salaryCurrency: 'NZD',
-        slots: 30, deadline: '2026-07-31',
-        description: 'Tuyển công nhân xây dựng tổng hợp cho các dự án nhà ở và thương mại tại Auckland. Công việc bao gồm đổ bê tông, lắp đặt khung thép, hoàn thiện nội thất.',
-        requirements: 'Sức khỏe tốt. Kinh nghiệm xây dựng 1 năm. Có thể làm việc ngoài trời.',
-        benefits: 'Bao visa. Phụ cấp nhà ở. Làm thêm giờ được trả 1.5x lương.',
-        isHot: false, isFeatured: true,
-        image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&q=75',
-        categoryId: savedCats[3].id,
-      }),
-      jobRepo.create({
-        title: 'Nhân Viên Kho Hàng Amazon',
-        company: 'Amazon Fulfillment Center',
-        location: 'Vancouver',
-        country: 'canada',
-        jobType: JobType.FULL_TIME,
-        status: JobStatus.ACTIVE,
-        salaryMin: 2800, salaryMax: 3600, salaryCurrency: 'CAD',
-        slots: 40, deadline: '2026-10-15',
-        description: 'Amazon Canada tuyển nhân viên kho vận tại trung tâm phân phối Vancouver. Nhiệm vụ: nhận hàng, phân loại, đóng gói, vận chuyển nội bộ.',
-        requirements: 'Không yêu cầu kinh nghiệm. Có thể đứng 8 tiếng. Làm được ca đêm.',
-        benefits: 'Lương theo giờ $19-23/h. Bảo hiểm y tế. Work permit. Thưởng năng suất.',
-        isHot: true, isFeatured: false,
-        image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=75',
-        categoryId: savedCats[6].id,
-      }),
-      jobRepo.create({
-        title: 'Thợ Điện Công Nghiệp',
-        company: 'Electra Engineering GmbH',
-        location: 'Munich',
-        country: 'germany',
-        jobType: JobType.FULL_TIME,
-        status: JobStatus.ACTIVE,
-        salaryMin: 2800, salaryMax: 4000, salaryCurrency: 'EUR',
-        slots: 12, deadline: '2026-11-30',
-        description: 'Công ty kỹ thuật Đức tuyển thợ điện công nghiệp lắp đặt và bảo trì hệ thống điện nhà máy.',
-        requirements: 'Bằng nghề điện công nghiệp. Kinh nghiệm 2 năm. Tiếng Anh hoặc Đức cơ bản.',
-        benefits: 'Visa lao động Đức. Lương theo bảng lương Đức. Bảo hiểm xã hội đầy đủ.',
-        isHot: false, isFeatured: false,
-        image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800&q=75',
-        categoryId: savedCats[2].id,
-      }),
-      jobRepo.create({
-        title: 'Nhân Viên Phục Vụ Nhà Hàng',
-        company: 'The Crown Hotel',
-        location: 'Melbourne',
-        country: 'australia',
-        jobType: JobType.PART_TIME,
-        status: JobStatus.ACTIVE,
-        salaryMin: 2200, salaryMax: 2800, salaryCurrency: 'AUD',
-        slots: 25, deadline: '2026-06-30',
-        description: 'Khách sạn 5 sao Crown tại Melbourne tuyển nhân viên phục vụ nhà hàng và bar. Ca làm việc linh hoạt, phù hợp du học sinh và người mới.',
-        requirements: 'Tiếng Anh giao tiếp tốt. Ngoại hình lịch sự. Kinh nghiệm phục vụ là lợi thế.',
-        benefits: 'Tip cao. Bao bữa ăn ca. Hỗ trợ visa. Môi trường 5 sao chuyên nghiệp.',
-        isHot: false, isFeatured: false,
-        image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=75',
-        categoryId: savedCats[4].id,
-      }),
-      jobRepo.create({
-        title: 'Công Nhân Chế Biến Hải Sản',
-        company: 'SeaFresh NZ Ltd',
-        location: 'Christchurch',
-        country: 'new_zealand',
-        jobType: JobType.SEASONAL,
-        status: JobStatus.ACTIVE,
-        salaryMin: 2400, salaryMax: 3000, salaryCurrency: 'NZD',
-        slots: 35, deadline: '2026-05-31',
-        description: 'Nhà máy chế biến hải sản tại Christchurch tuyển công nhân sơ chế, đóng gói tôm cá. Làm theo ca, bao ăn ở ký túc xá.',
-        requirements: 'Chịu khó, chịu lạnh. Không yêu cầu kinh nghiệm. Làm được ca đêm.',
-        benefits: 'Bao ăn ở tại nhà máy. Visa seasonal worker. Thưởng hoàn thành hợp đồng.',
-        isHot: false, isFeatured: false,
-        image: 'https://images.unsplash.com/photo-1497019944517-2b9c9a742a80?w=800&q=75',
-        categoryId: savedCats[4].id,
-      }),
-      jobRepo.create({
-        title: 'Kỹ Thuật Viên Máy CNC',
-        company: 'Precision Parts Canada',
-        location: 'Calgary',
-        country: 'canada',
-        jobType: JobType.FULL_TIME,
-        status: JobStatus.ACTIVE,
-        salaryMin: 3500, salaryMax: 5000, salaryCurrency: 'CAD',
-        slots: 10, deadline: '2026-12-31',
-        description: 'Công ty gia công cơ khí chính xác tại Calgary tuyển kỹ thuật viên vận hành máy CNC tiện, phay.',
-        requirements: 'Bằng nghề cơ khí. Kinh nghiệm máy CNC 2 năm. Đọc bản vẽ kỹ thuật.',
-        benefits: 'Visa lao động. Lương + OT. Đào tạo nâng cao. Bảo hiểm y tế gia đình.',
-        isHot: true, isFeatured: false,
-        image: 'https://images.unsplash.com/photo-1565688534245-05d6b5be184a?w=800&q=75',
-        categoryId: savedCats[2].id,
-      }),
-      jobRepo.create({
-        title: 'Trợ Lý Nha Khoa',
-        company: 'SmileBright Dental',
-        location: 'Brisbane',
-        country: 'australia',
-        jobType: JobType.FULL_TIME,
-        status: JobStatus.ACTIVE,
-        salaryMin: 3000, salaryMax: 4000, salaryCurrency: 'AUD',
-        slots: 6, deadline: '2026-09-15',
-        description: 'Phòng khám nha khoa tại Brisbane tuyển trợ lý nha khoa hỗ trợ bác sĩ trong các ca điều trị, tiếp đón bệnh nhân và quản lý hồ sơ.',
-        requirements: 'Bằng trợ lý nha khoa hoặc y tế. Tiếng Anh tốt. Cẩn thận, chuyên nghiệp.',
-        benefits: 'Visa 482. Lương tốt. Môi trường làm việc sạch sẽ chuyên nghiệp.',
-        isHot: false, isFeatured: false,
-        image: 'https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=800&q=75',
-        categoryId: savedCats[5].id,
-      }),
-      jobRepo.create({
-        title: 'Thợ Hàn TIG Inox Xuất Khẩu',
-        company: 'SteelFab NZ',
-        location: 'Wellington',
-        country: 'new_zealand',
-        jobType: JobType.FULL_TIME,
-        status: JobStatus.ACTIVE,
-        salaryMin: 3000, salaryMax: 4200, salaryCurrency: 'NZD',
-        slots: 8, deadline: '2026-08-15',
-        description: 'Công ty chế tạo kết cấu thép tại Wellington cần tuyển thợ hàn TIG inox và thép không gỉ cho các đơn hàng xuất khẩu Mỹ, Úc.',
-        requirements: 'Chứng chỉ hàn TIG. Kinh nghiệm hàn inox 2 năm. Làm theo ca.',
-        benefits: 'Lương cao + phụ cấp kỹ thuật. Visa sponsored. Bảo hiểm tai nạn lao động.',
-        isHot: true, isFeatured: true,
-        image: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=75',
-        categoryId: savedCats[2].id,
-      }),
-    ])
-    console.log('✅ Tạo 15 việc làm mẫu (5 cũ + 10 mới)')
-  } else {
-    console.log('⏭️  Danh mục & việc làm đã tồn tại, bỏ qua')
-  }
 
   // ── 4. News ──
   const newsRepo = AppDataSource.getRepository(News)
@@ -367,24 +69,372 @@ async function seed() {
     console.log('✅ Tạo 3 tin tức mẫu')
   }
 
-  // ── 5. Study Programs (Đơn du học) ──
-  const studyProgramsToSeed = [
+// ── 5. Travel Tours (Tour du lịch) ──
+  const travelToursToSeed = [
     {
-      title: 'Đại học Quốc gia Úc (ANU) - Chương trình Cử nhân & Thạc sĩ',
-      slug: 'dai-hoc-quoc-gia-uc-anu',
-      excerpt: 'Đại học danh tiếng top 1 tại Úc, tọa lạc tại thủ đô Canberra với các chương trình học bổng lên tới 50% học phí.',
-      content: '<p>Đại học Quốc gia Úc (ANU) là thành viên của Nhóm 8 trường đại học nghiên cứu hàng đầu nước Úc (Group of Eight). Trường đào tạo đa dạng các chuyên ngành từ Kinh tế, Luật, Kỹ thuật, Công nghệ thông tin đến Y khoa và Nghệ thuật.</p><p>Học viên đăng ký qua hệ thống Fly Visa sẽ được hướng dẫn phỏng vấn học bổng và hoàn thiện hồ sơ xin visa du học miễn phí.</p>',
-      image: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800&q=75',
+      title: 'Tour Hàn Quốc 5N4Đ - Seoul / Nami / Everland',
+      slug: 'tour-han-quoc-5n4d',
+      excerpt: 'Gói phổ thông phù hợp gia đình, lịch trình nhẹ, khách sạn 3-4 sao.',
+      content: '<p>📍 <strong>Lộ trình chi tiết:</strong></p><ul><li><strong>Ngày 1:</strong> TP. Hồ Chí Minh → Seoul (Núi Namsan, check-in khách sạn)</li><li><strong>Ngày 2:</strong> Seoul → Nami Island (đảo Nami, cây thông trắng) → Quay lại Seoul</li><li><strong>Ngày 3:</strong> Everland (công viên giải trí lớn nhất Hàn Quốc)</li><li><strong>Ngày 4:</strong> Shopping tại Myeongdong → Viện bảo tàng kim chi</li><li><strong>Ngày 5:</strong> Tự do → Ra sân bay về VN</li></ul><p>✅ <strong>Bao gồm:</strong> Vé máy bay khứ hồi, khách sạn 3-4 sao, xe đưa đón, vé tham quan chính, hướng dẫn viên tiếng Việt.</p><p>❌ <strong>Không bao gồm:</strong> Phí visa, ăn uống ngoài chương trình, tip HDV.</p>',
+      image: 'https://images.unsplash.com/photo-1538485399081-7c8976f33827?w=1200&q=80&fit=crop',
+      type: 'travel' as const,
+      country: 'south_korea',
+      priceFrom: 14900000,
+      priceTo: 18900000,
+      priceCurrency: 'VND',
+      itinerary: 'Seoul - Nami - Everland - Shopping - Về VN',
+      registerUrl: '',
+      isPublished: true,
+    },
+    {
+      title: 'Tour Nhật Bản 6N5Đ - Tokyo / Fuji / Osaka',
+      slug: 'tour-nhat-ban-6n5d',
+      excerpt: 'Lộ trình vàng mùa hoa, tối ưu điểm check-in và mua sắm.',
+      content: '<p>📍 <strong>Lộ trình chi tiết:</strong></p><ul><li><strong>Ngày 1:</strong> TP. Hồ Chí Minh → Tokyo (Narita/Haneda)</li><li><strong>Ngày 2:</strong> Tokyo city tour (Senso-ji, Shibuya, Harajuku)</li><li><strong>Ngày 3:</strong> Mount Fuji (Phú Sĩ) - Kawaguchiko - Hakone</li><li><strong>Ngày 4:</strong> Osaka - Dotonbori - Universal Studios</li><li><strong>Ngày 5:</strong> Kyoto - Fushimi Inari - Arashiyama</li><li><strong>Ngày 6:</strong> Kansai → Ra sân bay về VN</li></ul><p>✅ <strong>Bao gồm:</strong> Hướng dẫn viên tiếng Việt, ăn theo chương trình, tặng sim data du lịch, vé máy bay khứ hồi.</p>',
+      image: 'https://images.unsplash.com/photo-1492571350019-22de08371fd3?w=1200&q=80&fit=crop',
+      type: 'travel' as const,
+      country: 'japan',
+      priceFrom: 28900000,
+      priceTo: 35900000,
+      priceCurrency: 'VND',
+      itinerary: 'Tokyo - Asakusa - Fuji - Kyoto - Osaka - Kansai',
+      registerUrl: '',
+      isPublished: true,
+    },
+    {
+      title: 'Tour Úc 7N6Đ - Sydney / Melbourne / Blue Mountains',
+      slug: 'tour-uc-7n6d',
+      excerpt: 'Hành trình chuẩn premium, phù hợp gia đình và trải nghiệm city + thiên nhiên.',
+      content: '<p>📍 <strong>Lộ trình chi tiết:</strong></p><ul><li><strong>Ngày 1:</strong> TP. Hồ Chí Minh → Sydney</li><li><strong>Ngày 2:</strong> Sydney (Sydney Opera House, Harbour Bridge)</li><li><strong>Ngày 3:</strong> Blue Mountains (núi xanh)</li><li><strong>Ngày 4:</strong> Melbourne city tour</li><li><strong>Ngày 5:</strong> Great Ocean Road (12 Apostles)</li><li><strong>Ngày 6:</strong> Penguin Parade (Phillip Island)</li><li><strong>Ngày 7:</strong> Melbourne → Về VN</li></ul><p>✅ <strong>Bao gồm:</strong> Vé máy bay khứ hồi, khách sạn trung tâm, city tour, hướng dẫn viên tiếng Việt.</p>',
+      image: 'https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=1200&q=80&fit=crop',
+      type: 'travel' as const,
+      country: 'australia',
+      priceFrom: 42900000,
+      priceTo: 52900000,
+      priceCurrency: 'VND',
+      itinerary: 'Sydney - Opera House - Blue Mountains - Melbourne - Great Ocean Road',
+      registerUrl: '',
+      isPublished: true,
+    },
+    {
+      title: 'Tour Châu Âu 10N9Đ - Pháp / Ý / Thụy Sĩ',
+      slug: 'tour-chau-au-10n9d',
+      excerpt: 'Lộ trình liên tuyến nổi bật, tối ưu thời gian và chi phí visa Schengen.',
+      content: '<p>📍 <strong>Lộ trình chi tiết:</strong></p><ul><li><strong>Ngày 1-2:</strong> Paris (Eiffel, Louvre, Notre Dame)</li><li><strong>Ngày 3:</strong> Disneyland Paris</li><li><strong>Ngày 4:</strong> Paris → Lucerne (Thụy Sĩ)</li><li><strong>Ngày 5:</strong> Interlaken - Jungfrau</li><li><strong>Ngày 6:</strong> Lucerne → Milan (Ý)</li><li><strong>Ngày 7:</strong> Venice</li><li><strong>Ngày 8:</strong> Florence</li><li><strong>Ngày 9:</strong> Rome (Colosseum, Vatican)</li><li><strong>Ngày 10:</strong> Rome → Về VN</li></ul><p>✅ <strong>Bao gồm:</strong> Khách sạn 4 sao, xe liên quốc gia, hỗ trợ thủ tục visa.</p>',
+      image: 'https://images.unsplash.com/photo-1491557345352-5929e343eb89?w=1200&q=80&fit=crop',
+      type: 'travel' as const,
+      country: 'europe',
+      priceFrom: 69900000,
+      priceTo: 89900000,
+      priceCurrency: 'VND',
+      itinerary: 'Paris - Lucerne - Interlaken - Milan - Venice - Rome',
+      registerUrl: '',
+      isPublished: true,
+    },
+    {
+      title: 'Tour Singapore 4N3Đ - Sentosa / Marina Bay',
+      slug: 'tour-singapore-4n3d',
+      excerpt: 'Tour ngắn ngày, lịch trình nhẹ phù hợp gia đình có trẻ nhỏ.',
+      content: '<p>📍 <strong>Lộ trình chi tiết:</strong></p><ul><li><strong>Ngày 1:</strong> TP. Hồ Chí Minh → Singapore (Gardens by the Bay)</li><li><strong>Ngày 2:</strong> Universal Studios Singapore</li><li><strong>Ngày 3:</strong> Sentosa - Beach - S.E.A Aquarium</li><li><strong>Ngày 4:</strong> Shopping Orchard → Về VN</li></ul><p>✅ <strong>Bao gồm:</strong> Combo vé tham quan Universal Studios, city tour, hỗ trợ hoàn thuế mua sắm, hướng dẫn viên.</p>',
+      image: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=1200&q=80&fit=crop',
+      type: 'travel' as const,
+      country: 'singapore',
+      priceFrom: 15900000,
+      priceTo: 21900000,
+      priceCurrency: 'VND',
+      itinerary: 'Marina Bay - Gardens by the Bay - Sentosa - Universal Studios',
+      registerUrl: '',
+      isPublished: true,
+    },
+  ]
+
+  for (const tour of travelToursToSeed) {
+    const exist = await newsRepo.findOne({ where: { slug: tour.slug } })
+    if (!exist) {
+      await newsRepo.save(newsRepo.create(tour))
+      console.log(`✅ Đã seed tour du lịch: ${tour.title}`)
+    } else {
+      console.log(`⏭️  Tour du lịch đã tồn tại: ${tour.title}`)
+    }
+  }
+
+// ── 6. Study Programs (Đơn du học) ──
+  // Import danh sách trường đại học Úc từ file JSON
+  const australianUniversities: Array<{
+    name: string
+    url: string
+    locations: string[]
+    tuition_fee_range_aud: string
+    is_group_of_eight: boolean
+  }> = require('../../../australian_universities_seed.json')
+
+  // Import danh sách trường đại học Canada từ file JSON
+  const canadianUniversities: Array<{
+    ten_truong_vi: string
+    ten_truong_en: string
+    tinh_bang: string
+    trang_web: string
+    hoc_phi_uoc_tinh_cad: string
+    loai_truong: string
+  }> = require('../../../canadian_universities_seed.json')
+
+  // Hàm tạo slug từ tên trường
+  function makeSlug(name: string): string {
+    return name
+      .toLowerCase()
+      .replace(/[()]/g, '')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .slice(0, 80)
+  }
+
+  // Hàm parse tuition fee range "35,000 - 50,000" → { from: 35000, to: 50000 }
+  function parseFeeRange(range: string): { from: number; to: number } {
+    const parts = range.split('-').map(s => parseInt(s.replace(/,/g, '').trim(), 10))
+    return { from: parts[0] || 0, to: parts[1] || parts[0] || 0 }
+  }
+
+  // Unsplash images xoay vòng cho các trường Úc
+  const uniImages = [
+    'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800&q=75',
+    'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=75',
+    'https://images.unsplash.com/photo-1562774053-701939374585?w=800&q=75',
+    'https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800&q=75',
+    'https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800&q=75',
+    'https://images.unsplash.com/photo-1592280771190-3e2e4d571952?w=800&q=75',
+    'https://images.unsplash.com/photo-1580537659466-0a9bfa916a54?w=800&q=75',
+    'https://images.unsplash.com/photo-1568792923760-d70635a89fdc?w=800&q=75',
+  ]
+
+  // Unsplash images xoay vòng cho các trường Canada
+  const canadaUniImages = [
+    'https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=800&q=75',
+    'https://images.unsplash.com/photo-1517935706615-2717063c2225?w=800&q=75',
+    'https://images.unsplash.com/photo-1519832979-6fa011b87667?w=800&q=75',
+    'https://images.unsplash.com/photo-1551009175-15bdf9dcb580?w=800&q=75',
+    'https://images.unsplash.com/photo-1569982175971-d92b01cf8694?w=800&q=75',
+    'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=75',
+    'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=75',
+    'https://images.unsplash.com/photo-1590012314607-cda9d9b699ae?w=800&q=75',
+  ]
+
+  // Tạo seed data cho tất cả trường đại học Úc từ JSON
+  const australianUniSeeds = australianUniversities.map((uni, idx) => {
+    const fees = parseFeeRange(uni.tuition_fee_range_aud)
+    const go8Label = uni.is_group_of_eight ? ' — thành viên Group of Eight (Go8)' : ''
+    const locationStr = uni.locations.join(', ')
+
+    return {
+      title: `${uni.name} — Chương trình Cử nhân & Thạc sĩ`,
+      slug: makeSlug(uni.name),
+      excerpt: `Trường đại học tại ${locationStr}, Úc${go8Label}. Học phí từ ${uni.tuition_fee_range_aud} AUD/năm. Đăng ký qua Fly Visa để được hỗ trợ hồ sơ miễn phí.`,
+      content: `<p><strong>${uni.name}</strong> tọa lạc tại ${locationStr}, là một trong những trường đại học ${uni.is_group_of_eight ? 'nghiên cứu hàng đầu nước Úc, thuộc nhóm Group of Eight danh tiếng' : 'uy tín tại Úc'}. Trường đào tạo đa dạng các chuyên ngành từ Kinh tế, Kỹ thuật, Công nghệ thông tin, Y khoa đến Khoa học xã hội và Nghệ thuật.</p><p>Học phí tham khảo: <strong>${uni.tuition_fee_range_aud} AUD/năm</strong> tùy ngành. Học viên đăng ký qua hệ thống Fly Visa sẽ được tư vấn chuyên sâu về học bổng, hỗ trợ hoàn thiện hồ sơ xin visa du học miễn phí.</p><p>🔗 Website trường: <a href="${uni.url}" target="_blank">${uni.url}</a></p>`,
+      image: uniImages[idx % uniImages.length],
       type: 'study' as const,
       country: 'australia',
       studyType: 'university',
-      priceFrom: 35000,
-      priceTo: 55000,
+      priceFrom: fees.from,
+      priceTo: fees.to,
       priceCurrency: 'AUD',
       itinerary: 'Kỳ nhập học Tháng 2 và Tháng 7 hàng năm',
-      registerUrl: 'https://www.anu.edu.au',
+      registerUrl: uni.url,
+      isPublished: true,
+    }
+  })
+
+  // Tạo seed data cho tất cả trường đại học Canada từ JSON
+  const canadianUniSeeds = canadianUniversities.map((uni, idx) => {
+    const fees = parseFeeRange(uni.hoc_phi_uoc_tinh_cad)
+
+    return {
+      title: `${uni.ten_truong_vi} (${uni.ten_truong_en}) — Chương trình Cử nhân & Thạc sĩ`,
+      slug: makeSlug(uni.ten_truong_en),
+      excerpt: `${uni.ten_truong_vi} tại ${uni.tinh_bang}, Canada. Trường ${uni.loai_truong}. Học phí từ ${uni.hoc_phi_uoc_tinh_cad} CAD/năm. Đăng ký qua Fly Visa để được hỗ trợ hồ sơ miễn phí.`,
+      content: `<p><strong>${uni.ten_truong_vi} (${uni.ten_truong_en})</strong> tọa lạc tại bang ${uni.tinh_bang}, Canada. Đây là trường đại học ${uni.loai_truong.toLowerCase()} uy tín, đào tạo đa dạng các chuyên ngành từ Kinh tế, Kỹ thuật, Công nghệ thông tin, Y khoa đến Khoa học xã hội và Nghệ thuật.</p><p>Học phí tham khảo: <strong>${uni.hoc_phi_uoc_tinh_cad} CAD/năm</strong> tùy ngành. Sinh viên quốc tế có cơ hội xin giấy phép làm việc sau tốt nghiệp (PGWP) và lộ trình định cư tại Canada.</p><p>Học viên đăng ký qua hệ thống Fly Visa sẽ được tư vấn chuyên sâu về học bổng, hỗ trợ hoàn thiện hồ sơ xin visa du học miễn phí.</p><p>🔗 Website trường: <a href="${uni.trang_web}" target="_blank">${uni.trang_web}</a></p>`,
+      image: canadaUniImages[idx % canadaUniImages.length],
+      type: 'study' as const,
+      country: 'canada',
+      studyType: 'university',
+      priceFrom: fees.from,
+      priceTo: fees.to,
+      priceCurrency: 'CAD',
+      itinerary: 'Kỳ nhập học Tháng 1, Tháng 5 và Tháng 9 hàng năm',
+      registerUrl: uni.trang_web,
+      isPublished: true,
+    }
+  })
+
+  const studyProgramsToSeed = [
+    // Các trường đại học Úc từ file JSON
+    ...australianUniSeeds,
+
+    // Các trường đại học Canada từ file JSON
+    ...canadianUniSeeds,
+
+    // ── Các trường Cao đẳng / TAFE tại Úc ──
+    {
+      title: 'TAFE NSW — Cao đẳng nghề lớn nhất nước Úc',
+      slug: 'tafe-nsw',
+      excerpt: 'Hệ thống TAFE lớn nhất Úc với hơn 130 campus tại New South Wales. Đào tạo hơn 1.200 khóa học nghề từ Bếp, IT, Điều dưỡng đến Xây dựng.',
+      content: '<p><strong>TAFE NSW</strong> là hệ thống giáo dục nghề nghiệp công lập lớn nhất nước Úc, trực thuộc chính phủ bang New South Wales. Với hơn 130 campus trải khắp NSW, TAFE NSW đào tạo hàng trăm nghìn sinh viên mỗi năm.</p><p>Các ngành học phổ biến: Bếp thương mại, CNTT, Điều dưỡng, Xây dựng, Cơ khí ô tô, Thiết kế, Kế toán. Sinh viên quốc tế được hỗ trợ việc làm thực tập và có lộ trình chuyển tiếp lên đại học.</p><p>🔗 Website: <a href="https://www.tafensw.edu.au" target="_blank">tafensw.edu.au</a></p>',
+      image: 'https://images.unsplash.com/photo-1562774053-701939374585?w=800&q=75',
+      type: 'study' as const,
+      country: 'australia',
+      studyType: 'college',
+      priceFrom: 12000,
+      priceTo: 22000,
+      priceCurrency: 'AUD',
+      itinerary: 'Kỳ nhập học Tháng 2 và Tháng 7 hàng năm',
+      registerUrl: 'https://www.tafensw.edu.au',
       isPublished: true,
     },
+    {
+      title: 'TAFE Queensland — Cao đẳng nghề hàng đầu Queensland',
+      slug: 'tafe-queensland',
+      excerpt: 'Hệ thống TAFE công lập lớn nhất bang Queensland với hơn 50 campus. Chương trình đào tạo nghề chất lượng cao, cơ hội việc làm rộng mở.',
+      content: '<p><strong>TAFE Queensland</strong> là nhà cung cấp đào tạo nghề lớn nhất bang Queensland, cung cấp hơn 500 khóa học từ chứng chỉ đến cao đẳng nâng cao.</p><p>Các ngành nổi bật: Du lịch & Khách sạn, Bếp, Điều dưỡng, Nông nghiệp, Xây dựng, CNTT. Sinh viên tốt nghiệp có tỷ lệ có việc làm rất cao tại Queensland.</p><p>🔗 Website: <a href="https://tafeqld.edu.au" target="_blank">tafeqld.edu.au</a></p>',
+      image: 'https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800&q=75',
+      type: 'study' as const,
+      country: 'australia',
+      studyType: 'college',
+      priceFrom: 12000,
+      priceTo: 20000,
+      priceCurrency: 'AUD',
+      itinerary: 'Kỳ nhập học Tháng 2 và Tháng 7 hàng năm',
+      registerUrl: 'https://tafeqld.edu.au',
+      isPublished: true,
+    },
+    {
+      title: 'Box Hill Institute — Cao đẳng nghề uy tín tại Melbourne',
+      slug: 'box-hill-institute',
+      excerpt: 'Trường cao đẳng công lập tại Melbourne với hơn 50 năm kinh nghiệm đào tạo nghề. Nổi tiếng với ngành Ô tô, Bếp, IT và Điều dưỡng.',
+      content: '<p><strong>Box Hill Institute</strong> là một trong những trường cao đẳng công lập uy tín nhất tại Victoria, Australia. Trường có hơn 50 năm kinh nghiệm đào tạo với các cơ sở hiện đại tại Melbourne.</p><p>Các ngành đào tạo nổi bật: Cơ khí ô tô, Bếp thương mại, Công nghệ thông tin, Điều dưỡng, Thiết kế đồ họa. Chương trình thực tập hưởng lương giúp sinh viên có kinh nghiệm thực tế.</p><p>🔗 Website: <a href="https://www.boxhill.edu.au" target="_blank">boxhill.edu.au</a></p>',
+      image: 'https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800&q=75',
+      type: 'study' as const,
+      country: 'australia',
+      studyType: 'college',
+      priceFrom: 13000,
+      priceTo: 20000,
+      priceCurrency: 'AUD',
+      itinerary: 'Kỳ nhập học Tháng 2 và Tháng 7 hàng năm',
+      registerUrl: 'https://www.boxhill.edu.au',
+      isPublished: true,
+    },
+    {
+      title: 'Holmesglen Institute — Cao đẳng đa ngành tại Victoria',
+      slug: 'holmesglen-institute',
+      excerpt: 'Trường cao đẳng công lập lớn tại Melbourne với hơn 600 khóa học. Cơ sở vật chất hiện đại, hỗ trợ sinh viên quốc tế toàn diện.',
+      content: '<p><strong>Holmesglen Institute</strong> là một trong những trường cao đẳng lớn nhất Victoria với 5 campus tại khu vực Melbourne. Trường cung cấp hơn 600 khóa học từ chứng chỉ nghề đến cử nhân ứng dụng.</p><p>Ngành học phổ biến: Xây dựng, Điều dưỡng, Du lịch khách sạn, CNTT, Kế toán, Thiết kế nội thất. Sinh viên quốc tế được hỗ trợ tìm việc và chuyển tiếp lên đại học đối tác.</p><p>🔗 Website: <a href="https://holmesglen.edu.au" target="_blank">holmesglen.edu.au</a></p>',
+      image: 'https://images.unsplash.com/photo-1592280771190-3e2e4d571952?w=800&q=75',
+      type: 'study' as const,
+      country: 'australia',
+      studyType: 'college',
+      priceFrom: 12000,
+      priceTo: 19000,
+      priceCurrency: 'AUD',
+      itinerary: 'Kỳ nhập học Tháng 2 và Tháng 7 hàng năm',
+      registerUrl: 'https://holmesglen.edu.au',
+      isPublished: true,
+    },
+    {
+      title: 'Melbourne Polytechnic — Cao đẳng bách khoa Melbourne',
+      slug: 'melbourne-polytechnic',
+      excerpt: 'Trường cao đẳng công lập với lịch sử hơn 100 năm tại Melbourne. Đào tạo nghề chất lượng cao với mức học phí hợp lý.',
+      content: '<p><strong>Melbourne Polytechnic</strong> là trường cao đẳng công lập có lịch sử hơn 100 năm, cung cấp đào tạo từ chứng chỉ nghề đến bằng cử nhân ứng dụng.</p><p>Ngành nổi bật: Kỹ thuật điện, Cơ khí, Làm đẹp & Spa, Bếp, CNTT, Nông nghiệp. Trường có mối quan hệ chặt chẽ với các doanh nghiệp địa phương, đảm bảo cơ hội thực tập và việc làm cho sinh viên.</p><p>🔗 Website: <a href="https://www.melbournepolytechnic.edu.au" target="_blank">melbournepolytechnic.edu.au</a></p>',
+      image: 'https://images.unsplash.com/photo-1580537659466-0a9bfa916a54?w=800&q=75',
+      type: 'study' as const,
+      country: 'australia',
+      studyType: 'college',
+      priceFrom: 11000,
+      priceTo: 18000,
+      priceCurrency: 'AUD',
+      itinerary: 'Kỳ nhập học Tháng 2 và Tháng 7 hàng năm',
+      registerUrl: 'https://www.melbournepolytechnic.edu.au',
+      isPublished: true,
+    },
+    {
+      title: 'South Metropolitan TAFE — Cao đẳng nghề hàng đầu Perth',
+      slug: 'south-metropolitan-tafe',
+      excerpt: 'Trường TAFE công lập lớn nhất tại Perth, Western Australia. Đào tạo nghề chất lượng với chi phí sinh hoạt thấp hơn Sydney và Melbourne.',
+      content: '<p><strong>South Metropolitan TAFE</strong> là một trong những trường TAFE lớn nhất Western Australia, phục vụ hơn 30.000 sinh viên mỗi năm tại nhiều campus ở Perth và khu vực phía nam.</p><p>Ngành học nổi bật: Hàn & Cơ khí, Xây dựng, Điện, Bếp, Du lịch, Y tế. Perth có chi phí sinh hoạt thấp hơn đáng kể so với Sydney/Melbourne, giúp sinh viên tiết kiệm chi phí.</p><p>🔗 Website: <a href="https://www.southmetrotafe.wa.edu.au" target="_blank">southmetrotafe.wa.edu.au</a></p>',
+      image: 'https://images.unsplash.com/photo-1568792923760-d70635a89fdc?w=800&q=75',
+      type: 'study' as const,
+      country: 'australia',
+      studyType: 'college',
+      priceFrom: 10000,
+      priceTo: 17000,
+      priceCurrency: 'AUD',
+      itinerary: 'Kỳ nhập học Tháng 2 và Tháng 7 hàng năm',
+      registerUrl: 'https://www.southmetrotafe.wa.edu.au',
+      isPublished: true,
+    },
+    {
+      title: 'William Angliss Institute — Cao đẳng chuyên ngành Nhà hàng Khách sạn',
+      slug: 'william-angliss-institute',
+      excerpt: 'Trường cao đẳng chuyên ngành Du lịch, Khách sạn và Ẩm thực hàng đầu tại Úc. Nằm ngay trung tâm Melbourne.',
+      content: '<p><strong>William Angliss Institute</strong> là trường cao đẳng chuyên biệt hàng đầu nước Úc về Du lịch, Khách sạn, Ẩm thực và Sự kiện. Trường nằm ngay trung tâm Melbourne CBD.</p><p>Ngành đào tạo: Bếp thương mại, Làm bánh, Quản trị khách sạn, Du lịch, Tổ chức sự kiện, Quản lý nhà hàng. Sinh viên được thực tập tại các nhà hàng và khách sạn 5 sao đối tác.</p><p>🔗 Website: <a href="https://www.angliss.edu.au" target="_blank">angliss.edu.au</a></p>',
+      image: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=75',
+      type: 'study' as const,
+      country: 'australia',
+      studyType: 'college',
+      priceFrom: 14000,
+      priceTo: 22000,
+      priceCurrency: 'AUD',
+      itinerary: 'Kỳ nhập học Tháng 2 và Tháng 7 hàng năm',
+      registerUrl: 'https://www.angliss.edu.au',
+      isPublished: true,
+    },
+    {
+      title: 'TAFE SA (South Australia) — Cao đẳng nghề Adelaide',
+      slug: 'tafe-sa',
+      excerpt: 'Hệ thống TAFE công lập tại South Australia. Chi phí sinh hoạt thấp, chất lượng đào tạo cao, cơ hội định cư tốt tại Adelaide.',
+      content: '<p><strong>TAFE SA</strong> là hệ thống giáo dục nghề nghiệp công lập chính thức của bang South Australia, cung cấp hàng trăm khóa học tại các campus ở Adelaide và vùng phụ cận.</p><p>Ngành học phổ biến: Điều dưỡng, Bếp, Nha khoa, CNTT, Xây dựng, Kế toán. Adelaide nằm trong danh sách vùng regional của Úc, giúp sinh viên có thêm điểm cộng khi xin PR.</p><p>🔗 Website: <a href="https://www.tafesa.edu.au" target="_blank">tafesa.edu.au</a></p>',
+      image: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800&q=75',
+      type: 'study' as const,
+      country: 'australia',
+      studyType: 'college',
+      priceFrom: 10000,
+      priceTo: 18000,
+      priceCurrency: 'AUD',
+      itinerary: 'Kỳ nhập học Tháng 2 và Tháng 7 hàng năm',
+      registerUrl: 'https://www.tafesa.edu.au',
+      isPublished: true,
+    },
+    {
+      title: 'Kangan Institute — Cao đẳng nghề Ô tô & Kỹ thuật Melbourne',
+      slug: 'kangan-institute',
+      excerpt: 'Trường cao đẳng công lập nổi tiếng về đào tạo Cơ khí ô tô, Kỹ thuật và Sức khỏe tại Melbourne. Cơ sở thực hành hiện đại.',
+      content: '<p><strong>Kangan Institute</strong> là trường cao đẳng công lập tại Melbourne, nổi tiếng với chương trình đào tạo kỹ thuật ô tô hàng đầu nước Úc. Trường có xưởng thực hành hiện đại đạt tiêu chuẩn công nghiệp.</p><p>Ngành nổi bật: Cơ khí ô tô, Kỹ thuật điện, Điều dưỡng, Sức khỏe cộng đồng, Thời trang. Sinh viên được đào tạo thực hành 70% thời gian, đảm bảo kỹ năng làm việc ngay sau tốt nghiệp.</p><p>🔗 Website: <a href="https://www.kangan.edu.au" target="_blank">kangan.edu.au</a></p>',
+      image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=75',
+      type: 'study' as const,
+      country: 'australia',
+      studyType: 'college',
+      priceFrom: 12000,
+      priceTo: 19000,
+      priceCurrency: 'AUD',
+      itinerary: 'Kỳ nhập học Tháng 2 và Tháng 7 hàng năm',
+      registerUrl: 'https://www.kangan.edu.au',
+      isPublished: true,
+    },
+    {
+      title: 'Chisholm Institute — Cao đẳng đa ngành tại Melbourne',
+      slug: 'chisholm-institute',
+      excerpt: 'Trường cao đẳng công lập lớn tại khu vực đông nam Melbourne. Đào tạo hơn 400 khóa học nghề với cơ sở vật chất tiên tiến.',
+      content: '<p><strong>Chisholm Institute</strong> là một trong những trường cao đẳng công lập lớn nhất Victoria, phục vụ hơn 40.000 sinh viên mỗi năm tại các campus ở khu vực đông nam Melbourne.</p><p>Ngành đào tạo: Xây dựng, Điện & Điện tử, Bếp, Làm đẹp, CNTT, Kế toán, Điều dưỡng. Trường có chương trình hỗ trợ sinh viên quốc tế toàn diện và lộ trình chuyển tiếp lên đại học Monash, Deakin.</p><p>🔗 Website: <a href="https://www.chisholm.edu.au" target="_blank">chisholm.edu.au</a></p>',
+      image: 'https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800&q=75',
+      type: 'study' as const,
+      country: 'australia',
+      studyType: 'college',
+      priceFrom: 11000,
+      priceTo: 18000,
+      priceCurrency: 'AUD',
+      itinerary: 'Kỳ nhập học Tháng 2 và Tháng 7 hàng năm',
+      registerUrl: 'https://www.chisholm.edu.au',
+      isPublished: true,
+    },
+
+    // Các chương trình du học khác (non-Úc & nghề)
     {
       title: 'Cao đẳng Langara Canada - Lộ trình chuyển tiếp Đại học hàng đầu',
       slug: 'cao-dang-langara-canada',
@@ -399,6 +449,86 @@ async function seed() {
       priceCurrency: 'CAD',
       itinerary: 'Kỳ nhập học Tháng 1, Tháng 5 và Tháng 9',
       registerUrl: 'https://langara.ca',
+      isPublished: true,
+    },
+    {
+      title: 'Cao đẳng Seneca Canada — Đào tạo ứng dụng hàng đầu Toronto',
+      slug: 'cao-dang-seneca-canada',
+      excerpt: 'Học tập tại Toronto với chương trình Cao đẳng công lập lớn bậc nhất Canada, thế mạnh về Kinh doanh, Công nghệ và Truyền thông.',
+      content: '<p><strong>Cao đẳng Seneca (Seneca College)</strong> là một trong những trường cao đẳng công lập lớn nhất và đi đầu về đào tạo thực hành ứng dụng tại Canada, tọa lạc tại thành phố Toronto năng động.</p><p>Trường cung cấp các chương trình Cao đẳng (Diploma), Đại học (Bachelor) và Sau đại học (Post-Graduate) với các ngành học thế mạnh: Quản trị Kinh doanh, Công nghệ Thông tin, Thiết kế Đồ họa, Hàng không và Khoa học Y sinh. Sinh viên tốt nghiệp từ chương trình 2 năm trở lên được cấp giấy phép làm việc PGWP lên đến 3 năm và rộng mở cơ hội định cư bang Ontario.</p><p>🔗 Website: <a href="https://www.senecapolytechnic.ca" target="_blank">senecapolytechnic.ca</a></p>',
+      image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=75',
+      type: 'study' as const,
+      country: 'canada',
+      studyType: 'college',
+      priceFrom: 16000,
+      priceTo: 22000,
+      priceCurrency: 'CAD',
+      itinerary: 'Kỳ nhập học Tháng 1, Tháng 5 và Tháng 9',
+      registerUrl: 'https://www.senecapolytechnic.ca',
+      isPublished: true,
+    },
+    {
+      title: 'Cao đẳng Humber Canada — Học viện Công nghệ & Học tập Nâng cao',
+      slug: 'cao-dang-humber-canada',
+      excerpt: 'Cơ sở giáo dục polytechnic lớn nhất Toronto với 83% sinh viên có việc làm ngay trong vòng 6 tháng sau khi tốt nghiệp.',
+      content: '<p><strong>Học viện Humber (Humber College / Humber Institute of Technology and Advanced Learning)</strong> là một trong những cơ sở giáo dục công lập lớn nhất và uy tín nhất Canada tại Toronto, bang Ontario.</p><p>Humber nổi tiếng với phương pháp đào tạo tích hợp lý thuyết và thực hành (co-op thực tập hưởng lương). Các ngành học nổi bật bao gồm: Quản trị Du lịch - Khách sạn, Khoa học Máy tính, Thiết kế Truyền thông và Kỹ thuật Cơ khí. Trường có liên kết đối tác rộng rãi với các doanh nghiệp lớn, đem lại cơ hội việc làm thực tế tuyệt vời.</p><p>🔗 Website: <a href="https://humber.ca" target="_blank">humber.ca</a></p>',
+      image: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800&q=75',
+      type: 'study' as const,
+      country: 'canada',
+      studyType: 'college',
+      priceFrom: 16500,
+      priceTo: 23000,
+      priceCurrency: 'CAD',
+      itinerary: 'Kỳ nhập học Tháng 1, Tháng 5 và Tháng 9',
+      registerUrl: 'https://humber.ca',
+      isPublished: true,
+    },
+    {
+      title: 'Cao đẳng Douglas Canada — Cao đẳng Công lập lớn nhất Vancouver',
+      slug: 'cao-dang-douglas-canada',
+      excerpt: 'Học phí hợp lý, lớp học quy mô nhỏ và lộ trình chuyển tiếp hoàn hảo lên các đại học danh tiếng tại British Columbia.',
+      content: '<p><strong>Cao đẳng Douglas (Douglas College)</strong> tọa lạc tại khu vực Metro Vancouver, bang British Columbia. Đây là trường cao đẳng công lập lớn nhất bang với thế mạnh kết hợp giữa nền tảng học thuật của trường đại học và kỹ năng thực hành của trường nghề.</p><p>Chương trình nổi bật: Quản trị Kinh doanh, Chăm sóc sức khỏe (Nursing), Khoa học Máy tính, Nghệ thuật Biểu diễn. Lớp học nhỏ giúp giảng viên tương tác trực tiếp với sinh viên tốt hơn. Douglas là lựa chọn hoàn hảo để chuyển tiếp lên Đại học British Columbia (UBC) hoặc Đại học Simon Fraser (SFU).</p><p>🔗 Website: <a href="https://www.douglascollege.ca" target="_blank">douglascollege.ca</a></p>',
+      image: 'https://images.unsplash.com/photo-1519832979-6fa011b87667?w=800&q=75',
+      type: 'study' as const,
+      country: 'canada',
+      studyType: 'college',
+      priceFrom: 17000,
+      priceTo: 21000,
+      priceCurrency: 'CAD',
+      itinerary: 'Kỳ nhập học Tháng 1, Tháng 5 và Tháng 9',
+      registerUrl: 'https://www.douglascollege.ca',
+      isPublished: true,
+    },
+    {
+      title: 'Cao đẳng Centennial Canada — Định hướng nghề nghiệp & Thực tập Co-op',
+      slug: 'cao-dang-centennial-canada',
+      excerpt: 'Trường cao đẳng đầu tiên của bang Ontario, nổi tiếng về đào tạo Kỹ thuật Ô tô, Hàng không, Công nghệ và Nghệ thuật Ẩm thực.',
+      content: '<p><strong>Cao đẳng Centennial (Centennial College)</strong> được thành lập từ năm 1966, là trường cao đẳng công lập đầu tiên của bang Ontario. Trường nổi tiếng thế giới về chất lượng giảng dạy hướng nghiệp thực tế và hỗ trợ việc làm cho sinh viên.</p><p>Trường có các khu học xá hiện đại tại Toronto, cung cấp hơn 250 chương trình học. Thế mạnh đào tạo đặc biệt của trường là: Công nghệ Kỹ thuật Ô tô & Hàng không, Quản trị Nhà hàng - Khách sạn, Khoa học Máy tính và Truyền thông đa phương tiện. Phần lớn các ngành đều tích hợp kỳ thực tập Co-op bắt buộc để sinh viên có trải nghiệm thực tiễn.</p><p>🔗 Website: <a href="https://www.centennialcollege.ca" target="_blank">centennialcollege.ca</a></p>',
+      image: 'https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800&q=75',
+      type: 'study' as const,
+      country: 'canada',
+      studyType: 'college',
+      priceFrom: 16000,
+      priceTo: 22000,
+      priceCurrency: 'CAD',
+      itinerary: 'Kỳ nhập học Tháng 1, Tháng 5 và Tháng 9',
+      registerUrl: 'https://www.centennialcollege.ca',
+      isPublished: true,
+    },
+    {
+      title: 'Du học nghề định cư Canada — Chương trình tay nghề kỹ thuật cao',
+      slug: 'du-hoc-nghe-dinh-cu-canada',
+      excerpt: 'Chương trình học nghề lấy chứng chỉ 1 - 2 năm các ngành kỹ thuật, xây dựng, cơ khí tại Canada với cơ hội định cư diện Skilled Trades cực lớn.',
+      content: '<p>Chương trình du học nghề tại Canada tập trung vào các nhóm ngành đang thiếu hụt nhân lực trầm trọng, thuộc diện định cư ưu tiên (Skilled Trades) như: Điện, Hàn, Hàn xì, Lắp ráp đường ống, Kỹ thuật ô tô, Vận hành máy móc và Xây dựng.</p><p>Học viên tham gia khóa học nghề từ 1 - 2 năm tại các trường cao đẳng đối tác của Fly Visa. Sau khi hoàn thành khóa học, sinh viên sẽ được hỗ trợ xin Giấy phép lao động (Work Permit) để tích lũy kinh nghiệm làm việc thực tế, mở ra lộ trình nộp hồ sơ xin Thường trú nhân (PR) qua hệ thống Express Entry (nhóm Federal Skilled Trades Class) hoặc các chương trình Đề cử tỉnh bang (PNP).</p>',
+      image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=75',
+      type: 'study' as const,
+      country: 'canada',
+      studyType: 'vocational',
+      priceFrom: 14000,
+      priceTo: 19000,
+      priceCurrency: 'CAD',
+      itinerary: 'Kỳ nhập học linh hoạt theo từng trường đối tác',
+      registerUrl: '',
       isPublished: true,
     },
     {
@@ -446,9 +576,6 @@ async function seed() {
   }
 
   await AppDataSource.destroy()
-  console.log('\n🎉 Seed hoàn tất!')
-  console.log('📧 Admin: admin@flylabour.com / Admin@123')
-  console.log('📧 User:  user@example.com / User@123')
 }
 
 seed().catch(err => { console.error('❌ Seed thất bại:', err.message); process.exit(1) })

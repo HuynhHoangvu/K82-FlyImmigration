@@ -62,7 +62,7 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Đóng mobile menu khi chuyển route
+// Đóng mobile menu khi chuyển route
   useEffect(() => {
     setMobileOpen(false);
     setMobileStudy(false);
@@ -92,7 +92,7 @@ export default function Header() {
       <div className={cx(s.inner, "fl-shell")}>
         <div className={s.bar}>
 
-          {/* Logo */}
+{/* Logo */}
           <Link to="/" className={s.logoLink}>
             <img src="/logo.png" alt="Fly Immigration" className={s.logoImg} />
           </Link>
@@ -240,6 +240,9 @@ export default function Header() {
 
             <Link to="/handbook" className={navLinkClass("/handbook")}>
               {lang === "vi" ? "Cẩm nang" : "Guide"}
+            </Link>
+            <Link to="/about" className={navLinkClass("/about")}>
+              {lang === "vi" ? "Về chúng tôi" : "About Us"}
             </Link>
             <Link to="/news" className={navLinkClass("/news")}>
               {lang === "vi" ? "Tin tức" : "News"}
@@ -469,6 +472,9 @@ export default function Header() {
 
           <Link to="/handbook" className={s.mobileLink}>
             {lang === "vi" ? "Cẩm nang" : "Guide"}
+          </Link>
+          <Link to="/about" className={s.mobileLink}>
+            {lang === "vi" ? "Về chúng tôi" : "About Us"}
           </Link>
           <Link to="/news" className={s.mobileLink}>
             {lang === "vi" ? "Tin tức" : "News"}

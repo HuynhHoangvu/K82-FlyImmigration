@@ -11,7 +11,7 @@ const NEWS_EMOJIS = ["🇦🇺", "🇨🇦", "🇳🇿", "📰", "✈️"];
 
 export default function NewsSection() {
   const [news, setNews] = useState<News[]>([]);
-  const { t } = useT();
+  const { t, lang } = useT();
   const h = t("home");
 
   useEffect(() => {
@@ -54,55 +54,59 @@ export default function NewsSection() {
         </div>
 
         <div className={s.grid}>
-          {news.slice(0, 3).map((item, i) => (
-            <Link
-              key={item.id}
-              to={`/news/${item.slug}`}
-              className={s.card}
-            >
-              <div className={s.imageWrap}>
-                {item.image ? (
-                  <img
-                    src={getImageUrl(item.image)}
-                    alt={item.title}
-                    className={s.image}
-                  />
-                ) : (
-                  <span className={s.emoji}>
-                    {NEWS_EMOJIS[i % NEWS_EMOJIS.length]}
-                  </span>
-                )}
-                <div className={s.imageOverlay} />
-              </div>
-
-              <div className={s.content}>
-                <div className={s.meta}>
-                  <Calendar size={13} className={s.calendar} />
-                  {formatDate(item.createdAt)}
-                  <span className={s.tag}>
-                    {h.newsTags[i % h.newsTags.length]}
-                  </span>
+          {news.slice(0, 3).map((item, i) => {
+            const title = lang === 'en' ? item.titleEn || item.title : item.title;
+            const excerpt = lang === 'en' ? item.excerptEn || item.excerpt : item.excerpt;
+            return (
+              <Link
+                key={item.id}
+                to={`/news/${item.slug}`}
+                className={s.card}
+              >
+                <div className={s.imageWrap}>
+                  {item.image ? (
+                    <img
+                      src={getImageUrl(item.image)}
+                      alt={title}
+                      className={s.image}
+                    />
+                  ) : (
+                    <span className={s.emoji}>
+                      {NEWS_EMOJIS[i % NEWS_EMOJIS.length]}
+                    </span>
+                  )}
+                  <div className={s.imageOverlay} />
                 </div>
 
-                <h3 className={s.cardTitle}>
-                  {item.title}
-                </h3>
+                <div className={s.content}>
+                  <div className={s.meta}>
+                    <Calendar size={13} className={s.calendar} />
+                    {formatDate(item.createdAt)}
+                    <span className={s.tag}>
+                      {h.newsTags[i % h.newsTags.length]}
+                    </span>
+                  </div>
 
-                {item.excerpt && (
-                  <p className={s.excerpt}>
-                    {item.excerpt}
-                  </p>
-                )}
+                  <h3 className={s.cardTitle}>
+                    {title}
+                  </h3>
 
-                <div className={s.readMore}>
-                  <span className={s.readMoreText}>
-                    {h.readMore}
-                  </span>
-                  <ArrowRight size={14} />
+                  {excerpt && (
+                    <p className={s.excerpt}>
+                      {excerpt}
+                    </p>
+                  )}
+
+                  <div className={s.readMore}>
+                    <span className={s.readMoreText}>
+                      {h.readMore}
+                    </span>
+                    <ArrowRight size={14} />
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>

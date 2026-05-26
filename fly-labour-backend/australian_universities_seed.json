@@ -1,0 +1,391 @@
+[
+    {
+        "name": "Adelaide University / University of Adelaide",
+        "url": "https://adelaide.edu.au",
+        "locations": [
+            "South Australia"
+        ],
+        "tuition_fee_range_aud": "35,000 - 50,000",
+        "is_group_of_eight": true
+    },
+    {
+        "name": "Australian Catholic University (ACU)",
+        "url": "https://www.acu.edu.au",
+        "locations": [
+            "Australian Capital Territory",
+            "New South Wales",
+            "Queensland",
+            "Victoria"
+        ],
+        "tuition_fee_range_aud": "25,000 - 35,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "Australian National University (ANU)",
+        "url": "https://www.anu.edu.au",
+        "locations": [
+            "Australian Capital Territory"
+        ],
+        "tuition_fee_range_aud": "40,000 - 55,000",
+        "is_group_of_eight": true
+    },
+    {
+        "name": "Avondale University",
+        "url": "https://www.avondale.edu.au",
+        "locations": [
+            "New South Wales"
+        ],
+        "tuition_fee_range_aud": "20,000 - 30,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "Bond University",
+        "url": "https://bond.edu.au",
+        "locations": [
+            "Queensland"
+        ],
+        "tuition_fee_range_aud": "35,000 - 50,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "Charles Darwin University (CDU)",
+        "url": "https://www.cdu.edu.au",
+        "locations": [
+            "Northern Territory",
+            "New South Wales"
+        ],
+        "tuition_fee_range_aud": "25,000 - 35,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "Charles Sturt University",
+        "url": "https://www.csu.edu.au",
+        "locations": [
+            "New South Wales",
+            "Australian Capital Territory"
+        ],
+        "tuition_fee_range_aud": "25,000 - 35,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "CQUniversity",
+        "url": "https://www.cqu.edu.au",
+        "locations": [
+            "Queensland",
+            "New South Wales",
+            "Victoria",
+            "South Australia",
+            "Western Australia"
+        ],
+        "tuition_fee_range_aud": "25,000 - 35,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "Curtin University",
+        "url": "https://www.curtin.edu.au",
+        "locations": [
+            "Western Australia"
+        ],
+        "tuition_fee_range_aud": "30,000 - 45,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "Deakin University",
+        "url": "https://www.deakin.edu.au",
+        "locations": [
+            "Victoria"
+        ],
+        "tuition_fee_range_aud": "30,000 - 45,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "Edith Cowan University (ECU)",
+        "url": "https://www.ecu.edu.au",
+        "locations": [
+            "Western Australia"
+        ],
+        "tuition_fee_range_aud": "30,000 - 40,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "Federation University of Australia",
+        "url": "https://federation.edu.au",
+        "locations": [
+            "Victoria"
+        ],
+        "tuition_fee_range_aud": "25,000 - 30,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "Flinders University",
+        "url": "https://www.flinders.edu.au",
+        "locations": [
+            "South Australia",
+            "Northern Territory"
+        ],
+        "tuition_fee_range_aud": "30,000 - 40,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "Griffith University",
+        "url": "https://www.griffith.edu.au",
+        "locations": [
+            "Queensland"
+        ],
+        "tuition_fee_range_aud": "30,000 - 40,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "James Cook University (JCU)",
+        "url": "https://www.jcu.edu.au",
+        "locations": [
+            "Queensland"
+        ],
+        "tuition_fee_range_aud": "30,000 - 45,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "La Trobe University",
+        "url": "https://www.latrobe.edu.au",
+        "locations": [
+            "Victoria",
+            "New South Wales"
+        ],
+        "tuition_fee_range_aud": "30,000 - 45,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "Macquarie University",
+        "url": "https://www.mq.edu.au",
+        "locations": [
+            "New South Wales"
+        ],
+        "tuition_fee_range_aud": "35,000 - 45,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "Monash University",
+        "url": "https://www.monash.edu",
+        "locations": [
+            "Victoria"
+        ],
+        "tuition_fee_range_aud": "40,000 - 55,000",
+        "is_group_of_eight": true
+    },
+    {
+        "name": "Murdoch University",
+        "url": "https://www.murdoch.edu.au",
+        "locations": [
+            "Western Australia"
+        ],
+        "tuition_fee_range_aud": "30,000 - 40,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "Queensland University of Technology (QUT)",
+        "url": "https://www.qut.edu.au",
+        "locations": [
+            "Queensland"
+        ],
+        "tuition_fee_range_aud": "30,000 - 45,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "RMIT University",
+        "url": "https://www.rmit.edu.au",
+        "locations": [
+            "Victoria"
+        ],
+        "tuition_fee_range_aud": "35,000 - 45,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "Southern Cross University (SCU)",
+        "url": "https://www.scu.edu.au",
+        "locations": [
+            "New South Wales",
+            "Queensland"
+        ],
+        "tuition_fee_range_aud": "25,000 - 35,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "Swinburne University of Technology",
+        "url": "https://www.swinburne.edu.au",
+        "locations": [
+            "Victoria"
+        ],
+        "tuition_fee_range_aud": "30,000 - 45,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "Torrens University Australia",
+        "url": "https://www.torrens.edu.au",
+        "locations": [
+            "South Australia",
+            "New South Wales",
+            "Queensland",
+            "Victoria"
+        ],
+        "tuition_fee_range_aud": "25,000 - 35,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "University of Canberra",
+        "url": "https://www.canberra.edu.au",
+        "locations": [
+            "Australian Capital Territory"
+        ],
+        "tuition_fee_range_aud": "30,000 - 40,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "University of Divinity",
+        "url": "https://divinity.edu.au",
+        "locations": [
+            "Victoria"
+        ],
+        "tuition_fee_range_aud": "15,000 - 25,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "University of Melbourne",
+        "url": "https://unimelb.edu.au",
+        "locations": [
+            "Victoria"
+        ],
+        "tuition_fee_range_aud": "40,000 - 60,000",
+        "is_group_of_eight": true
+    },
+    {
+        "name": "University of New England (UNE)",
+        "url": "https://www.une.edu.au",
+        "locations": [
+            "New South Wales"
+        ],
+        "tuition_fee_range_aud": "25,000 - 35,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "University of New South Wales (UNSW)",
+        "url": "https://www.unsw.edu.au",
+        "locations": [
+            "New South Wales",
+            "Australian Capital Territory"
+        ],
+        "tuition_fee_range_aud": "40,000 - 55,000",
+        "is_group_of_eight": true
+    },
+    {
+        "name": "University of Newcastle",
+        "url": "https://www.newcastle.edu.au",
+        "locations": [
+            "New South Wales"
+        ],
+        "tuition_fee_range_aud": "30,000 - 45,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "University of Notre Dame Australia",
+        "url": "https://www.notredame.edu.au",
+        "locations": [
+            "Western Australia",
+            "New South Wales"
+        ],
+        "tuition_fee_range_aud": "30,000 - 40,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "University of Queensland (UQ)",
+        "url": "https://www.uq.edu.au",
+        "locations": [
+            "Queensland"
+        ],
+        "tuition_fee_range_aud": "40,000 - 55,000",
+        "is_group_of_eight": true
+    },
+    {
+        "name": "University of Southern Queensland (UniSQ)",
+        "url": "https://www.unisq.edu.au",
+        "locations": [
+            "Queensland"
+        ],
+        "tuition_fee_range_aud": "25,000 - 35,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "University of Sydney",
+        "url": "https://www.sydney.edu.au",
+        "locations": [
+            "New South Wales"
+        ],
+        "tuition_fee_range_aud": "45,000 - 60,000",
+        "is_group_of_eight": true
+    },
+    {
+        "name": "University of Tasmania (UTAS)",
+        "url": "https://www.utas.edu.au",
+        "locations": [
+            "Tasmania",
+            "New South Wales"
+        ],
+        "tuition_fee_range_aud": "30,000 - 40,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "University of Technology Sydney (UTS)",
+        "url": "https://www.uts.edu.au",
+        "locations": [
+            "New South Wales"
+        ],
+        "tuition_fee_range_aud": "35,000 - 50,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "University of the Sunshine Coast (UniSC)",
+        "url": "https://www.usc.edu.au",
+        "locations": [
+            "Queensland"
+        ],
+        "tuition_fee_range_aud": "25,000 - 30,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "University of Western Australia (UWA)",
+        "url": "https://www.uwa.edu.au",
+        "locations": [
+            "Western Australia"
+        ],
+        "tuition_fee_range_aud": "40,000 - 55,000",
+        "is_group_of_eight": true
+    },
+    {
+        "name": "University of Wollongong (UOW)",
+        "url": "https://www.uow.edu.au",
+        "locations": [
+            "New South Wales"
+        ],
+        "tuition_fee_range_aud": "30,000 - 45,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "Victoria University",
+        "url": "https://www.vu.edu.au",
+        "locations": [
+            "Victoria",
+            "New South Wales",
+            "Queensland"
+        ],
+        "tuition_fee_range_aud": "25,000 - 35,000",
+        "is_group_of_eight": false
+    },
+    {
+        "name": "Western Sydney University",
+        "url": "https://www.westernsydney.edu.au",
+        "locations": [
+            "New South Wales"
+        ],
+        "tuition_fee_range_aud": "30,000 - 40,000",
+        "is_group_of_eight": false
+    }
+]

@@ -36,13 +36,31 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)({ required: false }),
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateNewsDto.prototype, "titleEn", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CreateNewsDto.prototype, "excerpt", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ required: false }),
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateNewsDto.prototype, "excerptEn", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CreateNewsDto.prototype, "content", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateNewsDto.prototype, "contentEn", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ required: false }),
     (0, class_validator_1.IsOptional)(),
@@ -91,8 +109,53 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)({ required: false }),
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateNewsDto.prototype, "itineraryEn", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CreateNewsDto.prototype, "studyType", void 0);
+async function translateText(text, from = 'vi', to = 'en') {
+    if (!text)
+        return '';
+    try {
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${from}&tl=${to}&dt=t&q=${encodeURIComponent(text)}`;
+        const res = await fetch(url);
+        if (!res.ok)
+            throw new Error(`HTTP error! status: ${res.status}`);
+        const data = await res.json();
+        if (data && data[0]) {
+            return data[0].map((item) => item[0]).join('');
+        }
+    }
+    catch (error) {
+        console.error('Translation error:', error);
+    }
+    return text;
+}
+async function translateHtml(html, from = 'vi', to = 'en') {
+    if (!html)
+        return '';
+    try {
+        const parts = html.split(/(<[^>]+>)/g);
+        const translatedParts = await Promise.all(parts.map(async (part) => {
+            if (part.startsWith('<') && part.endsWith('>')) {
+                return part;
+            }
+            if (part.trim().length === 0) {
+                return part;
+            }
+            return await translateText(part, from, to);
+        }));
+        return translatedParts.join('');
+    }
+    catch (error) {
+        console.error('HTML translation error:', error);
+        return html;
+    }
+}
 let NewsService = class NewsService {
     constructor(newsRepo, gcsService) {
         this.newsRepo = newsRepo;
@@ -134,8 +197,16 @@ let NewsService = class NewsService {
         return n;
     }
     async create(dto, file) {
+        const titleEn = dto.titleEn || (await translateText(dto.title));
+        const excerptEn = dto.excerptEn || (dto.excerpt ? await translateText(dto.excerpt) : undefined);
+        const contentEn = dto.contentEn || (dto.content ? await translateHtml(dto.content) : undefined);
+        const itineraryEn = dto.itineraryEn || (dto.itinerary ? await translateText(dto.itinerary) : undefined);
         const n = this.newsRepo.create({
             ...dto,
+            titleEn,
+            excerptEn,
+            contentEn,
+            itineraryEn,
             type: dto.type ?? 'news',
             isPublished: this.parseBoolean(dto.isPublished),
         });
@@ -147,8 +218,28 @@ let NewsService = class NewsService {
         const n = await this.newsRepo.findOne({ where: { id } });
         if (!n)
             throw new common_1.NotFoundException();
+        let titleEn = dto.titleEn;
+        if (dto.title !== undefined && !titleEn) {
+            titleEn = await translateText(dto.title);
+        }
+        let excerptEn = dto.excerptEn;
+        if (dto.excerpt !== undefined && !excerptEn) {
+            excerptEn = dto.excerpt ? await translateText(dto.excerpt) : '';
+        }
+        let contentEn = dto.contentEn;
+        if (dto.content !== undefined && !contentEn) {
+            contentEn = dto.content ? await translateHtml(dto.content) : '';
+        }
+        let itineraryEn = dto.itineraryEn;
+        if (dto.itinerary !== undefined && !itineraryEn) {
+            itineraryEn = dto.itinerary ? await translateText(dto.itinerary) : '';
+        }
         Object.assign(n, {
             ...dto,
+            ...(titleEn !== undefined ? { titleEn } : {}),
+            ...(excerptEn !== undefined ? { excerptEn } : {}),
+            ...(contentEn !== undefined ? { contentEn } : {}),
+            ...(itineraryEn !== undefined ? { itineraryEn } : {}),
             isPublished: dto.isPublished !== undefined ? this.parseBoolean(dto.isPublished) : n.isPublished,
         });
         if (file)

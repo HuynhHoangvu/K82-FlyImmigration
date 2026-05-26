@@ -2,6 +2,7 @@
 
 .page {
   min-height: 100vh;
+  padding-top: 5rem;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -107,6 +108,82 @@
   border-bottom: 1px solid #e2e8f0;
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(10px);
+}
+
+/* Award Section */
+.awardSection {
+  padding: 4rem 1.5rem;
+  background: linear-gradient(135deg, #fffbeb 0%, #ffffff 50%, #fef3c7 100%);
+
+  .fl-max-6xl {
+    text-align: center;
+  }
+}
+
+.awardHeader {
+  margin-bottom: 2rem;
+}
+
+.awardBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #e4a808, #fdd52f);
+  color: #78350f;
+  padding: 0.5rem 1.25rem;
+  border-radius: 2rem;
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 15px rgba(228, 168, 8, 0.3);
+}
+
+.awardTitle {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.3;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+
+  @include bp.mq-md {
+    font-size: 1.75rem;
+  }
+}
+
+.awardDesc {
+  color: #475569;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.awardImages {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.awardImg {
+  width: 280px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-8px);
+  }
+
+  @include bp.mq-sm {
+    width: 320px;
+    height: 220px;
+  }
 }
 
 .statsGrid {
@@ -421,4 +498,180 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 2rem;
+}
+
+/* Media Section - Video & Gallery */
+.mediaSection {
+  padding: 5rem 1.5rem;
+  background: #fff;
+}
+
+.sectionSubtitle {
+  color: #475569;
+  font-size: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.videoWrapper {
+  max-width: 800px;
+  margin: 0 auto 3rem;
+}
+
+.videoThumbnail {
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: var(--shadow-lg);
+
+  &:hover {
+    .playButton {
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+  }
+}
+
+.videoImage {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.playButton {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4.5rem;
+  height: 4.5rem;
+  background: linear-gradient(135deg, #e4a808, #fdd52f);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(228, 168, 8, 0.4);
+  transition: transform 0.2s ease;
+
+  svg {
+    margin-left: 4px;
+  }
+}
+
+.galleryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+
+  @include bp.mq-sm {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @include bp.mq-md {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+.galleryItem {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  cursor: pointer;
+
+  &:hover {
+    .galleryOverlay {
+      opacity: 1;
+    }
+
+    .galleryImage {
+      transform: scale(1.1);
+    }
+  }
+}
+
+.galleryImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.galleryOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  display: flex;
+  align-items: flex-end;
+  padding: 0.75rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+
+  span {
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+}
+
+/* Video Modal */
+.videoModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 1.5rem;
+}
+
+.videoModalContent {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+}
+
+.videoFrame {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 0.75rem;
+  border: none;
+}
+
+/* Lightbox */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 2rem;
+}
+
+.lightboxImage {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 0.5rem;
+}
+
+.closeButton {
+  position: absolute;
+  top: -3rem;
+  right: 0;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.7;
+  }
 }

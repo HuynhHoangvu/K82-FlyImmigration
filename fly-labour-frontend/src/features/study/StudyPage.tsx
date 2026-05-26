@@ -73,13 +73,16 @@ export default function StudyPage() {
 
   // Apply search query filter on study programs
   const filteredPrograms = useMemo(() => {
-    return studyPrograms.filter(
-      (p) =>
+    return studyPrograms.filter((p) => {
+      const title = lang === "en" ? p.titleEn || p.title : p.title;
+      const excerpt = lang === "en" ? p.excerptEn || p.excerpt : p.excerpt;
+      return (
         !search ||
-        p.title.toLowerCase().includes(search.toLowerCase()) ||
-        p.excerpt?.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [studyPrograms, search]);
+        title.toLowerCase().includes(search.toLowerCase()) ||
+        excerpt?.toLowerCase().includes(search.toLowerCase())
+      );
+    });
+  }, [studyPrograms, search, lang]);
 
   const setParam = (key: string, val: string) => {
     const p = new URLSearchParams(params);
@@ -102,9 +105,10 @@ export default function StudyPage() {
   };
 
   const handleOpenApplyModal = (program: News) => {
+    const universityName = lang === "en" ? program.titleEn || program.title : program.title;
     setSelectedProgram({
       country: getCountryLabel(program.country),
-      university: program.title,
+      university: universityName,
       major: "",
       studyType: program.studyType || "",
     });
@@ -232,73 +236,77 @@ export default function StudyPage() {
           </div>
         ) : (
           <div className={s.grid}>
-            {filteredPrograms.map((n) => (
-              <div key={n.id} className={s.card}>
-                <div className={s.imgWrap}>
-                  {n.image ? (
-                    <img src={getImageUrl(n.image)} alt={n.title} className={s.cardImg} />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-amber-50/50 text-amber-500">
-                      <GraduationCap size={48} />
-                    </div>
-                  )}
-                  {n.priceFrom === 0 && <span className={s.hotBadge}>{lang === "en" ? "Scholarship" : "Học bổng 100%"}</span>}
-                </div>
-                
-                <div className={s.cardContent}>
-                  <div className={s.badgeRow}>
-                    <span className={s.countryBadge}>
-                      <Globe size={12} />
-                      {getCountryLabel(n.country)}
-                    </span>
-                    {n.studyType && (
-                      <span className={clsx(
-                        s.typeBadge,
-                        n.studyType === "university" && s.badgeUni,
-                        n.studyType === "college" && s.badgeCol,
-                        n.studyType === "vocational" && s.badgeVoc
-                      )}>
-                        {n.studyType === "university" && "🎓 " + (lang === "en" ? "Uni" : "Đại học")}
-                        {n.studyType === "college" && "🏫 " + (lang === "en" ? "College" : "Cao đẳng")}
-                        {n.studyType === "vocational" && "💼 " + (lang === "en" ? "Vocational" : "Du học nghề")}
-                      </span>
+            {filteredPrograms.map((n) => {
+              const title = lang === "en" ? n.titleEn || n.title : n.title;
+              const excerpt = lang === "en" ? n.excerptEn || n.excerpt : n.excerpt;
+              return (
+                <div key={n.id} className={s.card}>
+                  <div className={s.imgWrap}>
+                    {n.image ? (
+                      <img src={getImageUrl(n.image)} alt={title} className={s.cardImg} />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-amber-50/50 text-amber-500">
+                        <GraduationCap size={48} />
+                      </div>
                     )}
+                    {n.priceFrom === 0 && <span className={s.hotBadge}>{lang === "en" ? "Scholarship" : "Học bổng 100%"}</span>}
                   </div>
                   
-                  <h3 className={s.cardTitle}>
-                    <Link to={`/study/${n.slug}`} className="hover:text-amber-600 transition">
-                      {n.title}
-                    </Link>
-                  </h3>
-                  
-                  {n.excerpt && <p className={s.cardExcerpt}>{n.excerpt}</p>}
-                  
-                  <div className={s.metaGrid}>
-                    <div className={s.metaItem}>
-                      <DollarSign size={14} className={s.metaIcon} />
-                      <span>{lang === "en" ? "Tuition:" : "Học phí:"}</span>
-                      <span className={s.metaValue}>{formatPrice(n)}</span>
-                    </div>
-                    <div className={s.metaItem}>
-                      <Calendar size={14} className={s.metaIcon} />
-                      <span>{lang === "en" ? "Intake:" : "Kỳ nhập học:"}</span>
-                      <span className={s.metaValue}>
-                        {n.itinerary || (lang === "en" ? "Contact for schedule" : "Liên hệ lịch nhập học")}
+                  <div className={s.cardContent}>
+                    <div className={s.badgeRow}>
+                      <span className={s.countryBadge}>
+                        <Globe size={12} />
+                        {getCountryLabel(n.country)}
                       </span>
+                      {n.studyType && (
+                        <span className={clsx(
+                          s.typeBadge,
+                          n.studyType === "university" && s.badgeUni,
+                          n.studyType === "college" && s.badgeCol,
+                          n.studyType === "vocational" && s.badgeVoc
+                        )}>
+                          {n.studyType === "university" && "🎓 " + (lang === "en" ? "Uni" : "Đại học")}
+                          {n.studyType === "college" && "🏫 " + (lang === "en" ? "College" : "Cao đẳng")}
+                          {n.studyType === "vocational" && "💼 " + (lang === "en" ? "Vocational" : "Du học nghề")}
+                        </span>
+                      )}
                     </div>
-                  </div>
+                    
+                    <h3 className={s.cardTitle}>
+                      <Link to={`/study/${n.slug}`} className="hover:text-amber-600 transition">
+                        {title}
+                      </Link>
+                    </h3>
+                    
+                    {excerpt && <p className={s.cardExcerpt}>{excerpt}</p>}
+                    
+                    <div className={s.metaGrid}>
+                      <div className={s.metaItem}>
+                        <DollarSign size={14} className={s.metaIcon} />
+                        <span>{lang === "en" ? "Tuition:" : "Học phí:"}</span>
+                        <span className={s.metaValue}>{formatPrice(n)}</span>
+                      </div>
+                      <div className={s.metaItem}>
+                        <Calendar size={14} className={s.metaIcon} />
+                        <span>{lang === "en" ? "Intake:" : "Kỳ nhập học:"}</span>
+                        <span className={s.metaValue}>
+                          {n.itinerary || (lang === "en" ? "Contact for schedule" : "Liên hệ lịch nhập học")}
+                        </span>
+                      </div>
+                    </div>
 
-                  <div className={s.cardFooter}>
-                    <Link to={`/study/${n.slug}`} className={s.detailBtn}>
-                      {lang === "en" ? "Details" : "Xem chi tiết"}
-                    </Link>
-                    <button onClick={() => handleOpenApplyModal(n)} className={s.applyBtn}>
-                      {lang === "en" ? "Apply" : "Đăng ký tư vấn"} <ArrowRight size={14} />
-                    </button>
+                    <div className={s.cardFooter}>
+                      <Link to={`/study/${n.slug}`} className={s.detailBtn}>
+                        {lang === "en" ? "Details" : "Xem chi tiết"}
+                      </Link>
+                      <button onClick={() => handleOpenApplyModal(n)} className={s.applyBtn}>
+                        {lang === "en" ? "Apply" : "Đăng ký tư vấn"} <ArrowRight size={14} />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
@@ -315,31 +323,35 @@ export default function StudyPage() {
             </div>
             
             <div className={s.grid}>
-              {studyNews.slice(0, 3).map((n) => (
-                <article key={n.id} className={s.newsCard}>
-                  <div className={s.newsImgWrap}>
-                    {n.image ? (
-                      <img src={getImageUrl(n.image)} alt={n.title} className={s.newsImg} />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-slate-100 text-slate-400">
-                        <BookOpen size={36} />
-                      </div>
-                    )}
-                  </div>
-                  <div className={s.newsContent}>
-                    <span className={s.newsDate}>{formatDate(n.createdAt)}</span>
-                    <h3 className={s.newsTitle}>
-                      <Link to={`/study/${n.slug}`} className="hover:text-amber-600 transition">
-                        {n.title}
+              {studyNews.slice(0, 3).map((n) => {
+                const title = lang === "en" ? n.titleEn || n.title : n.title;
+                const excerpt = lang === "en" ? n.excerptEn || n.excerpt : n.excerpt;
+                return (
+                  <article key={n.id} className={s.newsCard}>
+                    <div className={s.newsImgWrap}>
+                      {n.image ? (
+                        <img src={getImageUrl(n.image)} alt={title} className={s.newsImg} />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-slate-100 text-slate-400">
+                          <BookOpen size={36} />
+                        </div>
+                      )}
+                    </div>
+                    <div className={s.newsContent}>
+                      <span className={s.newsDate}>{formatDate(n.createdAt)}</span>
+                      <h3 className={s.newsTitle}>
+                        <Link to={`/study/${n.slug}`} className="hover:text-amber-600 transition">
+                          {title}
+                        </Link>
+                      </h3>
+                      {excerpt && <p className={s.newsExcerpt}>{excerpt}</p>}
+                      <Link to={`/study/${n.slug}`} className={s.newsLink}>
+                        {lang === "en" ? "Read guide" : "Đọc bài viết"} <ArrowRight size={13} />
                       </Link>
-                    </h3>
-                    {n.excerpt && <p className={s.newsExcerpt}>{n.excerpt}</p>}
-                    <Link to={`/study/${n.slug}`} className={s.newsLink}>
-                      {lang === "en" ? "Read guide" : "Đọc bài viết"} <ArrowRight size={13} />
-                    </Link>
-                  </div>
-                </article>
-              ))}
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           </div>
         </section>

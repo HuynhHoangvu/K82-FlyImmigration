@@ -38,6 +38,7 @@ export declare class JobsService {
             location: string;
             country: string;
             jobType: import("./job.entity").JobType;
+            labourType: import("./job.entity").LabourType;
             status: JobStatus;
             salaryMin: number;
             salaryMax: number;
