@@ -34,7 +34,7 @@ export default function AboutSection() {
               onClick={() => setShowVideo(true)}
             >
               <video
-                src="/FLY VISA.mp4"
+                src="/fly-visa.mp4"
                 className={s.videoImage}
                 muted
                 playsInline
@@ -84,7 +84,7 @@ export default function AboutSection() {
               <X size={24} />
             </button>
             <video
-              src="/FLY VISA.mp4"
+              src="/fly-visa.mp4"
               className={s.videoFrame}
               controls
               autoPlay
