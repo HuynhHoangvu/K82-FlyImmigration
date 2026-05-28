@@ -65,12 +65,12 @@ export default function AboutPage() {
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
 
   const GALLERY_IMAGES = [
-    { id: 1, src: "/gallery/office-1.jpg", alt: "Văn phòng Fly Immigration" },
-    { id: 2, src: "/gallery/team-1.jpg", alt: "Đội ngũ nhân viên" },
+    { id: 1, src: "/event-1.jpg", alt: "Văn phòng Fly Immigration" },
+    { id: 2, src: "event-2.jpg", alt: "Đội ngũ nhân viên" },
     { id: 3, src: "/gallery/event-1.jpg", alt: "Sự kiện công ty" },
-    { id: 4, src: "/gallery/support-1.jpg", alt: "Hỗ trợ người lao động" },
-    { id: 5, src: "/gallery/partner-1.jpg", alt: "Ký kết đối tác" },
-    { id: 6, src: "/gallery/training-1.jpg", alt: "Đào tạo kỹ năng" },
+    { id: 4, src: "event-3.jpg", alt: "Hỗ trợ người lao động" },
+    { id: 5, src: "event-4.jpg", alt: "Ký kết đối tác" },
+    { id: 6, src: "event-5.jpg", alt: "Đào tạo kỹ năng" },
   ];
 
   return (
@@ -129,9 +129,7 @@ export default function AboutPage() {
                 onClick={() => setLightboxImage(img.src)}
               >
                 <img src={img.src} alt={img.alt} className={s.galleryImage} />
-                <div className={s.galleryOverlay}>
-                  <span>{img.alt}</span>
-                </div>
+               
               </div>
             ))}
           </div>

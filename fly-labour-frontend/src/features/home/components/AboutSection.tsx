@@ -8,7 +8,6 @@ import {
   MapPin,
   Phone,
   Mail,
-  Play,
   X,
 } from "lucide-react";
 import { useT } from "@core/hooks/useT";
@@ -21,61 +20,10 @@ export default function AboutSection() {
   const d = t("about");
   const { lang } = useLangStore();
 
-  const [activeVideo, setActiveVideo] = useState<string | null>(null);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
-
-  const videos = [
-    {
-      src: "/fly-visa.mp4",
-      title: lang === "vi" ? "Giới thiệu Fly Visa & Dịch vụ Định cư" : "Introduction to Fly Visa & Settlement Services",
-      desc: lang === "vi" ? "Tổng quan về dịch vụ tư vấn định cư, việc làm và visa của Fly Visa." : "Overview of Fly Visa's settlement, employment, and visa consulting services."
-    },
-    {
-      src: "/fly-visa-2.mp4",
-      title: lang === "vi" ? "Khách hàng nhận kết quả Visa thành công" : "Customers Receiving Successful Visa Results",
-      desc: lang === "vi" ? "Niềm vui và chia sẻ thực tế từ các khách hàng đã nhận visa thành công." : "Real joy and feedback from our customers who successfully received visas."
-    }
-  ];
 
   return (
     <div id="about" className={s.section}>
-      {/* Video Section */}
-      <div className={s.mediaSection}>
-        <div className="fl-max-6xl">
-          <div className={s.centerHead}>
-            <p className={s.sectionBadge}>{d.v_badge}</p>
-            <h2 className={s.sectionTitle}>{d.v_title}</h2>
-            <p className={s.sectionSubtitle}>{d.v_desc}</p>
-          </div>
-
-          <div className={s.videoGrid}>
-            {videos.map((vid, idx) => (
-              <div key={idx} className={s.videoCard}>
-                <div
-                  className={s.videoThumbnail}
-                  onClick={() => setActiveVideo(vid.src)}
-                >
-                  <video
-                    src={`${vid.src}#t=0.1`}
-                    className={s.videoImage}
-                    muted
-                    playsInline
-                    preload="metadata"
-                  />
-                  <div className={s.playButton}>
-                    <Play size={20} fill="white" />
-                  </div>
-                </div>
-                <div className={s.videoInfo}>
-                  <h3 className={s.videoTitle}>{vid.title}</h3>
-                  <p className={s.videoDesc}>{vid.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
       {/* Award Section */}
       <div className={s.awardSection}>
         <div className="fl-max-6xl">
@@ -98,29 +46,6 @@ export default function AboutSection() {
           </Marquee>
         </div>
       </div>
-
-      {/* Video Modal */}
-      {activeVideo && (
-        <div className={s.videoModal} onClick={() => setActiveVideo(null)}>
-          <div
-            className={s.videoModalContent}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              className={s.closeButton}
-              onClick={() => setActiveVideo(null)}
-            >
-              <X size={24} />
-            </button>
-            <video
-              src={activeVideo}
-              className={s.videoFrame}
-              controls
-              autoPlay
-            />
-          </div>
-        </div>
-      )}
 
       {/* Lightbox */}
       {lightboxImage && (
