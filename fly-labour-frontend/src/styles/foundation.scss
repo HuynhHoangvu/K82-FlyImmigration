@@ -1,11 +1,11 @@
 // App-wide SASS foundation: tokens → :root, shared mixins, semantic utilities.
 // Tailwind vẫn load qua index.css; biến `--*` dùng chung cho cả hai.
 
-@forward "breakpoints";
-@forward "mixins";
-@forward "tokens";
+@forward "abstracts/breakpoints";
+@forward "abstracts/mixins";
+@forward "abstracts/tokens";
 
-@use "tokens" as tokens;
-@use "utilities";
+@use "abstracts/tokens" as tokens;
+@use "base/utilities";
 
 @include tokens.emit-root-vars;

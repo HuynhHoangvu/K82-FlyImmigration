@@ -1,0 +1,109 @@
+.btn-primary {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-xl);
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.025em;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #121212;
+  background: linear-gradient(135deg, #e4a808 0%, #fdd52f 60%, #f2ee8c 100%);
+  box-shadow: var(--shadow-accent);
+}
+
+.btn-primary:hover {
+  box-shadow: var(--shadow-accent-lg);
+  filter: brightness(1.04);
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-xl);
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.025em;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+  border: 1.5px solid var(--accent-primary);
+  background: transparent;
+}
+
+.btn-outline:hover {
+  background: rgba(228, 168, 8, 0.08);
+  border-color: var(--accent-bright);
+  color: var(--accent-bright);
+}
+
+.btn-outline:active {
+  transform: scale(0.97);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-xl);
+  padding: 0.625rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+}
+
+.btn-ghost:hover {
+  background: var(--surface-secondary);
+  color: var(--text-base);
+}
+
+.btn-ghost:active {
+  transform: scale(0.97);
+}
+
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-xl);
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.025em;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: var(--error);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+}
+
+.btn-danger:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.35);
+}
+
+.btn-danger:active {
+  transform: scale(0.97);
+}

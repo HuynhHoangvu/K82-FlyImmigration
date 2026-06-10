@@ -1,0 +1,30 @@
+.table-dark {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-dark thead {
+  background: var(--surface-secondary);
+  border-bottom: 2px solid var(--border-default);
+}
+
+.table-dark thead th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--accent-primary);
+}
+
+.table-dark tbody tr {
+  border-bottom: 1px solid var(--border-default);
+  transition: background-color 0.2s ease;
+}
+
+.table-dark tbody tr:hover {
+  background-color: var(--surface-secondary);
+}
+
+.table-dark td {
+  padding: 12px;
+  color: var(--text-base);
+}

@@ -1,0 +1,43 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--surface);
+  color: var(--text-base);
+}
+
+body {
+  font-family: "Nunito Sans", "Segoe UI", sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--text-base);
+  background-color: var(--surface);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #e4a808, #fdd52f);
+  border-radius: 10px;
+}
+
+::selection {
+  background: rgba(228, 168, 8, 0.3);
+  color: var(--accent-primary);
+}

@@ -28,6 +28,9 @@ let UsersController = class UsersController {
     changePassword(req, dto) {
         return this.usersService.changePassword(req.user.id, dto);
     }
+    create(dto) {
+        return this.usersService.create(dto);
+    }
     findAll(query) {
         return this.usersService.findAll(query);
     }
@@ -62,6 +65,16 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "changePassword", null);
+__decorate([
+    (0, common_1.Post)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, admin_guard_1.AdminGuard),
+    (0, swagger_1.ApiBearerAuth)('JWT'),
+    (0, swagger_1.ApiOperation)({ summary: '[Admin] Tạo người dùng mới' }),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, admin_guard_1.AdminGuard),

@@ -23,6 +23,24 @@ let UsersService = class UsersService {
     constructor(usersRepo) {
         this.usersRepo = usersRepo;
     }
+    async create(dto) {
+        const existing = await this.usersRepo.findOne({ where: { email: dto.email } });
+        if (existing)
+            throw new common_1.BadRequestException('Email đã được sử dụng');
+        if (dto.password.length < 6)
+            throw new common_1.BadRequestException('Mật khẩu phải có ít nhất 6 ký tự');
+        const user = this.usersRepo.create({
+            email: dto.email,
+            password: await bcrypt.hash(dto.password, 12),
+            fullName: dto.fullName,
+            phone: dto.phone,
+            role: dto.role,
+            isActive: dto.isActive ?? true,
+        });
+        await this.usersRepo.save(user);
+        const { password, ...rest } = user;
+        return rest;
+    }
     async findAll(query) {
         const { page = 1, search } = query;
         const limit = Math.min(query.limit ?? constants_1.PAGINATION.DEFAULT_LIMIT, constants_1.PAGINATION.MAX_LIMIT);

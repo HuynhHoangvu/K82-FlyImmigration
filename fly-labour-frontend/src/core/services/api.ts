@@ -118,6 +118,8 @@ export const categoriesApi = {
 export const usersApi = {
   getAll:         (params?: Record<string, any>) => api.get('/users', { params }),
   getOne:         (id: string) => api.get(`/users/${id}`),
+  create:         (data: { email: string; password: string; fullName: string; phone?: string; role?: string; isActive?: boolean }) =>
+    api.post('/users', data),
   toggleActive:   (id: string) => api.patch(`/users/${id}/toggle-active`),
   getStats:       () => api.get('/users/stats'),
   updateMe:       (data: Record<string, any>) => api.patch('/users/me', data),

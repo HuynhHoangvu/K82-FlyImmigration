@@ -1,0 +1,560 @@
+import { useState, useRef, useEffect } from "react";
+import ConfirmDeleteModal from "@features/admin/components/ConfirmDeleteModal";
+import AdminRichTextEditor from "@features/admin/components/AdminRichTextEditor";
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  X,
+  Eye,
+  EyeOff,
+  Upload,
+  Image as ImageIcon,
+  Newspaper,
+  Loader2,
+  Link as LinkIcon,
+} from "lucide-react";
+import type { News } from "@core/types";
+import { formatDate } from "@core/utils/helpers";
+import toast from "react-hot-toast";
+import { newsApi, getImageUrl } from "@core/services/api";
+import clsx from "clsx";
+import s from "./AdminNewsPage.module.scss";
+
+function slugify(str: string) {
+  return str
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .slice(0, 80);
+}
+
+type FormData = {
+  title: string;
+  titleEn: string;
+  slug: string;
+  excerpt: string;
+  excerptEn: string;
+  content: string;
+  contentEn: string;
+  isPublished: boolean;
+  imagePreview: string;
+};
+
+const EMPTY: FormData = {
+  title: "",
+  titleEn: "",
+  slug: "",
+  excerpt: "",
+  excerptEn: "",
+  content: "",
+  contentEn: "",
+  isPublished: true,
+  imagePreview: "",
+};
+
+export default function AdminNewsPage() {
+  const [news, setNews] = useState<News[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [modal, setModal] = useState<"add" | "edit" | null>(null);
+  const [editing, setEditing] = useState<News | null>(null);
+  const [form, setForm] = useState<FormData>(EMPTY);
+  const [deleting, setDeleting] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [imgTab, setImgTab] = useState<"upload" | "url">("upload");
+  const [urlInput, setUrlInput] = useState("");
+  const [langTab, setLangTab] = useState<"vi" | "en">("vi");
+  const fileRef = useRef<HTMLInputElement>(null);
+  const fileObj = useRef<File | null>(null);
+
+  const loadNews = () => {
+    setLoading(true);
+    newsApi
+      .getAllAdmin()
+      .then((r) => setNews(r.data))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    loadNews();
+  }, []);
+
+  const openAdd = () => {
+    setForm(EMPTY);
+    setEditing(null);
+    setUrlInput("");
+    fileObj.current = null;
+    setLangTab("vi");
+    setModal("add");
+  };
+
+  const openEdit = (n: News) => {
+    setForm({
+      title: n.title,
+      titleEn: n.titleEn || "",
+      slug: n.slug,
+      excerpt: n.excerpt || "",
+      excerptEn: n.excerptEn || "",
+      content: n.content || "",
+      contentEn: n.contentEn || "",
+      isPublished: n.isPublished,
+      imagePreview: n.image || "",
+    });
+    setUrlInput(n.image?.startsWith("http") ? n.image : "");
+    fileObj.current = null;
+    setEditing(n);
+    setLangTab("vi");
+    setModal("edit");
+  };
+
+  const setField =
+    (k: keyof FormData) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const val = e.target.value;
+      setForm((f) => ({
+        ...f,
+        [k]: val,
+        ...(k === "title" && !editing ? { slug: slugify(val) } : {}),
+      }));
+    };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Ảnh tối đa 5MB");
+      return;
+    }
+    fileObj.current = file;
+    const reader = new FileReader();
+    reader.onload = () => setForm((f) => ({ ...f, imagePreview: reader.result as string }));
+    reader.readAsDataURL(file);
+  };
+
+  const applyUrl = () => {
+    if (!urlInput.trim()) return;
+    fileObj.current = null;
+    setForm((f) => ({ ...f, imagePreview: urlInput.trim() }));
+    toast.success("Đã áp dụng URL ảnh");
+  };
+
+  const handleSave = async () => {
+    if (!form.title) return toast.error("Vui lòng nhập tiêu đề");
+    if (!form.slug) return toast.error("Vui lòng nhập slug");
+
+    setSaving(true);
+    try {
+      const fd = new FormData();
+      fd.append("title", form.title);
+      if (form.titleEn) fd.append("titleEn", form.titleEn);
+      fd.append("slug", form.slug);
+      if (form.excerpt) fd.append("excerpt", form.excerpt);
+      if (form.excerptEn) fd.append("excerptEn", form.excerptEn);
+      if (form.content) fd.append("content", form.content);
+      if (form.contentEn) fd.append("contentEn", form.contentEn);
+      fd.append("isPublished", form.isPublished ? "true" : "false");
+      if (fileObj.current) fd.append("image", fileObj.current);
+      else if (imgTab === "url" && urlInput.trim()) fd.set("image", urlInput.trim());
+
+      if (modal === "edit" && editing) {
+        await newsApi.update(editing.id, fd);
+        toast.success("Đã cập nhật bài viết");
+      } else {
+        await newsApi.create(fd);
+        toast.success("Đã đăng bài viết");
+      }
+      setModal(null);
+      loadNews();
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Lỗi khi lưu bài viết");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await newsApi.remove(id);
+      toast.success("Đã xóa bài viết");
+      setDeleting(null);
+      loadNews();
+    } catch {
+      toast.error("Xóa thất bại");
+    }
+  };
+
+  const handleTogglePublish = async (n: News) => {
+    try {
+      const fd = new FormData();
+      fd.append("isPublished", (!n.isPublished).toString());
+      await newsApi.update(n.id, fd);
+      loadNews();
+    } catch {
+      toast.error("Cập nhật thất bại");
+    }
+  };
+
+  return (
+    <div className={s.page}>
+      <div className={s.head}>
+        <div>
+          <h1 className={s.title}>
+            <Newspaper className={s.titleIcon} />
+            Quản lý Tin tức
+          </h1>
+          <p className={s.sub}>
+            {news.length} bài viết ·{" "}
+            <span className={s.subAccent}>{news.filter((n) => n.isPublished).length} bài công khai</span>
+          </p>
+        </div>
+        <button onClick={openAdd} className={clsx("btn-primary", s.addBtn)}>
+          <Plus size={18} /> Thêm bài viết mới
+        </button>
+      </div>
+
+      <div className={s.card}>
+        <div className={clsx(s.tableWrap, "custom-scrollbar")}>
+          <table className={s.table}>
+            <thead className={s.thead}>
+              <tr>
+                <th className={clsx(s.th, s.thCenter)}>Ảnh</th>
+                <th className={s.th}>Nội dung bài viết</th>
+                <th className={clsx(s.th, s.hideMd)}>Slug (URL)</th>
+                <th className={clsx(s.th, s.hideSm)}>Ngày tạo</th>
+                <th className={s.th}>Trạng thái</th>
+                <th className={clsx(s.th, s.thRight)}>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody className={s.tbody}>
+              {loading ? (
+                [...Array(5)].map((_, i) => (
+                  <tr key={i}>
+                    <td colSpan={6} className={s.loadingCell}>
+                      <Loader2 className={s.spin} />
+                    </td>
+                  </tr>
+                ))
+              ) : news.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className={s.emptyCell}>
+                    Hệ thống chưa có bài viết nào
+                  </td>
+                </tr>
+              ) : (
+                news.map((n) => (
+                  <tr key={n.id} className={s.row}>
+                    <td className={clsx(s.th, s.tdCenter)}>
+                      <div className={s.thumbWrap}>
+                        {n.image ? (
+                          <img src={getImageUrl(n.image)} alt="" className={s.thumb} />
+                        ) : (
+                          <div className={s.thumbEmpty}>
+                            <ImageIcon size={18} />
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td className={s.th}>
+                      <p className={s.newsTitle}>{n.title}</p>
+                      {n.excerpt && <p className={s.excerpt}>"{n.excerpt}"</p>}
+                    </td>
+                    <td className={clsx(s.th, s.hideMd)}>
+                      <code className={s.slug}>/{n.slug}</code>
+                    </td>
+                    <td className={clsx(s.th, s.hideSm)}>
+                      <p className={s.date}>{formatDate(n.createdAt)}</p>
+                    </td>
+                    <td className={s.th}>
+                      <button
+                        onClick={() => handleTogglePublish(n)}
+                        className={clsx(s.statusBtn, n.isPublished ? s.statusOn : s.statusOff)}
+                      >
+                        {n.isPublished ? (
+                          <>
+                            <Eye size={12} /> Công khai
+                          </>
+                        ) : (
+                          <>
+                            <EyeOff size={12} /> Đang ẩn
+                          </>
+                        )}
+                      </button>
+                    </td>
+                    <td className={clsx(s.th, s.tdRight)}>
+                      <div className={s.actions}>
+                        <button onClick={() => openEdit(n)} className={clsx(s.iconBtn, s.editBtn)}>
+                          <Pencil size={16} />
+                        </button>
+                        <button
+                          onClick={() => setDeleting(n.id)}
+                          className={clsx(s.iconBtn, s.deleteBtn)}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {modal && (
+        <div className={s.modalRoot}>
+          <div className={s.modalHead}>
+            <div className={s.headLeft}>
+              <button onClick={() => setModal(null)} className={s.closeIconBtn} title="Quay lại">
+                <X size={20} />
+              </button>
+              <div className={s.divider} />
+              <div className={s.headLabelWrap}>
+                <span className={s.headLabelTop}>{modal === "add" ? "Tạo bài viết mới" : "Đang chỉnh sửa bài"}</span>
+                <span className={s.headTitle}>{form.title || "Chưa có tiêu đề"}</span>
+              </div>
+            </div>
+            <div className={s.headRight}>
+              <div className={s.publishBadge}>
+                <div className={clsx(s.publishDot, form.isPublished ? s.dotOn : s.dotOff)} />
+                {form.isPublished ? "Sẵn sàng công khai" : "Bản nháp"}
+              </div>
+              <button onClick={() => setModal(null)} className={s.cancelBtn}>
+                Hủy bỏ
+              </button>
+              <button onClick={handleSave} disabled={saving} className={clsx("btn-primary", s.saveBtn)}>
+                {saving ? <Loader2 className={s.saveSpin} /> : modal === "add" ? "Đăng ngay" : "Lưu thay đổi"}
+              </button>
+            </div>
+          </div>
+
+          <div className={s.workspace}>
+            <div className={clsx(s.editorArea, "custom-scrollbar")}>
+              {/* Language Tabs */}
+              <div style={{ display: "flex", gap: "1rem", borderBottom: "1px solid #e2e8f0", padding: "0.75rem 1.5rem 0.5rem", background: "#f8fafc" }}>
+                <button
+                  type="button"
+                  onClick={() => setLangTab("vi")}
+                  style={{
+                    fontWeight: langTab === "vi" ? "bold" : "normal",
+                    borderBottom: langTab === "vi" ? "2px solid #d97706" : "none",
+                    paddingBottom: "0.25rem",
+                    color: langTab === "vi" ? "#d97706" : "#64748b",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer"
+                  }}
+                >
+                  🇻🇳 Tiếng Việt
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLangTab("en")}
+                  style={{
+                    fontWeight: langTab === "en" ? "bold" : "normal",
+                    borderBottom: langTab === "en" ? "2px solid #d97706" : "none",
+                    paddingBottom: "0.25rem",
+                    color: langTab === "en" ? "#d97706" : "#64748b",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer"
+                  }}
+                >
+                  🇬🇧 Tiếng Anh (English)
+                </button>
+              </div>
+
+              <div className={s.paper}>
+                {langTab === "vi" ? (
+                  <>
+                    <div className={s.paperHead}>
+                      <input
+                        value={form.title}
+                        onChange={setField("title")}
+                        placeholder="Nhập tiêu đề bài viết của bạn tại đây..."
+                        className={s.titleInput}
+                      />
+                      <div className={s.metaRow}>
+                        <span>{formatDate(new Date().toISOString())}</span>
+                        <span className={s.metaDot} />
+                        <span>Ban biên tập FLY LABOUR</span>
+                      </div>
+                    </div>
+                    <div className={s.editorWrap}>
+                      <AdminRichTextEditor
+                        value={form.content}
+                        onChange={(html) => setForm((f) => ({ ...f, content: html }))}
+                        placeholder="Soạn tin bài — định dạng, chèn ảnh và bảng từ thanh công cụ phía trên…"
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className={s.paperHead}>
+                      <input
+                        value={form.titleEn}
+                        onChange={setField("titleEn")}
+                        placeholder="Nhập tiêu đề tiếng Anh (để trống để tự động dịch)..."
+                        className={s.titleInput}
+                      />
+                      <div className={s.metaRow}>
+                        <span>{formatDate(new Date().toISOString())}</span>
+                        <span className={s.metaDot} />
+                        <span>FLY LABOUR Editorial Team</span>
+                      </div>
+                    </div>
+                    <div className={s.editorWrap}>
+                      <AdminRichTextEditor
+                        value={form.contentEn}
+                        onChange={(html) => setForm((f) => ({ ...f, contentEn: html }))}
+                        placeholder="Soạn tin bài tiếng Anh (để trống để tự động dịch từ tiếng Việt)…"
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div className={clsx(s.sidebar, "custom-scrollbar")}>
+              <div className={s.section}>
+                <h3 className={clsx(s.sectionTitle, s.sectionTitleLine)}>Cấu hình bài viết</h3>
+                <label className={s.toggleRow}>
+                  <div>
+                    <span className={s.toggleLabelMain}>Công khai bài viết</span>
+                    <p className={s.toggleLabelSub}>Hiện thị trên trang chủ</p>
+                  </div>
+                  <div className={clsx(s.toggleTrack, form.isPublished ? s.toggleTrackOn : s.toggleTrackOff)}>
+                    <div className={clsx(s.toggleThumb, form.isPublished ? s.thumbOn : s.thumbOff)} />
+                    <input
+                      type="checkbox"
+                      checked={form.isPublished}
+                      onChange={(e) => setForm((f) => ({ ...f, isPublished: e.target.checked }))}
+                      className={s.hiddenInput}
+                    />
+                  </div>
+                </label>
+              </div>
+
+              <div className={s.section}>
+                <div className={s.slugTop}>
+                  <h3 className={s.sectionTitle}>Đường dẫn (Slug)</h3>
+                  <code className={s.slugCode}>flylabour.vn/news/...</code>
+                </div>
+                <input
+                  value={form.slug}
+                  onChange={setField("slug")}
+                  className={clsx(s.field, s.mono)}
+                  placeholder="slug-bai-viet"
+                />
+              </div>
+
+              <div className={s.section}>
+                <h3 className={s.sectionTitle}>Hình ảnh đại diện</h3>
+                <div className={s.imagePreview}>
+                  {form.imagePreview ? (
+                    <img src={form.imagePreview} alt="preview" className={s.imageObj} />
+                  ) : (
+                    <div className={s.imageEmpty}>
+                      <ImageIcon size={32} />
+                      <p className={s.imageEmptyText}>Chưa có ảnh</p>
+                    </div>
+                  )}
+                  {form.imagePreview && (
+                    <button
+                      onClick={() => {
+                        setForm((f) => ({ ...f, imagePreview: "" }));
+                        setUrlInput("");
+                        fileObj.current = null;
+                      }}
+                      className={s.removeImgBtn}
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  )}
+                </div>
+
+                <div className={s.uploadGrid}>
+                  <button
+                    onClick={() => {
+                      setImgTab("upload");
+                      fileRef.current?.click();
+                    }}
+                    className={s.uploadOpt}
+                  >
+                    <Upload size={18} className={s.uploadOptIcon} />
+                    <span className={s.uploadOptLabel}>Tải lên</span>
+                    <input
+                      ref={fileRef}
+                      type="file"
+                      accept="image/*"
+                      className={s.hiddenInput}
+                      onChange={handleFileChange}
+                    />
+                  </button>
+                  <button
+                    onClick={() => setImgTab("url")}
+                    className={clsx(s.uploadOpt, imgTab === "url" && s.uploadOptActive)}
+                  >
+                    <LinkIcon size={18} className={s.uploadOptIcon} />
+                    <span className={s.uploadOptLabel}>Dùng Link</span>
+                  </button>
+                </div>
+
+                {imgTab === "url" && (
+                  <div className={s.urlRow}>
+                    <input
+                      value={urlInput}
+                      onChange={(e) => setUrlInput(e.target.value)}
+                      className={clsx(s.field, s.urlInput)}
+                      placeholder="https://..."
+                    />
+                    <button onClick={applyUrl} className={s.okBtn}>
+                      OK
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className={s.section}>
+                <h3 className={s.sectionTitle}>Tóm tắt (Trích dẫn VI)</h3>
+                <textarea
+                  value={form.excerpt}
+                  onChange={setField("excerpt")}
+                  className={s.textArea}
+                  placeholder="Mô tả súc tích cho bài viết này bằng tiếng Việt..."
+                />
+              </div>
+
+              <div className={s.section}>
+                <h3 className={s.sectionTitle}>Tóm tắt (Trích dẫn EN)</h3>
+                <textarea
+                  value={form.excerptEn}
+                  onChange={setField("excerptEn")}
+                  className={s.textArea}
+                  placeholder="Mô tả bằng tiếng Anh (để trống để tự động dịch)..."
+                />
+              </div>
+
+              <div className={s.tip}>
+                Mẹo: Tiêu đề nên chứa từ khóa chính
+                <br />
+                để tối ưu SEO tốt hơn.
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {deleting && (
+        <ConfirmDeleteModal
+          message="Bài viết này sẽ bị xóa vĩnh viễn khỏi hệ thống."
+          onConfirm={() => handleDelete(deleting)}
+          onCancel={() => setDeleting(null)}
+        />
+      )}
+    </div>
+  );
+}

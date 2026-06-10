@@ -9,6 +9,28 @@ import { PAGINATION } from '../../common/constants'
 export class UsersService {
   constructor(@InjectRepository(User) private usersRepo: Repository<User>) {}
 
+  async create(dto: { email: string; password: string; fullName: string; phone?: string; role?: string; isActive?: boolean }) {
+    // Check email exists
+    const existing = await this.usersRepo.findOne({ where: { email: dto.email } })
+    if (existing) throw new BadRequestException('Email đã được sử dụng')
+    
+    // Validate password
+    if (dto.password.length < 6) throw new BadRequestException('Mật khẩu phải có ít nhất 6 ký tự')
+    
+    // Create user
+    const user = this.usersRepo.create({
+      email: dto.email,
+      password: await bcrypt.hash(dto.password, 12),
+      fullName: dto.fullName,
+      phone: dto.phone,
+      role: dto.role as any,
+      isActive: dto.isActive ?? true,
+    })
+    await this.usersRepo.save(user)
+    const { password, ...rest } = user
+    return rest
+  }
+
   async findAll(query: { page?: number; limit?: number; search?: string }) {
     const { page = 1, search } = query
     const limit = Math.min(query.limit ?? PAGINATION.DEFAULT_LIMIT, PAGINATION.MAX_LIMIT)

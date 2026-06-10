@@ -6,7 +6,7 @@ import { Toaster } from "react-hot-toast";
 import { useContentStore } from "@core/hooks/usePageContent";
 import ScrollToTop from "@components/widgets/ScrollToTop";
 import UserLayout from "@components/layout/UserLayout";
-import AdminLayout from "@/admin/layout/AdminLayout";
+import AdminLayout from "@features/admin/layout/AdminLayout";
 
 // ── Public site + user account (UserLayout) ─────────────────────────────────────
 import HomePage from "@features/home/pages/HomePage";
@@ -15,9 +15,9 @@ import JobDetailPage from "@features/jobs/pages/JobDetailPage";
 import NewsPage from "@features/news/pages/NewsPage";
 import NewsDetailPage from "@features/news/pages/NewsDetailPage";
 import HandbookPage from "@features/news/pages/HandbookPage";
-import StudyPage from "@features/study/StudyPage";
+import StudyPage from "@features/study/pages/StudyPage";
 import StudyDetailPage from "@features/study/pages/StudyDetailPage";
-import TravelPage from "@features/travel/TravelPage";
+import TravelPage from "@features/travel/pages/TravelPage";
 import TravelDetailPage from "@features/travel/pages/TravelDetailPage";
 import ContactPage from "@features/contact/pages/ContactPage";
 import LoginPage from "@features/auth/pages/LoginPage";
@@ -32,28 +32,28 @@ import TermsOfServicePage from "@features/static-pages/pages/TermsOfServicePage"
 import NotFoundPage from "@features/static-pages/pages/NotFoundPage";
 
 // ── Employer pages ────────────────────────────────────────────────────────────
-import EmployerLayout from "@features/employer/pages/EmployerLayout";
+import EmployerLayout from "@features/employer/layout/EmployerLayout";
 import EmployerDashboard from "@features/employer/pages/EmployerDashboard";
 import EmployerJobsPage from "@features/employer/pages/EmployerJobsPage";
 import EmployerApplicationsPage from "@features/employer/pages/EmployerApplicationsPage";
 import EmployerProfilePage from "@features/employer/pages/EmployerProfilePage";
 
 // ── Admin pages ───────────────────────────────────────────────────────────────
-import AdminDashboard from "@/admin/pages/AdminDashboard";
-import AdminJobsPage from "@/admin/pages/AdminJobsPage";
-import AdminApplicationsPage from "@/admin/pages/AdminApplicationsPage";
-import AdminUsersPage from "@/admin/pages/AdminUsersPage";
-import AdminCategoriesPage from "@/admin/pages/AdminCategoriesPage";
-import AdminNewsPage from "@/admin/pages/AdminNewsPage";
-import AdminSettingsPage from "@/admin/pages/AdminSettingsPage";
-import AdminChoresPage from "@/admin/pages/AdminChoresPage";
-import AdminContactsPage from "@/admin/pages/AdminContactsPage";
-import AdminPoliciesPage from "@/admin/pages/AdminPoliciesPage";
-import AdminHandbookPage from "@/admin/pages/AdminHandbookPage";
-import AdminStudyNewsPage from "@/admin/pages/AdminStudyNewsPage";
-import AdminStudyProgramsPage from "@/admin/pages/AdminStudyProgramsPage";
-import AdminStudyApplicationsPage from "@/admin/pages/AdminStudyApplicationsPage";
-import AdminTravelPage from "@/admin/pages/AdminTravelPage";
+import AdminDashboard from "@features/admin/pages/AdminDashboard";
+import AdminJobsPage from "@features/admin/pages/AdminJobsPage";
+import AdminApplicationsPage from "@features/admin/pages/AdminApplicationsPage";
+import AdminUsersPage from "@features/admin/pages/AdminUsersPage";
+import AdminCategoriesPage from "@features/admin/pages/AdminCategoriesPage";
+import AdminNewsPage from "@features/admin/pages/AdminNewsPage";
+import AdminSettingsPage from "@features/admin/pages/AdminSettingsPage";
+import AdminChoresPage from "@features/admin/pages/AdminChoresPage";
+import AdminContactsPage from "@features/admin/pages/AdminContactsPage";
+import AdminPoliciesPage from "@features/admin/pages/AdminPoliciesPage";
+import AdminHandbookPage from "@features/admin/pages/AdminHandbookPage";
+import AdminStudyNewsPage from "@features/admin/pages/AdminStudyNewsPage";
+import AdminStudyProgramsPage from "@features/admin/pages/AdminStudyProgramsPage";
+import AdminStudyApplicationsPage from "@features/admin/pages/AdminStudyApplicationsPage";
+import AdminTravelPage from "@features/admin/pages/AdminTravelPage";
 
 // ── Bootstrap components ──────────────────────────────────────────────────────
 function ContentLoader() {

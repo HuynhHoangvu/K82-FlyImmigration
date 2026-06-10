@@ -3,6 +3,29 @@ import { User } from './user.entity';
 export declare class UsersService {
     private usersRepo;
     constructor(usersRepo: Repository<User>);
+    create(dto: {
+        email: string;
+        password: string;
+        fullName: string;
+        phone?: string;
+        role?: string;
+        isActive?: boolean;
+    }): Promise<{
+        id: string;
+        email: string;
+        fullName: string;
+        phone: string;
+        avatar: string;
+        address: string;
+        role: import("./user.entity").UserRole;
+        isActive: boolean;
+        cvUrl: string;
+        companyName: string;
+        companyDescription: string;
+        website: string;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
     findAll(query: {
         page?: number;
         limit?: number;

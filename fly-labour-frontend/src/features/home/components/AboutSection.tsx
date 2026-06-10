@@ -35,13 +35,19 @@ export default function AboutSection() {
             <h2 className={s.awardTitle}>{d.award_title}</h2>
             <p className={s.awardDesc}>{d.award_desc}</p>
           </div>
+
+          {/* 3 Ảnh chứng nhận hiển thị cố định dưới tiêu đề */}
+          <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 mb-8 mt-4">
+            <img src="/chung-nhan-1.jpg" alt="Award 3" className={s.awardImg} onClick={() => setLightboxImage("/chung-nhan-1.jpg")} />
+            <img src="/chung-nhan-2.jpg" alt="Award 4" className={s.awardImg} onClick={() => setLightboxImage("/chung-nhan-2.jpg")} />
+            <img src="/chung-nhan-3.jpg" alt="Award 5" className={s.awardImg} onClick={() => setLightboxImage("/chung-nhan-3.jpg")} />
+          </div>
+
+          {/* Các ảnh hoạt động/sự kiện giữ nguyên hiệu ứng chạy */}
           <Marquee direction="left" speed={50} pauseOnHover={true}>
             <div className={s.awardImages}>
               <img src="/gallery/event-2.jpg" alt="Award 1" className={s.awardImg} onClick={() => setLightboxImage("/gallery/event-2.jpg")} />
               <img src="/gallery/event-3.jpg" alt="Award 2" className={s.awardImg} onClick={() => setLightboxImage("/gallery/event-3.jpg")} />
-              <img src="/chung-nhan-1.jpg" alt="Award 3" className={s.awardImg} onClick={() => setLightboxImage("/chung-nhan-1.jpg")} />
-              <img src="/chung-nhan-2.jpg" alt="Award 4" className={s.awardImg} onClick={() => setLightboxImage("/chung-nhan-2.jpg")} />
-              <img src="/chung-nhan-3.jpg" alt="Award 5" className={s.awardImg} onClick={() => setLightboxImage("/chung-nhan-3.jpg")} />
             </div>
           </Marquee>
         </div>

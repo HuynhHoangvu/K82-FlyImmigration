@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Delete, Param, Query, Body, UseGuards, Request } from '@nestjs/common'
+import { Controller, Get, Post, Patch, Delete, Param, Query, Body, UseGuards, Request } from '@nestjs/common'
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger'
 import { UsersService } from './users.service'
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard'
@@ -27,6 +27,14 @@ export class UsersController {
   }
 
   // Admin routes
+  @Post()
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @ApiBearerAuth('JWT')
+  @ApiOperation({ summary: '[Admin] Tạo người dùng mới' })
+  create(@Body() dto: { email: string; password: string; fullName: string; phone?: string; role?: string; isActive?: boolean }) {
+    return this.usersService.create(dto)
+  }
+
   @Get()
   @UseGuards(JwtAuthGuard, AdminGuard)
   @ApiBearerAuth('JWT')
